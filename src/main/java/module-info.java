@@ -6,7 +6,8 @@ module no.ssb.dapla.dataset.uri {
     requires avro;
     requires avro.buddy.core;
 
-    exports no.ssb.dapla.dataset.doc;
+    exports no.ssb.dapla.dataset.doc.model.simple;
+    exports no.ssb.dapla.dataset.doc.model.gsim;
 
     opens no.ssb.dapla.dataset.doc.model.simple to com.fasterxml.jackson.databind;
     opens no.ssb.dapla.dataset.doc.model.gsim to com.fasterxml.jackson.databind;
