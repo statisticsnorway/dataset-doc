@@ -21,6 +21,19 @@ public class SimpleToGsim {
     }
 
     void processAll(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord, int level) {
+        LogicalRecord gsimLogicalRecord = GsimBuilder.create()
+                .id("id")
+                .id(createId(logicalRecord))
+                .name(logicalRecord.getName())
+                .logicalRecord()
+                .unitType(logicalRecord.getUnitType(), "UnitType_DUMMY")
+                .shortName(logicalRecord.getName())
+                .instanceVariables(logicalRecord.getInstanceVariableIds(root.getPath()))
+                .build();
+
+//        System.out.println(getIntendString(level) + gsimLogicalRecord.getShortName() + " (lr)");
+        persistenceProvider.save(gsimLogicalRecord);
+
         for (var instanceVariable : logicalRecord.getInstanceVariables()) {
             InstanceVariable gsimInstanceVariable = GsimBuilder.create()
                     .id(createId(logicalRecord, instanceVariable))
@@ -46,20 +59,6 @@ public class SimpleToGsim {
         }
 
         for (var child : logicalRecord.getLogicalRecords()) {
-            LogicalRecord gsimLogicalRecord = GsimBuilder.create()
-                    .id("id")
-                    .id(createId(child))
-                    .name(child.getName())
-                    .logicalRecord()
-                    .unitType(child.getUnitType(), "UnitType_DUMMY")
-                    .shortName(child.getName())
-                    .instanceVariables(logicalRecord.getInstanceVariableIds(root.getPath()))
-                    .build();
-
-//            System.out.println(getIntendString(level) + gsimLogicalRecord.getShortName() + " (lr)");
-            persistenceProvider.save(gsimLogicalRecord);
-
-
             processAll(child, level + 1);
         }
     }

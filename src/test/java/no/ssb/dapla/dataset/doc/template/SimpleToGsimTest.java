@@ -83,7 +83,7 @@ class SimpleToGsimTest {
 
         Dataset root = new ObjectMapper().readValue(json, Dataset.class);
         new SimpleToGsim(root, identifiableArtefact -> {
-            System.out.println(getJson(identifiableArtefact));
+//            System.out.println(getJson(identifiableArtefact));
         }).createGsimObjects();
     }
 
