@@ -16,7 +16,7 @@ public class SimpleToGsim {
         this.persistenceProvider = persistenceProvider;
     }
 
-    void createGsimObjects() {
+    public void createGsimObjects() {
         processAll(root.getRoot(), 0);
     }
 
