@@ -35,7 +35,7 @@ public class SimpleToGsim {
                 .isPlaceholderRecord(false)// TODO: add and get from simple
                 .unitType(logicalRecord.getUnitType(), "UnitType_DUMMY")
                 .shortName(logicalRecord.getName())
-                .instanceVariables(logicalRecord.getInstanceVariableIds(root.getPath()))
+                .instanceVariables(logicalRecord.getInstanceVariableIds(i -> createId(logicalRecord, i)))
                 .build();
 
 //        System.out.println(getIntendString(level) + gsimLogicalRecord.getShortName() + " (lr)");

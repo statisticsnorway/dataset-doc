@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 @JsonFilter("LogicalRecord_MinimumFilter")
 public class LogicalRecord {
+    public interface CreateIdHandler {
+        String createId(InstanceVariable name);
+    }
 
     @JsonProperty
     private String name;
@@ -75,7 +78,7 @@ public class LogicalRecord {
         return instanceVariables;
     }
 
-    public List<String> getInstanceVariableIds(String datasetPath) {
-        return instanceVariables.stream().map(i -> datasetPath + "/" + getPath() + "/" + i.getName()).collect(Collectors.toList());
+    public List<String> getInstanceVariableIds(CreateIdHandler createIdHandler) {
+        return instanceVariables.stream().map(i -> "/" + createIdHandler.createId(i)).collect(Collectors.toList());
     }
 }
