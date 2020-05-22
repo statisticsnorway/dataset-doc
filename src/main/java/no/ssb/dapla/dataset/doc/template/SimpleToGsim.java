@@ -26,8 +26,15 @@ public class SimpleToGsim {
                     .id(createId(logicalRecord, instanceVariable))
                     .name(instanceVariable.getName())
                     .description(instanceVariable.getDescription())
+                    .createdBy("rl") // TODO: get from argument
+                    .addProperty("administrativeStatus", "DRAFT") // TODO: add and get from simple
+                    .addProperty("createdDate", "2020-01-01T00:00:00Z")// TODO: add and get from simple
+                    .addProperty("validFrom", "2020-01-01T00:00:00Z")// TODO: add and get from simple
+                    .addProperty("version", "1.0.0")// TODO: add and get from simple
+                    .addProperty("versionValidFrom", "2020-01-01T00:00:00Z")// TODO: add and get from simple
                     .instanceVariable()
                     .shortName(instanceVariable.getName())
+                    .population("Population_DUMMY")
                     .dataStructureComponentType(instanceVariable.getDataStructureComponentType(), "MEASURE")
                     .dataStructureComponentRole(instanceVariable.getDataStructureComponentRole(), "ENTITY")
                     .sentinelValueDomain(instanceVariable.getSentinelValueDomain(), "DescribedValueDomain_DUMMY")
@@ -63,7 +70,8 @@ public class SimpleToGsim {
 
     private String createId(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord,
                             no.ssb.dapla.dataset.doc.model.simple.InstanceVariable instanceVariable) {
-        return root.getPath() + "/" + logicalRecord.getPath() + "/" + instanceVariable.getName();
+        String path = root.getPath().substring(1); // Remove first slash
+        return path.replace("/", ".") + "." + logicalRecord.getPath() + "." + instanceVariable.getName();
     }
 
     String getIntendString(int level) {
