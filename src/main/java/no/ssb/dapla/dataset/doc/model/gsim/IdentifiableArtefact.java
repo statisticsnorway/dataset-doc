@@ -39,6 +39,11 @@ public abstract class IdentifiableArtefact {
     }
 
     @JsonIgnore
+    public String getGsimName() {
+        return this.getClass().getSimpleName();
+    }
+
+    @JsonIgnore
     public String getName() {
         // A bit of a hack to get name from gsim json structure. Should rewrite to have a class for this common structure
         Object name = unknownProperties.getOrDefault("name", null);

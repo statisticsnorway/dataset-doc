@@ -4,13 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import no.ssb.dapla.dataset.doc.model.gsim.IdentifiableArtefact;
+import no.ssb.dapla.dataset.doc.model.gsim.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.simple.Dataset;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 class SimpleToGsimTest {
     final private static String TEST_DATA_FOLDER = "testdata/gsim_files";
@@ -82,10 +88,35 @@ class SimpleToGsimTest {
                 "}\n";
 
         Dataset root = new ObjectMapper().readValue(json, Dataset.class);
+        List<String> list = List.of(
+                "/InstanceVariable/path.to.dataset.konto.kontonummer",
+                "/InstanceVariable/path.to.dataset.konto.innskudd",
+                "/InstanceVariable/path.to.dataset.konto.gjeld");
+        Queue<String> paths = new LinkedList<>();
+        paths.add("path.to.dataset.konto");
+        paths.add("path.to.dataset.konto.kontonummer");
+        paths.add("path.to.dataset.konto.innskudd");
+        paths.add("path.to.dataset.konto.gjeld");
+
+        Queue<String> gsimNames = new LinkedList<>();
+        gsimNames.add("LogicalRecord");
+        gsimNames.add("InstanceVariable");
+        gsimNames.add("InstanceVariable");
+        gsimNames.add("InstanceVariable");
+
         new SimpleToGsim(root, identifiableArtefact -> {
-//            System.out.println(getJson(identifiableArtefact));
+            if (identifiableArtefact instanceof LogicalRecord) {
+                var instanceVariables = ((LogicalRecord) identifiableArtefact).getInstanceVariables();
+                assertThat(instanceVariables).isEqualTo(list);
+            }
+            assertThat(identifiableArtefact.getId()).isEqualTo(paths.remove());
+            assertThat(identifiableArtefact.getGsimName()).isEqualTo(gsimNames.remove());
         }).createGsimObjects();
+
+        assertThat(paths).isEmpty();
+        assertThat(gsimNames).isEmpty();
     }
+
 
     String getJson(IdentifiableArtefact identifiableArtefact) {
         try {
