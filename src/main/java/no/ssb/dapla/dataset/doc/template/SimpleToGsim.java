@@ -25,7 +25,14 @@ public class SimpleToGsim {
                 .id("id")
                 .id(createId(logicalRecord))
                 .name(logicalRecord.getName())
+                .createdBy("rl") // TODO: get from argument
+                .addProperty("administrativeStatus", "DRAFT") // TODO: add and get from simple
+                .addProperty("createdDate", "2020-01-01T00:00:00Z")// TODO: add and get from simple
+                .addProperty("validFrom", "2020-01-01T00:00:00Z")// TODO: add and get from simple
+                .addProperty("version", "1.0.0")// TODO: add and get from simple
+                .addProperty("versionValidFrom", "2020-01-01T00:00:00Z")// TODO: add and get from simple
                 .logicalRecord()
+                .isPlaceholderRecord(false)// TODO: add and get from simple
                 .unitType(logicalRecord.getUnitType(), "UnitType_DUMMY")
                 .shortName(logicalRecord.getName())
                 .instanceVariables(logicalRecord.getInstanceVariableIds(root.getPath()))
@@ -64,7 +71,8 @@ public class SimpleToGsim {
     }
 
     private String createId(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord) {
-        return root.getPath() + "/" + logicalRecord.getPath();
+        String path = root.getPath().substring(1); // Remove first slash
+        return path.replace("/", ".") + "." + logicalRecord.getPath();
     }
 
     private String createId(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord,
