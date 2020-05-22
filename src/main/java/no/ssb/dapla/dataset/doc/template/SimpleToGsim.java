@@ -41,7 +41,7 @@ public class SimpleToGsim {
                     .representedVariable(instanceVariable.getRepresentedVariable(), "RepresentertVariable_DUMMY")
                     .build();
 
-            System.out.println(getIntendString(level + 1) + gsimInstanceVariable.getShortName());
+//            System.out.println(getIntendString(level + 1) + gsimInstanceVariable.getShortName());
             persistenceProvider.save(gsimInstanceVariable);
         }
 
@@ -56,7 +56,7 @@ public class SimpleToGsim {
                     .instanceVariables(logicalRecord.getInstanceVariableIds(root.getPath()))
                     .build();
 
-            System.out.println(getIntendString(level) + gsimLogicalRecord.getShortName() + " (lr)");
+//            System.out.println(getIntendString(level) + gsimLogicalRecord.getShortName() + " (lr)");
             persistenceProvider.save(gsimLogicalRecord);
 
 
