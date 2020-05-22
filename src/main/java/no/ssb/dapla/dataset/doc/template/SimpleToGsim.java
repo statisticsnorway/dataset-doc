@@ -77,8 +77,7 @@ public class SimpleToGsim {
 
     private String createId(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord,
                             no.ssb.dapla.dataset.doc.model.simple.InstanceVariable instanceVariable) {
-        String path = root.getPath().substring(1); // Remove first slash
-        return path.replace("/", ".") + "." + logicalRecord.getPath() + "." + instanceVariable.getName();
+        return createId(logicalRecord) + "." + instanceVariable.getName();
     }
 
     String getIntendString(int level) {
