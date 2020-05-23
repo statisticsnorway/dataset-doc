@@ -205,6 +205,12 @@ public class GsimBuilder {
             return this;
         }
 
+        public UnitDataStructureBuilder logicalRecord(String id) {
+            List<String> logicalRecordsWithPath = List.of("/LogicalRecord/" + id);
+            unitDataStructure.setLogicalRecords(logicalRecordsWithPath);
+            return this;
+        }
+
         public UnitDataStructureBuilder noLogicalRecords() {
             unitDataStructure.setLogicalRecords(new ArrayList<>());
             return this;
@@ -236,7 +242,7 @@ public class GsimBuilder {
         }
 
         public LogicalRecordBuilder unitType(String unitTypeId, String defaultValue) {
-            if(unitTypeId!=null) {
+            if (unitTypeId != null) {
                 logicalRecord.setUnitType("/UnitType/" + unitTypeId);
             } else {
                 logicalRecord.setUnitType("/UnitType/" + defaultValue);
@@ -299,7 +305,7 @@ public class GsimBuilder {
         }
 
         public InstanceVariableBuilder dataStructureComponentType(String dataStructureComponentType, String defaultValue) {
-            if(dataStructureComponentType != null) {
+            if (dataStructureComponentType != null) {
                 instanceVariable.setDataStructureComponentType(dataStructureComponentType);
             } else {
                 instanceVariable.setDataStructureComponentType(defaultValue);
@@ -313,7 +319,7 @@ public class GsimBuilder {
         }
 
         public InstanceVariableBuilder sentinelValueDomain(String sentinelValueDomain, String defaultValue) {
-            if(sentinelValueDomain != null) {
+            if (sentinelValueDomain != null) {
                 instanceVariable.setSentinelValueDomain("/DescribedValueDomain/" + sentinelValueDomain);
             } else {
                 instanceVariable.setSentinelValueDomain("/DescribedValueDomain/" + defaultValue);
@@ -336,7 +342,7 @@ public class GsimBuilder {
         }
 
         public InstanceVariableBuilder representedVariable(String representedVariable, String defaultValue) {
-            if(representedVariable!= null) {
+            if (representedVariable != null) {
                 instanceVariable.setRepresentedVariable("/RepresentedVariable/" + representedVariable);
             } else {
                 instanceVariable.setRepresentedVariable("/RepresentedVariable/" + defaultValue);

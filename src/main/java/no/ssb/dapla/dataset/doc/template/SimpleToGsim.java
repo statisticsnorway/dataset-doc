@@ -4,6 +4,8 @@ import no.ssb.dapla.dataset.doc.builder.GsimBuilder;
 import no.ssb.dapla.dataset.doc.model.gsim.InstanceVariable;
 import no.ssb.dapla.dataset.doc.model.gsim.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.gsim.PersistenceProvider;
+import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
+import no.ssb.dapla.dataset.doc.model.gsim.UnitDataset;
 
 import java.util.Collections;
 
@@ -33,7 +35,23 @@ public class SimpleToGsim {
     }
 
     public void createGsimObjects() {
-        processAll(root.getRoot(), 0);
+        var rootLogicalRecord = this.root.getRoot();
+        UnitDataStructure unitDataStructure = createDefault(createId(rootLogicalRecord), rootLogicalRecord.getName(), null)
+                .unitDataStructure()
+                .logicalRecord(createId(rootLogicalRecord))
+                .build();
+        persistenceProvider.save(unitDataStructure);
+
+        UnitDataset unitDataset = createDefault(createId(rootLogicalRecord), rootLogicalRecord.getName(), null)
+                .unitDataSet()
+                .unitDataStructure(unitDataStructure.getId())
+                .temporalityType("EVENT") // TODO: get this from correct place
+                .dataSetState("INPUT_DATA") // TODO: get this from correct place
+                .dataSourcePath(root.getPath())
+                .build();
+        persistenceProvider.save(unitDataset);
+
+        processAll(rootLogicalRecord, 0);
     }
 
     void processAll(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord, int level) {

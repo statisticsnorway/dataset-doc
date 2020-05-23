@@ -96,11 +96,15 @@ class SimpleToGsimTest {
 
         Queue<String> paths = new LinkedList<>();
         paths.add("path.to.dataset.konto");
+        paths.add("path.to.dataset.konto");
+        paths.add("path.to.dataset.konto");
         paths.add("path.to.dataset.konto.kontonummer");
         paths.add("path.to.dataset.konto.innskudd");
         paths.add("path.to.dataset.konto.gjeld");
 
         Queue<String> gsimNames = new LinkedList<>();
+        gsimNames.add("UnitDataStructure");
+        gsimNames.add("UnitDataset");
         gsimNames.add("LogicalRecord");
         gsimNames.add("InstanceVariable");
         gsimNames.add("InstanceVariable");
