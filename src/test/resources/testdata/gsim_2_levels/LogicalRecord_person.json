@@ -1,0 +1,17 @@
+{
+  "id" : "path.to.dataset.person",
+  "shortName" : "person",
+  "unitType" : "/UnitType/UnitType_DUMMY",
+  "instanceVariables" : [ "/InstanceVariable/path.to.dataset.person.name", "/InstanceVariable/path.to.dataset.person.sex" ],
+  "name" : [ {
+    "languageText" : "person",
+    "languageCode" : "nb"
+  } ],
+  "createdDate" : "2020-01-01T00:00:00Z",
+  "administrativeStatus" : "DRAFT",
+  "createdBy" : "rl",
+  "validFrom" : "2020-01-01T00:00:00Z",
+  "version" : "1.0.0",
+  "isPlaceholderRecord" : false,
+  "versionValidFrom" : "2020-01-01T00:00:00Z"
+}

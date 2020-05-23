@@ -53,18 +53,19 @@ class SimpleToGsimTest {
             "  }\n" +
             "}\n";
 
-
-    @AfterEach
-    void cleanup() throws IOException {
-        FileUtils.deleteDirectory(new File(TEST_DATA_FOLDER));
-    }
-
     @Test
     void createGsimObjectsFor2Levels_AndWriteToFiles() throws JsonProcessingException {
         Dataset root = new ObjectMapper().readValue(json, Dataset.class);
 
-        new File(TEST_DATA_FOLDER).mkdirs();
-        new SimpleToGsim(root, new JsonToFileProvider(TEST_DATA_FOLDER)).createGsimObjects();
+        // to generate files
+        //new File(TEST_DATA_FOLDER).mkdirs();
+        //new SimpleToGsim(root, new JsonToFileProvider(TEST_DATA_FOLDER)).createGsimObjects();
+
+        new SimpleToGsim(root, identifiableArtefact -> {
+            String fileName = String.format("testdata/gsim_2_levels/%s_%s.json", identifiableArtefact.getGsimName(), identifiableArtefact.getName());
+            String expected = TestUtils.load(fileName);
+            assertThat(getJson(identifiableArtefact)).isEqualTo(expected);
+        }).createGsimObjects();
     }
 
     @Test
