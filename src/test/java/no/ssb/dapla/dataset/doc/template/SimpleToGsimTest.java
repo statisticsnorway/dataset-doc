@@ -92,6 +92,7 @@ class SimpleToGsimTest {
                 "/InstanceVariable/path.to.dataset.konto.kontonummer",
                 "/InstanceVariable/path.to.dataset.konto.innskudd",
                 "/InstanceVariable/path.to.dataset.konto.gjeld");
+
         Queue<String> paths = new LinkedList<>();
         paths.add("path.to.dataset.konto");
         paths.add("path.to.dataset.konto.kontonummer");
@@ -105,6 +106,10 @@ class SimpleToGsimTest {
         gsimNames.add("InstanceVariable");
 
         new SimpleToGsim(root, identifiableArtefact -> {
+            String fileName = String.format("testdata/gsim_1_level/%s_%s.json", identifiableArtefact.getGsimName(), identifiableArtefact.getName());
+            String expected = TestUtils.load(fileName);
+            assertThat(getJson(identifiableArtefact)).isEqualTo(expected);
+
             if (identifiableArtefact instanceof LogicalRecord) {
                 var instanceVariables = ((LogicalRecord) identifiableArtefact).getInstanceVariables();
                 assertThat(instanceVariables).isEqualTo(list);
