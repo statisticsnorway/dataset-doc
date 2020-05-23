@@ -4,8 +4,8 @@ import no.ssb.dapla.dataset.doc.builder.GsimBuilder;
 import no.ssb.dapla.dataset.doc.model.gsim.InstanceVariable;
 import no.ssb.dapla.dataset.doc.model.gsim.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.gsim.PersistenceProvider;
+import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
-import no.ssb.dapla.dataset.doc.model.gsim.UnitDataset;
 
 import java.util.Collections;
 
@@ -42,7 +42,7 @@ public class SimpleToGsim {
                 .build();
         persistenceProvider.save(unitDataStructure);
 
-        UnitDataset unitDataset = createDefault(createId(rootLogicalRecord), rootLogicalRecord.getName(), null)
+        UnitDataSet unitDataset = createDefault(createId(rootLogicalRecord), rootLogicalRecord.getName(), null)
                 .unitDataSet()
                 .unitDataStructure(unitDataStructure.getId())
                 .temporalityType("EVENT") // TODO: get this from correct place

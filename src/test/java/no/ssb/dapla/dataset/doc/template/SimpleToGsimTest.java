@@ -104,7 +104,7 @@ class SimpleToGsimTest {
 
         Queue<String> gsimNames = new LinkedList<>();
         gsimNames.add("UnitDataStructure");
-        gsimNames.add("UnitDataset");
+        gsimNames.add("UnitDataSet");
         gsimNames.add("LogicalRecord");
         gsimNames.add("InstanceVariable");
         gsimNames.add("InstanceVariable");

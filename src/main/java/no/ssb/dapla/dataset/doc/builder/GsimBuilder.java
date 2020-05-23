@@ -14,7 +14,7 @@ import no.ssb.dapla.dataset.doc.model.gsim.StatisticalProgramCycle;
 import no.ssb.dapla.dataset.doc.model.gsim.TransformableInput;
 import no.ssb.dapla.dataset.doc.model.gsim.TransformedOutput;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
-import no.ssb.dapla.dataset.doc.model.gsim.UnitDataset;
+import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -157,7 +157,7 @@ public class GsimBuilder {
 
     public static class UnitDatasetBuilder {
         private final BaseBuilder baseBuilder;
-        private UnitDataset unitDataset = new UnitDataset();
+        private UnitDataSet unitDataset = new UnitDataSet();
 
 
         public UnitDatasetBuilder(BaseBuilder baseBuilder) {
@@ -180,7 +180,7 @@ public class GsimBuilder {
             return this;
         }
 
-        public UnitDataset build() {
+        public UnitDataSet build() {
             baseBuilder.build(unitDataset);
             return unitDataset;
         }
