@@ -11,6 +11,22 @@ public class SimpleToGsim {
     private final no.ssb.dapla.dataset.doc.model.simple.Dataset root;
     private final PersistenceProvider persistenceProvider;
 
+    private GsimBuilder.BaseBuilder createDefault(String id, String name, String description) {
+        // for now just add hardcoded default values
+        String date = "2020-01-01T00:00:00Z";
+        return GsimBuilder.create()
+                .id(id)
+                .languageCode("nb")
+                .name(name)
+                .description(description)
+                .createdBy("rl")
+                .addProperty("administrativeStatus", "DRAFT")
+                .addProperty("createdDate", date)
+                .addProperty("validFrom", date)
+                .addProperty("version", "1.0.0")
+                .addProperty("versionValidFrom", date);
+    }
+
     public SimpleToGsim(no.ssb.dapla.dataset.doc.model.simple.Dataset root, PersistenceProvider persistenceProvider) {
         this.root = root;
         this.persistenceProvider = persistenceProvider;
@@ -21,45 +37,29 @@ public class SimpleToGsim {
     }
 
     void processAll(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord, int level) {
-        LogicalRecord gsimLogicalRecord = GsimBuilder.create()
-                .id("id")
-                .id(createId(logicalRecord))
-                .name(logicalRecord.getName())
-                .createdBy("rl") // TODO: get from argument
-                .addProperty("administrativeStatus", "DRAFT") // TODO: add and get from simple
-                .addProperty("createdDate", "2020-01-01T00:00:00Z")// TODO: add and get from simple
-                .addProperty("validFrom", "2020-01-01T00:00:00Z")// TODO: add and get from simple
-                .addProperty("version", "1.0.0")// TODO: add and get from simple
-                .addProperty("versionValidFrom", "2020-01-01T00:00:00Z")// TODO: add and get from simple
-                .logicalRecord()
-                .isPlaceholderRecord(false)// TODO: add and get from simple
-                .unitType(logicalRecord.getUnitType(), "UnitType_DUMMY")
-                .shortName(logicalRecord.getName())
-                .instanceVariables(logicalRecord.getInstanceVariableIds(i -> createId(logicalRecord, i)))
-                .build();
+        LogicalRecord gsimLogicalRecord =
+                createDefault(createId(logicalRecord), logicalRecord.getName(), null)
+                        .logicalRecord()
+                        .isPlaceholderRecord(false)// TODO: add and get from simple
+                        .unitType(logicalRecord.getUnitType(), "UnitType_DUMMY")
+                        .shortName(logicalRecord.getName())
+                        .instanceVariables(logicalRecord.getInstanceVariableIds(i -> createId(logicalRecord, i)))
+                        .build();
 
 //        System.out.println(getIntendString(level) + gsimLogicalRecord.getShortName() + " (lr)");
         persistenceProvider.save(gsimLogicalRecord);
 
         for (var instanceVariable : logicalRecord.getInstanceVariables()) {
-            InstanceVariable gsimInstanceVariable = GsimBuilder.create()
-                    .id(createId(logicalRecord, instanceVariable))
-                    .name(instanceVariable.getName())
-                    .description(instanceVariable.getDescription())
-                    .createdBy("rl") // TODO: get from argument
-                    .addProperty("administrativeStatus", "DRAFT") // TODO: add and get from simple
-                    .addProperty("createdDate", "2020-01-01T00:00:00Z")// TODO: add and get from simple
-                    .addProperty("validFrom", "2020-01-01T00:00:00Z")// TODO: add and get from simple
-                    .addProperty("version", "1.0.0")// TODO: add and get from simple
-                    .addProperty("versionValidFrom", "2020-01-01T00:00:00Z")// TODO: add and get from simple
-                    .instanceVariable()
-                    .shortName(instanceVariable.getName())
-                    .population("Population_DUMMY")
-                    .dataStructureComponentType(instanceVariable.getDataStructureComponentType(), "MEASURE")
-                    .dataStructureComponentRole(instanceVariable.getDataStructureComponentRole(), "ENTITY")
-                    .sentinelValueDomain(instanceVariable.getSentinelValueDomain(), "DescribedValueDomain_DUMMY")
-                    .representedVariable(instanceVariable.getRepresentedVariable(), "RepresentertVariable_DUMMY")
-                    .build();
+            InstanceVariable gsimInstanceVariable =
+                    createDefault(createId(logicalRecord, instanceVariable), instanceVariable.getName(), instanceVariable.getDescription())
+                            .instanceVariable()
+                            .shortName(instanceVariable.getName())
+                            .population("Population_DUMMY")
+                            .dataStructureComponentType(instanceVariable.getDataStructureComponentType(), "MEASURE")
+                            .dataStructureComponentRole(instanceVariable.getDataStructureComponentRole(), "ENTITY")
+                            .sentinelValueDomain(instanceVariable.getSentinelValueDomain(), "DescribedValueDomain_DUMMY")
+                            .representedVariable(instanceVariable.getRepresentedVariable(), "RepresentertVariable_DUMMY")
+                            .build();
 
 //            System.out.println(getIntendString(level + 1) + gsimInstanceVariable.getShortName());
             persistenceProvider.save(gsimInstanceVariable);
