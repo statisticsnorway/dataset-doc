@@ -18,6 +18,7 @@ import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -206,7 +207,7 @@ public class GsimBuilder {
         }
 
         public UnitDataStructureBuilder logicalRecord(String id) {
-            List<String> logicalRecordsWithPath = List.of("/LogicalRecord/" + id);
+            List<String> logicalRecordsWithPath = Arrays.asList("/LogicalRecord/" + id);
             unitDataStructure.setLogicalRecords(logicalRecordsWithPath);
             return this;
         }

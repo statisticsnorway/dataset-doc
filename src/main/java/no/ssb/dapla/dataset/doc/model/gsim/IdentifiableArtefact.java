@@ -49,7 +49,7 @@ public abstract class IdentifiableArtefact {
         Object name = unknownProperties.getOrDefault("name", null);
         if (name == null) return null;
         if (name instanceof List) {
-            var map = (List<Map<String, String>>) name;
+            List<Map<String, String>> map = (List<Map<String, String>>) name;
             Optional<String> languageText = map.stream().map(a -> a.getOrDefault("languageText", null)).filter(Objects::nonNull).findFirst();
             if (languageText.isPresent()) return languageText.get();
         }

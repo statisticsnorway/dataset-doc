@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -89,7 +90,7 @@ class SimpleToGsimTest {
                 "}\n";
 
         Dataset root = new ObjectMapper().readValue(json, Dataset.class);
-        List<String> list = List.of(
+        List<String> list = Arrays.asList(
                 "/InstanceVariable/path.to.dataset.konto.kontonummer",
                 "/InstanceVariable/path.to.dataset.konto.innskudd",
                 "/InstanceVariable/path.to.dataset.konto.gjeld");
@@ -116,7 +117,7 @@ class SimpleToGsimTest {
             assertThat(getJson(identifiableArtefact)).isEqualTo(expected);
 
             if (identifiableArtefact instanceof LogicalRecord) {
-                var instanceVariables = ((LogicalRecord) identifiableArtefact).getInstanceVariables();
+                List<String> instanceVariables = ((LogicalRecord) identifiableArtefact).getInstanceVariables();
                 assertThat(instanceVariables).isEqualTo(list);
             }
             assertThat(identifiableArtefact.getId()).isEqualTo(paths.remove());
