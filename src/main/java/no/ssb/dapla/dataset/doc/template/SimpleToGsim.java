@@ -35,7 +35,7 @@ public class SimpleToGsim {
     }
 
     public void createGsimObjects() {
-        var rootLogicalRecord = this.root.getRoot();
+        no.ssb.dapla.dataset.doc.model.simple.LogicalRecord rootLogicalRecord = this.root.getRoot();
         UnitDataStructure unitDataStructure = createDefault(createId(rootLogicalRecord), rootLogicalRecord.getName(), null)
                 .unitDataStructure()
                 .logicalRecord(createId(rootLogicalRecord))
@@ -67,7 +67,7 @@ public class SimpleToGsim {
 //        System.out.println(getIntendString(level) + gsimLogicalRecord.getShortName() + " (lr)");
         persistenceProvider.save(gsimLogicalRecord);
 
-        for (var instanceVariable : logicalRecord.getInstanceVariables()) {
+        for (no.ssb.dapla.dataset.doc.model.simple.InstanceVariable instanceVariable : logicalRecord.getInstanceVariables()) {
             InstanceVariable gsimInstanceVariable =
                     createDefault(createId(logicalRecord, instanceVariable), instanceVariable.getName(), instanceVariable.getDescription())
                             .instanceVariable()
@@ -83,7 +83,7 @@ public class SimpleToGsim {
             persistenceProvider.save(gsimInstanceVariable);
         }
 
-        for (var child : logicalRecord.getLogicalRecords()) {
+        for (no.ssb.dapla.dataset.doc.model.simple.LogicalRecord child : logicalRecord.getLogicalRecords()) {
             processAll(child, level + 1);
         }
     }
