@@ -13,7 +13,7 @@ public class SimpleToGsim {
     private final no.ssb.dapla.dataset.doc.model.simple.Dataset root;
     private final PersistenceProvider persistenceProvider;
 
-    private GsimBuilder.BaseBuilder createDefault(String id, String name, String description) {
+    public static GsimBuilder.BaseBuilder createDefault(String id, String name, String description) {
         // for now just add hardcoded default values
         String date = "2020-01-01T00:00:00Z";
         return GsimBuilder.create()
@@ -76,7 +76,7 @@ public class SimpleToGsim {
                             .dataStructureComponentType(instanceVariable.getDataStructureComponentType(), "MEASURE")
                             .dataStructureComponentRole(instanceVariable.getDataStructureComponentRole(), "ENTITY")
                             .sentinelValueDomain(instanceVariable.getSentinelValueDomain(), "DescribedValueDomain_DUMMY")
-                            .representedVariable(instanceVariable.getRepresentedVariable(), "RepresentertVariable_DUMMY")
+                            .representedVariable(instanceVariable.getRepresentedVariable(), "RepresentedVariable_DUMMY")
                             .build();
 
 //            System.out.println(getIntendString(level + 1) + gsimInstanceVariable.getShortName());
