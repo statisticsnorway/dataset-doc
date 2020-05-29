@@ -23,7 +23,6 @@ class SimpleToGsimTest {
     final private static String TEST_DATA_FOLDER = "testdata/gsim_files";
 
     String json = "{\n" +
-            "  \"dataset-path\" : \"/path/to/dataset\",\n" +
             "  \"logical-record-root\" : {\n" +
             "    \"name\" : \"root\",\n" +
             "    \"logicalRecords\" : [ {\n" +
@@ -62,7 +61,7 @@ class SimpleToGsimTest {
         //new File(TEST_DATA_FOLDER).mkdirs();
         //new SimpleToGsim(root, new JsonToFileProvider(TEST_DATA_FOLDER)).createGsimObjects();
 
-        new SimpleToGsim(root, identifiableArtefact -> {
+        new SimpleToGsim(root, "/path/to/dataset", identifiableArtefact -> {
             String fileName = String.format("testdata/gsim_2_levels/%s_%s.json", identifiableArtefact.getGsimName(), identifiableArtefact.getName());
             String expected = TestUtils.load(fileName);
             assertThat(getJson(identifiableArtefact)).isEqualTo(expected);
@@ -72,7 +71,6 @@ class SimpleToGsimTest {
     @Test
     void createGsimObjectsForZeroLevels() throws JsonProcessingException {
         String json = "{\n" +
-                "  \"dataset-path\" : \"/path/to/dataset\",\n" +
                 "  \"logical-record-root\" : {\n" +
                 "    \"name\" : \"konto\",\n" +
                 "    \"instanceVariables\" : [ {\n" +
@@ -111,7 +109,7 @@ class SimpleToGsimTest {
         gsimNames.add("InstanceVariable");
         gsimNames.add("InstanceVariable");
 
-        new SimpleToGsim(root, identifiableArtefact -> {
+        new SimpleToGsim(root, "/path/to/dataset", identifiableArtefact -> {
             String fileName = String.format("testdata/gsim_1_level/%s_%s.json", identifiableArtefact.getGsimName(), identifiableArtefact.getName());
             String expected = TestUtils.load(fileName);
             assertThat(getJson(identifiableArtefact)).isEqualTo(expected);

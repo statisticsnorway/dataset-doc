@@ -11,6 +11,7 @@ import java.util.Collections;
 
 public class SimpleToGsim {
     private final no.ssb.dapla.dataset.doc.model.simple.Dataset root;
+    private String dataSetPath;
     private final PersistenceProvider persistenceProvider;
 
     public static GsimBuilder.BaseBuilder createDefault(String id, String name, String description) {
@@ -29,8 +30,12 @@ public class SimpleToGsim {
                 .addProperty("versionValidFrom", date);
     }
 
-    public SimpleToGsim(no.ssb.dapla.dataset.doc.model.simple.Dataset root, PersistenceProvider persistenceProvider) {
+    public SimpleToGsim(no.ssb.dapla.dataset.doc.model.simple.Dataset root, String dataSetPath, PersistenceProvider persistenceProvider) {
+        if (!dataSetPath.startsWith("/")) {
+            throw new IllegalArgumentException("dataset path is expected to start with: '/' but was: " + dataSetPath);
+        }
         this.root = root;
+        this.dataSetPath = dataSetPath;
         this.persistenceProvider = persistenceProvider;
     }
 
@@ -47,7 +52,7 @@ public class SimpleToGsim {
                 .unitDataStructure(unitDataStructure.getId())
                 .temporalityType("EVENT") // TODO: get this from correct place
                 .dataSetState("INPUT_DATA") // TODO: get this from correct place
-                .dataSourcePath(root.getPath())
+                .dataSourcePath(dataSetPath)
                 .build();
         persistenceProvider.save(unitDataset);
 
@@ -89,7 +94,7 @@ public class SimpleToGsim {
     }
 
     private String createId(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord) {
-        String path = root.getPath().substring(1); // Remove first slash
+        String path = this.dataSetPath.substring(1); // Remove first slash
         return path.replace("/", ".") + "." + logicalRecord.getPath();
     }
 
