@@ -5,7 +5,7 @@
   "dataStructureComponentType" : "MEASURE",
   "identifierComponentIsComposite" : false,
   "identifierComponentIsUnique" : false,
-  "representedVariable" : "/RepresentedVariable/RepresentertVariable_DUMMY",
+  "representedVariable" : "/RepresentedVariable/RepresentedVariable_DUMMY",
   "sentinelValueDomain" : "/DescribedValueDomain/DescribedValueDomain_DUMMY",
   "name" : [ {
     "languageText" : "name",
