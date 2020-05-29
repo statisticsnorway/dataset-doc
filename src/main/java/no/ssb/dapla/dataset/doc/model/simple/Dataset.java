@@ -1,9 +1,11 @@
 package no.ssb.dapla.dataset.doc.model.simple;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Dataset {
     @JsonProperty("dataset-path")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     String path;
 
     @JsonProperty("logical-record-root")

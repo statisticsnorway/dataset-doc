@@ -25,14 +25,15 @@ public class SchemaToTemplate {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final Schema schema;
-    private final String path;
     private final HashMap<String, LogicalRecord> pathToLogicalRecord = new HashMap<>();
     private String[] instanceVariableFilter = new String[]{};
     private String[] logicalRecordFilter = new String[]{};
 
     public SchemaToTemplate(Schema schema, String path) {
         this.schema = schema;
-        this.path = path;
+        if (path != null) {
+            log.warn("Path {} will not be used", path);
+        }
     }
 
     public SchemaToTemplate withInstanceVariableFilter(String... ignoreFields) {
@@ -84,7 +85,6 @@ public class SchemaToTemplate {
             }
         });
         return SimpleBuilder.createDatasetBuilder()
-                .path(path)
                 .root(logicalRecordRoot.get())
                 .build();
     }

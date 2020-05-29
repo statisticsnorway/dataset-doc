@@ -43,7 +43,6 @@ class SchemaToTemplateTest {
 
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
         String expected = "{\n" +
-                "  \"dataset-path\" : \"/path/to/dataset\",\n" +
                 "  \"logical-record-root\" : {\n" +
                 "    \"name\" : \"root\",\n" +
                 "    \"logicalRecords\" : [ {\n" +
@@ -99,7 +98,6 @@ class SchemaToTemplateTest {
 
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
         String expected = "{\n" +
-                "  \"dataset-path\" : \"/path/to/dataset\",\n" +
                 "  \"logical-record-root\" : {\n" +
                 "    \"name\" : \"konto\",\n" +
                 "    \"instanceVariables\" : [ {\n" +
