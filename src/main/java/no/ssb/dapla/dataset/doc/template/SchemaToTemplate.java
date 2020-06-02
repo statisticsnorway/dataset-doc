@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -27,10 +28,15 @@ public class SchemaToTemplate {
 
     private final Schema schema;
     private final HashMap<String, LogicalRecord> pathToLogicalRecord = new HashMap<>();
-    private String[] instanceVariableFilter = new String[]{};
-    private String[] logicalRecordFilter = new String[]{};
+    private final List<String> instanceVariableFilter = new ArrayList<>();
+    private final List<String> logicalRecordFilter = new ArrayList<>();
 
-    @Deprecated
+    /**
+     * @deprecated (Path is no longer necessary)
+     * @param schema
+     * @param path
+     */
+    @Deprecated(forRemoval = true)
     public SchemaToTemplate(Schema schema, String path) {
         this.schema = schema;
         if (path != null) {
@@ -43,19 +49,26 @@ public class SchemaToTemplate {
     }
 
     public SchemaToTemplate withInstanceVariableFilter(String... ignoreFields) {
-        instanceVariableFilter = ignoreFields;
-        return this;
+        if (!instanceVariableFilter.isEmpty()) {
+            throw new IllegalStateException("InstanceVariableFilter already contains " + ignoreFields + ". use addInstanceVariableFilter to add");
+        }
+        return addInstanceVariableFilter(ignoreFields);
     }
 
-    public SchemaToTemplate addInstanceVariableFilter(String... ignoreField) {
-        ArrayList<String> list = new ArrayList<>(Arrays.asList(instanceVariableFilter));
-        list.addAll(Arrays.asList(ignoreField));
-        instanceVariableFilter = list.toArray(new String[0]);
+    public SchemaToTemplate addInstanceVariableFilter(String... ignoreFields) {
+        instanceVariableFilter.addAll(Arrays.asList(ignoreFields));
         return this;
     }
 
     public SchemaToTemplate withLogicalRecordFilterFilter(String... ignoreFields) {
-        logicalRecordFilter = ignoreFields;
+        if (!logicalRecordFilter.isEmpty()) {
+            throw new IllegalStateException("LogicalRecord already contains " + ignoreFields + ". use addLogicalRecordFilter to add");
+        }
+        return addLogicalRecordFilterFilter(ignoreFields);
+    }
+
+    public SchemaToTemplate addLogicalRecordFilterFilter(String... ignoreFields) {
+        logicalRecordFilter.addAll(Arrays.asList(ignoreFields));
         return this;
     }
 
@@ -115,8 +128,8 @@ public class SchemaToTemplate {
 
     private FilterProvider getFilterProvider() {
         return new SimpleFilterProvider()
-                .addFilter("LogicalRecord_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(logicalRecordFilter))
-                .addFilter("InstanceVariable_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(instanceVariableFilter));
+                .addFilter("LogicalRecord_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(logicalRecordFilter.toArray(new String[0])))
+                .addFilter("InstanceVariable_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(instanceVariableFilter.toArray(new String[0])));
     }
 
     private String getParentFromPath(String path) {
