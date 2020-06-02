@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public class SimpleToGsim {
     private final no.ssb.dapla.dataset.doc.model.simple.Dataset root;
-    private String dataSetPath;
+    private final String dataSetPath;
     private final PersistenceProvider persistenceProvider;
 
     public static GsimBuilder.BaseBuilder createDefault(String id, String name, String description) {

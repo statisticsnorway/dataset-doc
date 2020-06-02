@@ -15,6 +15,7 @@ import org.apache.avro.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -29,6 +30,7 @@ public class SchemaToTemplate {
     private String[] instanceVariableFilter = new String[]{};
     private String[] logicalRecordFilter = new String[]{};
 
+    @Deprecated
     public SchemaToTemplate(Schema schema, String path) {
         this.schema = schema;
         if (path != null) {
@@ -36,8 +38,19 @@ public class SchemaToTemplate {
         }
     }
 
+    public SchemaToTemplate(Schema schema) {
+        this.schema = schema;
+    }
+
     public SchemaToTemplate withInstanceVariableFilter(String... ignoreFields) {
         instanceVariableFilter = ignoreFields;
+        return this;
+    }
+
+    public SchemaToTemplate addInstanceVariableFilter(String... ignoreField) {
+        ArrayList<String> list = new ArrayList<>(Arrays.asList(instanceVariableFilter));
+        list.addAll(Arrays.asList(ignoreField));
+        instanceVariableFilter = list.toArray(new String[0]);
         return this;
     }
 

@@ -23,11 +23,11 @@ public class LogicalRecord {
 
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final List<LogicalRecord> logicalRecords = new ArrayList<>();
+    private final List<InstanceVariable> instanceVariables = new ArrayList<>();
 
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final List<InstanceVariable> instanceVariables = new ArrayList<>();
+    private final List<LogicalRecord> logicalRecords = new ArrayList<>();
 
     @JsonIgnore
     private String parentId;

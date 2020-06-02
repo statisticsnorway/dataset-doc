@@ -1,16 +1,19 @@
 package no.ssb.dapla.dataset.doc.template;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 class SchemaToTemplateTest {
 
     @Test
-    void testWithTwoLevels() {
+    void testWithTwoLevels() throws JSONException {
         Schema schema = SchemaBuilder
                 .record("root").namespace("no.ssb.dataset")
                 .fields()
@@ -29,53 +32,39 @@ class SchemaToTemplateTest {
                                 .endRecord())
                 .endRecord();
 
-        SchemaToTemplate schemaToTemplate =
-                new SchemaToTemplate(schema, "/path/to/dataset")
-                        .withLogicalRecordFilterFilter("unitType")
-                        .withInstanceVariableFilter(
-                                "dataStructureComponentRole",
-                                "dataStructureComponentType",
-                                "identifierComponentIsComposite",
-                                "identifierComponentIsUnique",
-                                "representedVariable",
-                                "sentinelValueDomain",
-                                "population");
+        SchemaToTemplate schemaToTemplate = new SchemaToTemplate(schema)
+                .withDoSimpleFiltering(true)
+                .addInstanceVariableFilter("description");
 
+        ObjectNode rootNode = new ObjectMapper().createObjectNode();
+        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
+        logicalRecordRoot.put("name", "root");
+        ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
+        ivs.addObject().put("name", "group");
+        ArrayNode lrs = logicalRecordRoot.putArray("logicalRecords");
+        ObjectNode personLR = lrs.addObject();
+        personLR.put("name", "person");
+        {
+            ArrayNode personIVs = personLR.putArray("instanceVariables");
+            personIVs.addObject().put("name", "name");
+            personIVs.addObject().put("name", "sex");
+
+            ArrayNode addressLogicalRecords = personLR.putArray("logicalRecords");
+            ObjectNode addressLR = addressLogicalRecords.addObject();
+            addressLR.put("name", "address");
+            {
+                ArrayNode addressIVs = addressLR.putArray("instanceVariables");
+                addressIVs.addObject().put("name", "street");
+                addressIVs.addObject().put("name", "postcode");
+            }
+        }
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
-        String expected = "{\n" +
-                "  \"logical-record-root\" : {\n" +
-                "    \"name\" : \"root\",\n" +
-                "    \"logicalRecords\" : [ {\n" +
-                "      \"name\" : \"person\",\n" +
-                "      \"logicalRecords\" : [ {\n" +
-                "        \"name\" : \"address\",\n" +
-                "        \"instanceVariables\" : [ {\n" +
-                "          \"name\" : \"street\",\n" +
-                "          \"description\" : \"street\"\n" +
-                "        }, {\n" +
-                "          \"name\" : \"postcode\",\n" +
-                "          \"description\" : \"postcode\"\n" +
-                "        } ]\n" +
-                "      } ],\n" +
-                "      \"instanceVariables\" : [ {\n" +
-                "        \"name\" : \"name\",\n" +
-                "        \"description\" : \"name\"\n" +
-                "      }, {\n" +
-                "        \"name\" : \"sex\",\n" +
-                "        \"description\" : \"sex\"\n" +
-                "      } ]\n" +
-                "    } ],\n" +
-                "    \"instanceVariables\" : [ {\n" +
-                "      \"name\" : \"group\",\n" +
-                "      \"description\" : \"group\"\n" +
-                "    } ]\n" +
-                "  }\n" +
-                "}";
-        assertThat(jsonString).isEqualTo(expected);
+
+        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
     }
 
     @Test
-    void testOneLevel() {
+    void testOneLevel() throws JSONException {
         Schema schema = SchemaBuilder
                 .record("konto").namespace("no.ssb.dataset")
                 .fields()
@@ -85,34 +74,24 @@ class SchemaToTemplateTest {
                 .endRecord();
 
         SchemaToTemplate schemaToTemplate =
-                new SchemaToTemplate(schema, "/path/to/dataset")
-                        .withLogicalRecordFilterFilter("unitType")
-                        .withInstanceVariableFilter(
-                                "dataStructureComponentRole",
-                                "dataStructureComponentType",
-                                "identifierComponentIsComposite",
-                                "identifierComponentIsUnique",
-                                "representedVariable",
-                                "sentinelValueDomain",
-                                "population");
+                new SchemaToTemplate(schema).withDoSimpleFiltering(true);
 
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
-        String expected = "{\n" +
-                "  \"logical-record-root\" : {\n" +
-                "    \"name\" : \"konto\",\n" +
-                "    \"instanceVariables\" : [ {\n" +
-                "      \"name\" : \"kontonummer\",\n" +
-                "      \"description\" : \"vilkårlig lang sekvens av tegn inkludert aksenter og spesielle tegn fra standardiserte tegnsett\"\n" +
-                "    }, {\n" +
-                "      \"name\" : \"innskudd\",\n" +
-                "      \"description\" : \"9 sifret nummer gitt de som er registrert i Enhetsregisteret.\"\n" +
-                "    }, {\n" +
-                "      \"name\" : \"gjeld\",\n" +
-                "      \"description\" : \"en sum av penger i hele kroner brukt i en kontekst. Dette kan være en transaksjon, saldo o.l.\"\n" +
-                "    } ]\n" +
-                "  }\n" +
-                "}";
 
-        assertThat(jsonString).isEqualTo(expected);
+        ObjectNode rootNode = new ObjectMapper().createObjectNode();
+        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
+        logicalRecordRoot.put("name", "konto");
+        ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
+        ivs.addObject()
+                .put("name", "kontonummer")
+                .put("description", "vilkårlig lang sekvens av tegn inkludert aksenter og spesielle tegn fra standardiserte tegnsett");
+        ivs.addObject()
+                .put("name", "innskudd")
+                .put("description", "9 sifret nummer gitt de som er registrert i Enhetsregisteret.");
+        ivs.addObject()
+                .put("name", "gjeld")
+                .put("description", "en sum av penger i hele kroner brukt i en kontekst. Dette kan være en transaksjon, saldo o.l.");
+
+        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
     }
 }
