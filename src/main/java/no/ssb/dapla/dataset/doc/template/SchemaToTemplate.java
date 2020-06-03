@@ -36,7 +36,7 @@ public class SchemaToTemplate {
      * @param schema
      * @param path
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated
     public SchemaToTemplate(Schema schema, String path) {
         this.schema = schema;
         if (path != null) {
