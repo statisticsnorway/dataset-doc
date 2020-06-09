@@ -88,30 +88,27 @@ class SchemaToTemplateTest {
                 )
                 .endRecord();
 
-//        System.out.println(SchemaBuddy.parse(schema).toString(true));
-
         SchemaToTemplate schemaToTemplate = new SchemaToTemplate(schema)
-                .withDoSimpleFiltering(true);
-
+                .withDoSimpleFiltering(true)
+                .addInstanceVariableFilter("description");
 
         System.out.println(schemaToTemplate.generateTemplateAsJsonString());
-//
-//
-//        ObjectNode rootNode = new ObjectMapper().createObjectNode();
-//        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
-//        logicalRecordRoot.put("name", "root");
-//        ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
-//        ivs.addObject().put("name", "id");
-//        ArrayNode lrs = logicalRecordRoot.putArray("logicalRecords");
-//        ObjectNode personLR = lrs.addObject();
-//        personLR.put("name", "person");
-//        {
-//            ArrayNode personIVs = personLR.putArray("instanceVariables");
-//            personIVs.addObject().put("name", "name");
-//            personIVs.addObject().put("name", "sex");
-//        }
+        ObjectNode rootNode = new ObjectMapper().createObjectNode();
+        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
+        logicalRecordRoot.put("name", "root");
+        ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
+        ivs.addObject().put("name", "id");
+        ArrayNode lrs = logicalRecordRoot.putArray("logicalRecords");
+        ObjectNode personLR = lrs.addObject();
+        personLR.put("name", "person");
+        {
+            ArrayNode personIVs = personLR.putArray("instanceVariables");
+            personIVs.addObject().put("name", "name");
+            personIVs.addObject().put("name", "sex");
+        }
+        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
 
-//        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
+        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
     }
 
     @Test
