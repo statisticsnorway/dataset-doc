@@ -83,15 +83,6 @@ public class SchemaToTemplate {
         return this;
     }
 
-    public Dataset generateTemplate() {
-        SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
-
-        LogicalRecord root = traverse(schemaBuddy);
-        return SimpleBuilder.createDatasetBuilder()
-                .root(root)
-                .build();
-    }
-
     public String generateTemplateAsJsonString() {
         try {
             Dataset dataset = generateTemplate();
@@ -103,7 +94,16 @@ public class SchemaToTemplate {
         }
     }
 
-    public LogicalRecord traverse(SchemaBuddy schemaBuddy) {
+    private Dataset generateTemplate() {
+        SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
+
+        LogicalRecord root = traverse(schemaBuddy);
+        return SimpleBuilder.createDatasetBuilder()
+                .root(root)
+                .build();
+    }
+
+    private LogicalRecord traverse(SchemaBuddy schemaBuddy) {
         LogicalRecord root = SimpleBuilder.createLogicalRecordBuilder()
                 .name("datasetName")
                 .build();
@@ -112,7 +112,7 @@ public class SchemaToTemplate {
         return root.getLogicalRecords().get(0); // We don't need the first witch always is the spark_schema root
     }
 
-    public void traverse(SchemaBuddy schemaBuddy, LogicalRecord parentLogicalRecord, int level) {
+    private void traverse(SchemaBuddy schemaBuddy, LogicalRecord parentLogicalRecord, int level) {
         if (schemaBuddy.isArrayType()) {
             List<SchemaBuddy> children = schemaBuddy.getChildren();
             if (children.size() != 1) {
@@ -134,7 +134,7 @@ public class SchemaToTemplate {
         }
     }
 
-    public FilterProvider getFilterProvider() {
+    private FilterProvider getFilterProvider() {
         return new SimpleFilterProvider()
                 .addFilter("LogicalRecord_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(logicalRecordFilter.toArray(new String[0])))
                 .addFilter("InstanceVariable_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(instanceVariableFilter.toArray(new String[0])));
