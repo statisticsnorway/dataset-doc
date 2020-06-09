@@ -96,45 +96,51 @@ public class SchemaToTemplate {
         ObjectNode dataset = root.putObject("dataset");
         dataset.put("name", "-person-");
         SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
-        traverse(schemaBuddy, dataset, 0);
+        ArrayNode ivs = dataset.putArray("instanceVariables");
+        ArrayNode lrs = dataset.putArray("logicalRecords");
+
+        traverse(schemaBuddy, dataset, 0, ivs, lrs);
         return root;
     }
 
-    public void traverse(SchemaBuddy schemaBuddy, ObjectNode node, int level) {
+    public void traverse(SchemaBuddy schemaBuddy, ObjectNode node, int level, ArrayNode instanceVariables, ArrayNode logicalRecords) {
         if (schemaBuddy.isArrayType()) {
             List<SchemaBuddy> children = schemaBuddy.getChildren();
             if (children.size() != 1) {
                 throw new IllegalStateException("Avro Array can only have 1 child: was:" + schemaBuddy.toString(true) + "‰n");
             }
-            traverse(children.get(0), node, level);
+            traverse(children.get(0), node, level, instanceVariables, logicalRecords);
             return;
         }
-//        if (schemaBuddy.isRoot()) {
-//            node.put("name", schemaBuddy.getName());
-//            return;
-//        }
         System.out.println(getIntendString(level) + schemaBuddy.getName());
 
         if (schemaBuddy.isBranch()) {
-            ArrayNode instanceVariables = node.putArray("InstanceVariables");
-            for (SchemaBuddy child : schemaBuddy.getSimpleTypeChildren()) {
-                System.out.println(getIntendString(level + 1) + child.getName());
-                instanceVariables.add(getInstanceVariableAsJsonNode(child.getName(), child.getName()));
+            ArrayNode ivs = node.putArray("instanceVariables");
+            ArrayNode lrs = node.putArray("logicalRecords");
+            for (SchemaBuddy child : schemaBuddy.getChildren()) {
+                ObjectNode jsonNode = logicalRecords.addObject();
+                traverse(child, jsonNode, level + 1, ivs, lrs);
             }
-            List<SchemaBuddy> complexTypeChildren = schemaBuddy.getComplexTypeChildren();
-            if (complexTypeChildren.isEmpty()) return;
 
-            ArrayNode logicalRecord = node.putArray("LogicalRecords");
-            for (SchemaBuddy child : complexTypeChildren) {
-                logicalRecord.add(getLogicalRecordAsJsonNode(child.getName(), child.getName()));
-                traverse(child, node, level + 1);
-            }
+//            ArrayNode instanceVariables = node.putArray("InstanceVariables");
+//            for (SchemaBuddy child : schemaBuddy.getSimpleTypeChildren()) {
+//                System.out.println(getIntendString(level + 1) + child.getName());
+//                instanceVariables.add(getInstanceVariableAsJsonNode(child.getName(), child.getName()));
+//            }
+//            List<SchemaBuddy> complexTypeChildren = schemaBuddy.getComplexTypeChildren();
+//            if (complexTypeChildren.isEmpty()) return;
+//
+//            ArrayNode logicalRecord = node.putArray("LogicalRecords");
+//            for (SchemaBuddy child : complexTypeChildren) {
+//                logicalRecord.add(getLogicalRecordAsJsonNode(child.getName(), child.getName()));
+//                traverse(child, node, level + 1);
+//            }
         } else {
-//            System.out.println("We have InstanceVariable:" + schemaBuddy.getName());
+            System.out.println("We have InstanceVariable:" + schemaBuddy.getName());
+//            instanceVariables.addObject().put("name", schemaBuddy.getName());
+            instanceVariables.add(getInstanceVariableAsJsonNode(schemaBuddy.getName(), schemaBuddy.getName()));
 //            ObjectNode instanceVariable = node.putObject("InstanceVariables");
-//            instanceVariable.put("name", schemaBuddy.getName());
-
-//            node.put("name", schemaBuddy.getName());
+//            instanceVariable
         }
     }
 
