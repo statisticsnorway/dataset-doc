@@ -91,56 +91,52 @@ public class SchemaToTemplate {
         return this;
     }
 
-    public ObjectNode generateTemplate() {
-        ObjectNode root = new ObjectMapper().createObjectNode();
-        ObjectNode dataset = root.putObject("dataset");
-        dataset.put("name", "-person-");
+    public Dataset generateTemplate() {
         SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
-        ArrayNode ivs = dataset.putArray("instanceVariables");
-        ArrayNode lrs = dataset.putArray("logicalRecords");
+        LogicalRecord root = SimpleBuilder.createLogicalRecordBuilder()
+                .name("datasetName")
+                .build();
 
-        traverse(schemaBuddy, dataset, 0, ivs, lrs);
-        return root;
+        traverse(schemaBuddy, root, 0);
+        return SimpleBuilder.createDatasetBuilder()
+                .root(root)
+                .build();
     }
 
-    public void traverse(SchemaBuddy schemaBuddy, ObjectNode node, int level, ArrayNode instanceVariables, ArrayNode logicalRecords) {
+    public String generateTemplateAsJsonString() {
+        try {
+            Dataset dataset = generateTemplate();
+            return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+                    .writer(getFilterProvider())
+                    .writeValueAsString(dataset);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void traverse(SchemaBuddy schemaBuddy, LogicalRecord logicalRecord, int level) {
         if (schemaBuddy.isArrayType()) {
             List<SchemaBuddy> children = schemaBuddy.getChildren();
             if (children.size() != 1) {
                 throw new IllegalStateException("Avro Array can only have 1 child: was:" + schemaBuddy.toString(true) + "‰n");
             }
-            traverse(children.get(0), node, level, instanceVariables, logicalRecords);
+            traverse(children.get(0), logicalRecord, level);
             return;
         }
-        System.out.println(getIntendString(level) + schemaBuddy.getName());
+        String description = (String) schemaBuddy.getProp("description");
 
         if (schemaBuddy.isBranch()) {
-            ArrayNode ivs = node.putArray("instanceVariables");
-            ArrayNode lrs = node.putArray("logicalRecords");
+            LogicalRecord lr = SimpleBuilder.createLogicalRecordBuilder()
+                    .name(schemaBuddy.getName())
+                    .unitType("UnitType_DUMMY")
+                    .parent(logicalRecord.getId())
+                    .build();
+            logicalRecord.addLogicalRecord(lr);
             for (SchemaBuddy child : schemaBuddy.getChildren()) {
-                ObjectNode jsonNode = logicalRecords.addObject();
-                traverse(child, jsonNode, level + 1, ivs, lrs);
+                traverse(child, lr, level + 1);
             }
-
-//            ArrayNode instanceVariables = node.putArray("InstanceVariables");
-//            for (SchemaBuddy child : schemaBuddy.getSimpleTypeChildren()) {
-//                System.out.println(getIntendString(level + 1) + child.getName());
-//                instanceVariables.add(getInstanceVariableAsJsonNode(child.getName(), child.getName()));
-//            }
-//            List<SchemaBuddy> complexTypeChildren = schemaBuddy.getComplexTypeChildren();
-//            if (complexTypeChildren.isEmpty()) return;
-//
-//            ArrayNode logicalRecord = node.putArray("LogicalRecords");
-//            for (SchemaBuddy child : complexTypeChildren) {
-//                logicalRecord.add(getLogicalRecordAsJsonNode(child.getName(), child.getName()));
-//                traverse(child, node, level + 1);
-//            }
         } else {
-            System.out.println("We have InstanceVariable:" + schemaBuddy.getName());
-//            instanceVariables.addObject().put("name", schemaBuddy.getName());
-            instanceVariables.add(getInstanceVariableAsJsonNode(schemaBuddy.getName(), schemaBuddy.getName()));
-//            ObjectNode instanceVariable = node.putObject("InstanceVariables");
-//            instanceVariable
+            logicalRecord.addInstanceVariable(getInstanceVariable(schemaBuddy.getName(), description));
         }
     }
 
@@ -184,7 +180,7 @@ public class SchemaToTemplate {
         }
     }
 
-    private FilterProvider getFilterProvider() {
+    public FilterProvider getFilterProvider() {
         return new SimpleFilterProvider()
                 .addFilter("LogicalRecord_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(logicalRecordFilter.toArray(new String[0])))
                 .addFilter("InstanceVariable_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(instanceVariableFilter.toArray(new String[0])));

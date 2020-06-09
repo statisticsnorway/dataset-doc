@@ -1,15 +1,22 @@
 package no.ssb.dapla.dataset.doc.template;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.ssb.avro.convert.core.SchemaBuddy;
+import no.ssb.dapla.dataset.doc.model.simple.Dataset;
+import no.ssb.dapla.dataset.doc.model.simple.LogicalRecord;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+
+import java.util.Map;
 
 class SchemaToTemplateTest {
 
@@ -87,8 +94,7 @@ class SchemaToTemplateTest {
                 .withDoSimpleFiltering(true);
 
 
-
-        System.out.println(schemaToTemplate.generateTemplate().toPrettyString());
+        System.out.println(schemaToTemplate.generateTemplateAsJsonString());
 //
 //
 //        ObjectNode rootNode = new ObjectMapper().createObjectNode();
@@ -139,5 +145,28 @@ class SchemaToTemplateTest {
                 .put("description", "en sum av penger i hele kroner brukt i en kontekst. Dette kan være en transaksjon, saldo o.l.");
 
         JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
+    }
+
+    @Test
+    void testDataset() throws JsonProcessingException {
+        SchemaToTemplate schemaToTemplate = new SchemaToTemplate(null);
+
+        Dataset dataset = new Dataset();
+        LogicalRecord root = new LogicalRecord();
+        root.setName("Name");
+        dataset.setRoot(root);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.setFilterProvider(schemaToTemplate.getFilterProvider())
+                .convertValue(dataset, new TypeReference<>() {
+                });
+
+        String json = objectMapper.enable(SerializationFeature.INDENT_OUTPUT)
+                .writer(schemaToTemplate.getFilterProvider())
+                .writeValueAsString(map);
+
+        System.out.println(json);
+//
+//        System.out.println(json);
     }
 }
