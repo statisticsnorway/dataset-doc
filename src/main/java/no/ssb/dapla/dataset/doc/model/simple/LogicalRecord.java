@@ -29,12 +29,6 @@ public class LogicalRecord {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final List<LogicalRecord> logicalRecords = new ArrayList<>();
 
-    @JsonIgnore
-    private String parentId;
-
-    @JsonIgnore
-    private String id;
-
     public String getName() {
         return name;
     }
@@ -49,14 +43,6 @@ public class LogicalRecord {
         this.name = name;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getUnitType() {
         return unitType;
     }
@@ -65,13 +51,6 @@ public class LogicalRecord {
         this.unitType = unitType;
     }
 
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
 
     public void addLogicalRecord(LogicalRecord logicalRecord) {
         logicalRecords.add(logicalRecord);

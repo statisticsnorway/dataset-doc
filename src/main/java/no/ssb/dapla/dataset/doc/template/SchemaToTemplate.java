@@ -1,11 +1,8 @@
 package no.ssb.dapla.dataset.doc.template;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -20,18 +17,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 public class SchemaToTemplate {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final Schema schema;
-    private final HashMap<String, LogicalRecord> pathToLogicalRecord = new HashMap<>();
     private final List<String> instanceVariableFilter = new ArrayList<>();
     private final List<String> logicalRecordFilter = new ArrayList<>();
 
@@ -93,11 +85,8 @@ public class SchemaToTemplate {
 
     public Dataset generateTemplate() {
         SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
-        LogicalRecord root = SimpleBuilder.createLogicalRecordBuilder()
-                .name("datasetName")
-                .build();
 
-        traverse(schemaBuddy, root, 0);
+        LogicalRecord root = traverse(schemaBuddy);
         return SimpleBuilder.createDatasetBuilder()
                 .root(root)
                 .build();
@@ -114,69 +103,34 @@ public class SchemaToTemplate {
         }
     }
 
-    public void traverse(SchemaBuddy schemaBuddy, LogicalRecord logicalRecord, int level) {
+    public LogicalRecord traverse(SchemaBuddy schemaBuddy) {
+        LogicalRecord root = SimpleBuilder.createLogicalRecordBuilder()
+                .name("datasetName")
+                .build();
+
+        traverse(schemaBuddy, root, 0);
+        return root.getLogicalRecords().get(0); // We don't need the first witch always is the spark_schema root
+    }
+
+    public void traverse(SchemaBuddy schemaBuddy, LogicalRecord parentLogicalRecord, int level) {
         if (schemaBuddy.isArrayType()) {
             List<SchemaBuddy> children = schemaBuddy.getChildren();
             if (children.size() != 1) {
                 throw new IllegalStateException("Avro Array can only have 1 child: was:" + schemaBuddy.toString(true) + "‰n");
             }
-            traverse(children.get(0), logicalRecord, level);
+            traverse(children.get(0), parentLogicalRecord, level);
             return;
         }
         String description = (String) schemaBuddy.getProp("description");
 
         if (schemaBuddy.isBranch()) {
-            LogicalRecord lr = SimpleBuilder.createLogicalRecordBuilder()
-                    .name(schemaBuddy.getName())
-                    .unitType("UnitType_DUMMY")
-                    .parent(logicalRecord.getId())
-                    .build();
-            logicalRecord.addLogicalRecord(lr);
+            LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
+            parentLogicalRecord.addLogicalRecord(childLogicalRecord);
             for (SchemaBuddy child : schemaBuddy.getChildren()) {
-                traverse(child, lr, level + 1);
+                traverse(child, childLogicalRecord, level + 1);
             }
         } else {
-            logicalRecord.addInstanceVariable(getInstanceVariable(schemaBuddy.getName(), description));
-        }
-    }
-
-    public Dataset generateSimpleTemplate() {
-        AtomicReference<LogicalRecord> logicalRecordRoot = new AtomicReference<>();
-        SchemaBuddy.parse(schema, schemaWrapper -> {
-            if (schemaWrapper.isBranch()) {
-                String path = schemaWrapper.getPath();
-                log.info("Type :{}", schemaWrapper.getType());
-                log.info("LogicalRecord name:{}", path);
-                String pathParent = getParentFromPath(path);
-                LogicalRecord logicalRecord = getLogicalRecord(schemaWrapper.getName(), pathParent);
-                pathToLogicalRecord.put(path, logicalRecord);
-
-                if (schemaWrapper.isRoot()) {
-                    logicalRecordRoot.set(logicalRecord);
-                }
-                for (SchemaBuddy child : schemaWrapper.getSimpleTypeChildren()) {
-                    String childDescription = (String) child.getProp("description");
-
-                    InstanceVariable instanceVariable = getInstanceVariable(child.getName(), childDescription);
-                    logicalRecord.addInstanceVariable(instanceVariable);
-
-                    log.info("InstanceVariable name:{}", child.getName());
-                }
-            }
-        });
-        return SimpleBuilder.createDatasetBuilder()
-                .root(logicalRecordRoot.get())
-                .build();
-    }
-
-    public String generateSimpleTemplateAsJsonString() {
-        try {
-            Dataset dataset = generateSimpleTemplate();
-            return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
-                    .writer(getFilterProvider())
-                    .writeValueAsString(dataset);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            parentLogicalRecord.addInstanceVariable(getInstanceVariable(schemaBuddy.getName(), description));
         }
     }
 
@@ -184,11 +138,6 @@ public class SchemaToTemplate {
         return new SimpleFilterProvider()
                 .addFilter("LogicalRecord_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(logicalRecordFilter.toArray(new String[0])))
                 .addFilter("InstanceVariable_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(instanceVariableFilter.toArray(new String[0])));
-    }
-
-    private String getParentFromPath(String path) {
-        String[] split = path.split("/");
-        return Arrays.stream(split).limit(split.length - 1L).collect(Collectors.joining("/"));
     }
 
     private InstanceVariable getInstanceVariable(String name, String description) {
@@ -205,49 +154,10 @@ public class SchemaToTemplate {
                 .build();
     }
 
-    private JsonNode getInstanceVariableAsJsonNode(String name, String description) {
-        InstanceVariable instanceVariable = getInstanceVariable(name, description);
-        return getJsonNode(instanceVariable);
-    }
-
-    private JsonNode getJsonNode(Object pojo) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String jsonString = objectMapper
-                    .writer(getFilterProvider()) // Adding filter returns ObjectWriter, so need to go through String
-                    .writeValueAsString(pojo);
-            return objectMapper.readTree(jsonString);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    private LogicalRecord getLogicalRecord(String name, String parentId) {
-        LogicalRecord parent = pathToLogicalRecord.getOrDefault(parentId, null);
-        LogicalRecord logicalRecord = SimpleBuilder.createLogicalRecordBuilder()
+    private LogicalRecord getLogicalRecord(String name) {
+        return SimpleBuilder.createLogicalRecordBuilder()
                 .name(name)
                 .unitType("UnitType_DUMMY")
-                .parent(parentId)
                 .build();
-
-        if (parent != null) {
-            parent.addLogicalRecord(logicalRecord);
-        } else {
-//            log.info("parent for {} not found", parentId);
-        }
-
-        return logicalRecord;
-    }
-
-    private JsonNode getLogicalRecordAsJsonNode(String name, String description) {
-        LogicalRecord logicalRecord = getLogicalRecord(name, description);
-        return getJsonNode(logicalRecord);
-    }
-
-    String getIntendString(int level) {
-        if (level == 0) return "";
-        if (level == 1) return " |-- ";
-        return String.join("", Collections.nCopies(level, " |   ")) + " |-- ";
     }
 }

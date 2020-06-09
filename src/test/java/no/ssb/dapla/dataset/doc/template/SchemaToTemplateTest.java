@@ -66,7 +66,7 @@ class SchemaToTemplateTest {
                 addressIVs.addObject().put("name", "postcode");
             }
         }
-        String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
+        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
 
         JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
     }
@@ -127,7 +127,7 @@ class SchemaToTemplateTest {
         SchemaToTemplate schemaToTemplate =
                 new SchemaToTemplate(schema).withDoSimpleFiltering(true);
 
-        String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
+        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
         System.out.println(jsonString);
 
         ObjectNode rootNode = new ObjectMapper().createObjectNode();

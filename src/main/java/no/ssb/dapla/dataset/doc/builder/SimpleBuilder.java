@@ -45,11 +45,6 @@ public class SimpleBuilder {
             return this;
         }
 
-        public LogicalRecordBuilder parent(String parentId) {
-            logicalRecord.setParentId(parentId);
-            return this;
-        }
-
         public LogicalRecord build() {
             return logicalRecord;
         }
