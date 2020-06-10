@@ -83,7 +83,7 @@ public class SchemaToTemplate {
         return this;
     }
 
-    public String generateTemplateAsJsonString() {
+    public String generateSimpleTemplateAsJsonString() {
         try {
             Dataset dataset = generateTemplate();
             return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)

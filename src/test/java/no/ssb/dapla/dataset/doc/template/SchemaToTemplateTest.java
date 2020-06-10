@@ -58,7 +58,7 @@ class SchemaToTemplateTest {
                 addressIVs.addObject().put("name", "postcode");
             }
         }
-        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
+        String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
 
         JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
     }
@@ -84,7 +84,7 @@ class SchemaToTemplateTest {
                 .withDoSimpleFiltering(true)
                 .addInstanceVariableFilter("description");
 
-        System.out.println(schemaToTemplate.generateTemplateAsJsonString());
+        System.out.println(schemaToTemplate.generateSimpleTemplateAsJsonString());
         ObjectNode rootNode = new ObjectMapper().createObjectNode();
         ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
         logicalRecordRoot.put("name", "root");
@@ -98,7 +98,7 @@ class SchemaToTemplateTest {
             personIVs.addObject().put("name", "name");
             personIVs.addObject().put("name", "sex");
         }
-        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
+        String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
 
         JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
     }
@@ -116,7 +116,7 @@ class SchemaToTemplateTest {
         SchemaToTemplate schemaToTemplate =
                 new SchemaToTemplate(schema).withDoSimpleFiltering(true);
 
-        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
+        String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
         System.out.println(jsonString);
 
         ObjectNode rootNode = new ObjectMapper().createObjectNode();
