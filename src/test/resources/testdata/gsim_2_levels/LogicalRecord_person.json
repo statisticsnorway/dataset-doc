@@ -1,5 +1,5 @@
 {
-  "id" : "path.to.dataset.person",
+  "id" : "path.to.dataset.root.person",
   "shortName" : "person",
   "unitType" : "/UnitType/UnitType_DUMMY",
   "instanceVariables" : [ "/InstanceVariable/path.to.dataset.person.name", "/InstanceVariable/path.to.dataset.person.sex" ],
@@ -9,9 +9,11 @@
   } ],
   "createdDate" : "2020-01-01T00:00:00Z",
   "administrativeStatus" : "DRAFT",
+  "parentChildMultiplicity" : "ONE_MANY",
   "createdBy" : "rl",
   "validFrom" : "2020-01-01T00:00:00Z",
   "version" : "1.0.0",
   "isPlaceholderRecord" : false,
-  "versionValidFrom" : "2020-01-01T00:00:00Z"
+  "versionValidFrom" : "2020-01-01T00:00:00Z",
+  "parentLogicalRecord" : "/LogicalRecord/path.to.dataset.root"
 }
