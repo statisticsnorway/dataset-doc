@@ -7,8 +7,6 @@ import no.ssb.dapla.dataset.doc.model.gsim.PersistenceProvider;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
 
-import java.util.Collections;
-
 public class SimpleToGsim {
     private final no.ssb.dapla.dataset.doc.model.simple.Dataset root;
     private final String dataSetPath;
@@ -72,7 +70,6 @@ public class SimpleToGsim {
                         .parentChildMultiplicity("ONE_MANY")
                         .build();
 
-//        System.out.println(getIntendString(level) + gsimLogicalRecord.getShortName() + " (lr)");
         persistenceProvider.save(gsimLogicalRecord);
 
         for (no.ssb.dapla.dataset.doc.model.simple.InstanceVariable instanceVariable : logicalRecord.getInstanceVariables()) {
@@ -87,7 +84,6 @@ public class SimpleToGsim {
                             .representedVariable(instanceVariable.getRepresentedVariable(), "RepresentedVariable_DUMMY")
                             .build();
 
-//            System.out.println(getIntendString(level + 1) + gsimInstanceVariable.getShortName());
             persistenceProvider.save(gsimInstanceVariable);
         }
 
@@ -104,11 +100,5 @@ public class SimpleToGsim {
     private String createId(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord,
                             no.ssb.dapla.dataset.doc.model.simple.InstanceVariable instanceVariable) {
         return createId(logicalRecord) + "." + instanceVariable.getName();
-    }
-
-    String getIntendString(int level) {
-        if (level == 0) return "";
-        if (level == 1) return " |-- ";
-        return String.join("", Collections.nCopies(level, " |   ")) + " |-- ";
     }
 }
