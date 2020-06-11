@@ -54,10 +54,10 @@ public class SimpleToGsim {
                 .build();
         persistenceProvider.save(unitDataset);
 
-        processAll(rootLogicalRecord, null, 0);
+        processAll(rootLogicalRecord, null);
     }
 
-    void processAll(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord, String parentLogicalRecordId, int level) {
+    void processAll(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord, String parentLogicalRecordId) {
         String logicalRecordId = parentLogicalRecordId == null ? createId(logicalRecord) : parentLogicalRecordId + "." + logicalRecord.getName();
         LogicalRecord gsimLogicalRecord =
                 createDefault(logicalRecordId, logicalRecord.getName(), null)
@@ -88,7 +88,7 @@ public class SimpleToGsim {
         }
 
         for (no.ssb.dapla.dataset.doc.model.simple.LogicalRecord child : logicalRecord.getLogicalRecords()) {
-            processAll(child, logicalRecordId, level + 1);
+            processAll(child, logicalRecordId);
         }
     }
 
