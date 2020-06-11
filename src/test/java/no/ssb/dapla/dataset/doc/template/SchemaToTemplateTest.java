@@ -64,6 +64,46 @@ class SchemaToTemplateTest {
     }
 
     @Test
+    void checkThatArrayWorks() throws JSONException {
+        Schema schema = SchemaBuilder
+                .record("root").namespace("no.ssb.dataset")
+                .fields()
+                .name("id").type().stringType().noDefault()
+                .name("person").type().optional().type(
+                        SchemaBuilder.array()
+                                .items(SchemaBuilder.record("person")
+                                        .fields()
+                                        .name("name").type().stringType().noDefault()
+                                        .name("sex").type().optional().stringType()
+                                        .endRecord()
+                                )
+                )
+                .endRecord();
+
+        SchemaToTemplate schemaToTemplate = new SchemaToTemplate(schema)
+                .withDoSimpleFiltering(true)
+                .addInstanceVariableFilter("description");
+
+        System.out.println(schemaToTemplate.generateSimpleTemplateAsJsonString());
+        ObjectNode rootNode = new ObjectMapper().createObjectNode();
+        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
+        logicalRecordRoot.put("name", "root");
+        ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
+        ivs.addObject().put("name", "id");
+        ArrayNode lrs = logicalRecordRoot.putArray("logicalRecords");
+        ObjectNode personLR = lrs.addObject();
+        personLR.put("name", "person");
+        {
+            ArrayNode personIVs = personLR.putArray("instanceVariables");
+            personIVs.addObject().put("name", "name");
+            personIVs.addObject().put("name", "sex");
+        }
+        String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
+
+        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
+    }
+
+    @Test
     void testOneLevel() throws JSONException {
         Schema schema = SchemaBuilder
                 .record("konto").namespace("no.ssb.dataset")
@@ -77,6 +117,7 @@ class SchemaToTemplateTest {
                 new SchemaToTemplate(schema).withDoSimpleFiltering(true);
 
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
+        System.out.println(jsonString);
 
         ObjectNode rootNode = new ObjectMapper().createObjectNode();
         ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");

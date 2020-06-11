@@ -22,11 +22,6 @@ public class SimpleBuilder {
     public static class DatasetBuilder {
         private final Dataset dataset = new Dataset();
 
-        public DatasetBuilder path(String path) {
-            dataset.setPath(path);
-            return this;
-        }
-
         public DatasetBuilder root(LogicalRecord path) {
             dataset.setRoot(path);
             return this;
@@ -47,11 +42,6 @@ public class SimpleBuilder {
 
         public LogicalRecordBuilder unitType(String unitTypeId) {
             logicalRecord.setUnitType(unitTypeId);
-            return this;
-        }
-
-        public LogicalRecordBuilder parent(String parentId) {
-            logicalRecord.setParentId(parentId);
             return this;
         }
 

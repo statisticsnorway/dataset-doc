@@ -17,24 +17,20 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 public class SchemaToTemplate {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final Schema schema;
-    private final HashMap<String, LogicalRecord> pathToLogicalRecord = new HashMap<>();
     private final List<String> instanceVariableFilter = new ArrayList<>();
     private final List<String> logicalRecordFilter = new ArrayList<>();
 
     /**
-     * @deprecated (Path is no longer necessary)
      * @param schema
      * @param path
+     * @deprecated (Path is no longer necessary)
      */
     @Deprecated
     public SchemaToTemplate(Schema schema, String path) {
@@ -87,37 +83,9 @@ public class SchemaToTemplate {
         return this;
     }
 
-    public Dataset generateSimpleTemplate() {
-        AtomicReference<LogicalRecord> logicalRecordRoot = new AtomicReference<>();
-        SchemaBuddy.parse(schema, schemaWrapper -> {
-            if (schemaWrapper.isBranch()) {
-                String path = schemaWrapper.getPath();
-                log.info("LogicalRecord name:{}", path);
-                String pathParent = getParentFromPath(path);
-                LogicalRecord logicalRecord = getLogicalRecord(schemaWrapper.getName(), pathParent);
-                pathToLogicalRecord.put(path, logicalRecord);
-
-                if (schemaWrapper.isRoot()) {
-                    logicalRecordRoot.set(logicalRecord);
-                }
-                for (SchemaBuddy child : schemaWrapper.getSimpleTypeChildren()) {
-                    String childDescription = (String) child.getProp("description");
-
-                    InstanceVariable instanceVariable = getInstanceVariable(child.getName(), childDescription);
-                    logicalRecord.addInstanceVariable(instanceVariable);
-
-                    log.info("InstanceVariable name:{}", child.getName());
-                }
-            }
-        });
-        return SimpleBuilder.createDatasetBuilder()
-                .root(logicalRecordRoot.get())
-                .build();
-    }
-
     public String generateSimpleTemplateAsJsonString() {
         try {
-            Dataset dataset = generateSimpleTemplate();
+            Dataset dataset = generateTemplate();
             return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
                     .writer(getFilterProvider())
                     .writeValueAsString(dataset);
@@ -126,15 +94,50 @@ public class SchemaToTemplate {
         }
     }
 
+    private Dataset generateTemplate() {
+        SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
+
+        LogicalRecord root = traverse(schemaBuddy);
+        return SimpleBuilder.createDatasetBuilder()
+                .root(root)
+                .build();
+    }
+
+    private LogicalRecord traverse(SchemaBuddy schemaBuddy) {
+        LogicalRecord root = SimpleBuilder.createLogicalRecordBuilder()
+                .name("datasetName")
+                .build();
+
+        traverse(schemaBuddy, root, 0);
+        return root.getLogicalRecords().get(0); // We don't need the first witch always is the spark_schema root
+    }
+
+    private void traverse(SchemaBuddy schemaBuddy, LogicalRecord parentLogicalRecord, int level) {
+        if (schemaBuddy.isArrayType()) {
+            List<SchemaBuddy> children = schemaBuddy.getChildren();
+            if (children.size() != 1) {
+                throw new IllegalStateException("Avro Array can only have 1 child: was:" + schemaBuddy.toString(true) + "‰n");
+            }
+            traverse(children.get(0), parentLogicalRecord, level);
+            return;
+        }
+        String description = (String) schemaBuddy.getProp("description");
+
+        if (schemaBuddy.isBranch()) {
+            LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
+            parentLogicalRecord.addLogicalRecord(childLogicalRecord);
+            for (SchemaBuddy child : schemaBuddy.getChildren()) {
+                traverse(child, childLogicalRecord, level + 1);
+            }
+        } else {
+            parentLogicalRecord.addInstanceVariable(getInstanceVariable(schemaBuddy.getName(), description));
+        }
+    }
+
     private FilterProvider getFilterProvider() {
         return new SimpleFilterProvider()
                 .addFilter("LogicalRecord_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(logicalRecordFilter.toArray(new String[0])))
                 .addFilter("InstanceVariable_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(instanceVariableFilter.toArray(new String[0])));
-    }
-
-    private String getParentFromPath(String path) {
-        String[] split = path.split("/");
-        return Arrays.stream(split).limit(split.length - 1L).collect(Collectors.joining("/"));
     }
 
     private InstanceVariable getInstanceVariable(String name, String description) {
@@ -151,20 +154,10 @@ public class SchemaToTemplate {
                 .build();
     }
 
-    private LogicalRecord getLogicalRecord(String name, String parentId) {
-        LogicalRecord parent = pathToLogicalRecord.getOrDefault(parentId, null);
-        LogicalRecord logicalRecord = SimpleBuilder.createLogicalRecordBuilder()
+    private LogicalRecord getLogicalRecord(String name) {
+        return SimpleBuilder.createLogicalRecordBuilder()
                 .name(name)
                 .unitType("UnitType_DUMMY")
-                .parent(parentId)
                 .build();
-
-        if (parent != null) {
-            parent.addLogicalRecord(logicalRecord);
-        } else {
-            log.info("parent for {} not found", parentId);
-        }
-
-        return logicalRecord;
     }
 }
