@@ -11,8 +11,9 @@ public class SimpleToGsim {
     private final no.ssb.dapla.dataset.doc.model.simple.Dataset root;
     private final String dataSetPath;
     private final PersistenceProvider persistenceProvider;
+    private String userName = "Unknown";
 
-    public static GsimBuilder.BaseBuilder createDefault(String id, String name, String description) {
+    public GsimBuilder.BaseBuilder createDefault(String id, String name, String description) {
         // for now just add hardcoded default values
         String date = "2020-01-01T00:00:00Z";
         return GsimBuilder.create()
@@ -20,7 +21,7 @@ public class SimpleToGsim {
                 .languageCode("nb")
                 .name(name)
                 .description(description)
-                .createdBy("rl")
+                .createdBy(userName)
                 .addProperty("administrativeStatus", "DRAFT")
                 .addProperty("createdDate", date)
                 .addProperty("validFrom", date)
@@ -35,6 +36,11 @@ public class SimpleToGsim {
         this.root = root;
         this.dataSetPath = dataSetPath;
         this.persistenceProvider = persistenceProvider;
+    }
+
+    public SimpleToGsim addUser(String userName) {
+        this.userName = userName;
+        return this;
     }
 
     public void createGsimObjects() {
