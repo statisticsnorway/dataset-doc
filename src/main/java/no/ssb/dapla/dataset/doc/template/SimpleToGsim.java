@@ -38,7 +38,7 @@ public class SimpleToGsim {
         this.persistenceProvider = persistenceProvider;
     }
 
-    public SimpleToGsim addUser(String userName) {
+    public SimpleToGsim createdBy(String userName) {
         this.userName = userName;
         return this;
     }
