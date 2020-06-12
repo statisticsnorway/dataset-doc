@@ -82,8 +82,7 @@ class SimpleToGsimTest {
                 "    }, {\n" +
                 "      \"name\" : \"gjeld\",\n" +
                 "      \"description\" : \"en sum av penger i hele kroner brukt i en kontekst. Dette kan være en transaksjon, saldo o.l.\"\n" +
-                "    } ],\n" +
-                "    \"path\" : \"konto\"\n" +
+                "    } ]\n" +
                 "  }\n" +
                 "}\n";
 

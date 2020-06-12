@@ -9,6 +9,7 @@
   } ],
   "createdDate" : "2020-01-01T00:00:00Z",
   "administrativeStatus" : "DRAFT",
+  "parentChildMultiplicity" : "ONE_MANY",
   "createdBy" : "rl",
   "validFrom" : "2020-01-01T00:00:00Z",
   "version" : "1.0.0",

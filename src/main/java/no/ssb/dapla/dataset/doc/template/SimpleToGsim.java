@@ -7,8 +7,6 @@ import no.ssb.dapla.dataset.doc.model.gsim.PersistenceProvider;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
 
-import java.util.Collections;
-
 public class SimpleToGsim {
     private final no.ssb.dapla.dataset.doc.model.simple.Dataset root;
     private final String dataSetPath;
@@ -56,20 +54,22 @@ public class SimpleToGsim {
                 .build();
         persistenceProvider.save(unitDataset);
 
-        processAll(rootLogicalRecord, 0);
+        processAll(rootLogicalRecord, null);
     }
 
-    void processAll(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord, int level) {
+    void processAll(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord, String parentLogicalRecordId) {
+        String logicalRecordId = parentLogicalRecordId == null ? createId(logicalRecord) : parentLogicalRecordId + "." + logicalRecord.getName();
         LogicalRecord gsimLogicalRecord =
-                createDefault(createId(logicalRecord), logicalRecord.getName(), null)
+                createDefault(logicalRecordId, logicalRecord.getName(), null)
                         .logicalRecord()
                         .isPlaceholderRecord(false)// TODO: add and get from simple
                         .unitType(logicalRecord.getUnitType(), "UnitType_DUMMY")
                         .shortName(logicalRecord.getName())
                         .instanceVariables(logicalRecord.getInstanceVariableIds(i -> createId(logicalRecord, i)))
+                        .parent(parentLogicalRecordId)
+                        .parentChildMultiplicity("ONE_MANY")
                         .build();
 
-//        System.out.println(getIntendString(level) + gsimLogicalRecord.getShortName() + " (lr)");
         persistenceProvider.save(gsimLogicalRecord);
 
         for (no.ssb.dapla.dataset.doc.model.simple.InstanceVariable instanceVariable : logicalRecord.getInstanceVariables()) {
@@ -84,12 +84,11 @@ public class SimpleToGsim {
                             .representedVariable(instanceVariable.getRepresentedVariable(), "RepresentedVariable_DUMMY")
                             .build();
 
-//            System.out.println(getIntendString(level + 1) + gsimInstanceVariable.getShortName());
             persistenceProvider.save(gsimInstanceVariable);
         }
 
         for (no.ssb.dapla.dataset.doc.model.simple.LogicalRecord child : logicalRecord.getLogicalRecords()) {
-            processAll(child, level + 1);
+            processAll(child, logicalRecordId);
         }
     }
 
@@ -101,11 +100,5 @@ public class SimpleToGsim {
     private String createId(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord,
                             no.ssb.dapla.dataset.doc.model.simple.InstanceVariable instanceVariable) {
         return createId(logicalRecord) + "." + instanceVariable.getName();
-    }
-
-    String getIntendString(int level) {
-        if (level == 0) return "";
-        if (level == 1) return " |-- ";
-        return String.join("", Collections.nCopies(level, " |   ")) + " |-- ";
     }
 }
