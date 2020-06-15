@@ -5,7 +5,7 @@
 
     <groupId>no.ssb.dapla</groupId>
     <artifactId>dataset-doc</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>${project.artifactId}</name>
 
     <repositories>
