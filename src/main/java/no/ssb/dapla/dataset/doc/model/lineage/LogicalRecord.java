@@ -1,41 +1,42 @@
 package no.ssb.dapla.dataset.doc.model.lineage;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LogicalRecord {
-    @JsonProperty
+    @JsonIgnore
     private String name;
 
-    @JsonProperty
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final List<LogicalRecord> logicalRecords = new ArrayList<>();
-
     @JsonProperty("instanceVariables")
-    private final Map<String, InstanceVariable> mapOfInstanceVariables = new HashMap<>();
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private final Map<String, InstanceVariable> instanceVariables = new HashMap<>();
 
-    public String getName() {
-        return name;
-    }
+    @JsonProperty("logicalRecords")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private final Map<String, LogicalRecord> logicalRecords = new HashMap<>();
 
     public void setName(String name) {
         this.name = name;
     }
 
     public void addLogicalRecord(LogicalRecord logicalRecord) {
-        logicalRecords.add(logicalRecord);
+        logicalRecords.put(logicalRecord.name, logicalRecord);
     }
 
-    public List<LogicalRecord> getLogicalRecords() {
-        return logicalRecords;
+    @JsonIgnore
+    public LogicalRecord getRoot() {
+        if (logicalRecords.size() == 1) {
+            return logicalRecords.values().iterator().next();
+        }
+        throw new IllegalStateException("Can only have one root, was:" + logicalRecords);
     }
+
 
     public void addInstanceVariable(InstanceVariable instanceVariable) {
-        mapOfInstanceVariables.put(instanceVariable.getInherit(), instanceVariable);
+        instanceVariables.put(instanceVariable.getInherit(), instanceVariable);
     }
 }

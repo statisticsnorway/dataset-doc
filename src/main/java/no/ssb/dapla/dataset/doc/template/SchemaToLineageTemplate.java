@@ -46,7 +46,7 @@ public class SchemaToLineageTemplate {
                 .build();
 
         traverse(schemaBuddy, root, 0);
-        return root.getLogicalRecords().get(0); // We don't need the first witch always is the spark_schema root
+        return root.getRoot(); // We don't need the first witch always is the spark_schema root
     }
 
     private void traverse(SchemaBuddy schemaBuddy, LogicalRecord parentLogicalRecord, int level) {
