@@ -4,39 +4,42 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LogicalRecord {
-    @JsonIgnore
+    @JsonProperty
     private String name;
 
-    @JsonProperty("instanceVariables")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final Map<String, InstanceVariable> instanceVariables = new HashMap<>();
+    @JsonProperty
+    private String type = "structure";
 
-    @JsonProperty("logicalRecords")
+    @JsonProperty("fields")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final Map<String, LogicalRecord> logicalRecords = new HashMap<>();
+    private final List<InstanceVariable> instanceVariables = new ArrayList<>();
+
+    @JsonProperty("catalogs")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private final List<LogicalRecord> logicalRecords = new ArrayList<>();
 
     public void setName(String name) {
         this.name = name;
     }
 
     public void addLogicalRecord(LogicalRecord logicalRecord) {
-        logicalRecords.put(logicalRecord.name, logicalRecord);
+        logicalRecords.add(logicalRecord);
     }
 
     @JsonIgnore
     public LogicalRecord getRoot() {
         if (logicalRecords.size() == 1) {
-            return logicalRecords.values().iterator().next();
+            return logicalRecords.get(0);
         }
         throw new IllegalStateException("Can only have one root, was:" + logicalRecords);
     }
 
 
     public void addInstanceVariable(InstanceVariable instanceVariable) {
-        instanceVariables.put(instanceVariable.getInherit(), instanceVariable);
+        instanceVariables.add(instanceVariable);
     }
 }

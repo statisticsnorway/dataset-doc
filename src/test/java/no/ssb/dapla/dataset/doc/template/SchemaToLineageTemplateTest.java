@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class SchemaToLineageTemplateTest {
 
     @Test
-    void testOneLevel() {
+    void testNoHierarchy() {
         Schema schema = SchemaBuilder
                 .record("konto").namespace("no.ssb.dataset")
                 .fields()
@@ -26,7 +26,7 @@ class SchemaToLineageTemplateTest {
     }
 
     @Test
-    void testWithTwoLevels() throws JSONException {
+    void testWithTwoLevels() {
         Schema schema = SchemaBuilder
                 .record("root").namespace("no.ssb.dataset")
                 .fields()
@@ -46,7 +46,27 @@ class SchemaToLineageTemplateTest {
                 .endRecord();
 
         SchemaToLineageTemplate schemaToTemplate =
-                new SchemaToLineageTemplate(schema, "/kilde/ske/freg/person/rådata/v123");
+                new SchemaToLineageTemplate(schema, "/kilde/freg");
+
+        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
+        System.out.println(jsonString);
+    }
+
+    @Test
+    void testWithOneLevel() {
+        Schema schema = SchemaBuilder
+                .record("root").namespace("no.ssb.dataset")
+                .fields()
+                .name("fnr").type().stringType().noDefault()
+                .name("konto").type().optional().type(
+                        SchemaBuilder.record("konto")
+                                .fields()
+                                .name("saldo").type().stringType().noDefault()
+                                .endRecord())
+                .endRecord();
+
+        SchemaToLineageTemplate schemaToTemplate =
+                new SchemaToLineageTemplate(schema, "/kilde/freg");
 
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
         System.out.println(jsonString);

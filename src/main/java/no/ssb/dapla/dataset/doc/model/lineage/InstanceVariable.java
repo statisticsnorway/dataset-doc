@@ -10,6 +10,9 @@ public class InstanceVariable {
     @JsonProperty
     private String inherit;
 
+    @JsonProperty
+    private String confidence= "0.9";
+
     public String getSource() {
         return source;
     }
