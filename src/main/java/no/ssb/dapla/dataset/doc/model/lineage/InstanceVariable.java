@@ -2,7 +2,7 @@ package no.ssb.dapla.dataset.doc.model.lineage;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class InstanceVariable {
+public class InstanceVariable extends Field {
 
     @JsonProperty
     private String source;

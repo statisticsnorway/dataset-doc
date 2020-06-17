@@ -7,19 +7,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LogicalRecord {
+public class LogicalRecord extends Field {
     @JsonProperty
     private String name;
 
     @JsonProperty
     private String type = "structure";
 
+
     @JsonProperty("fields")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final List<InstanceVariable> instanceVariables = new ArrayList<>();
+    private final List<Field> fields = new ArrayList<>();
 
-    @JsonProperty("catalogs")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonIgnore
     private final List<LogicalRecord> logicalRecords = new ArrayList<>();
 
     public void setName(String name) {
@@ -28,6 +28,7 @@ public class LogicalRecord {
 
     public void addLogicalRecord(LogicalRecord logicalRecord) {
         logicalRecords.add(logicalRecord);
+        fields.add(logicalRecord);
     }
 
     @JsonIgnore
@@ -38,8 +39,7 @@ public class LogicalRecord {
         throw new IllegalStateException("Can only have one root, was:" + logicalRecords);
     }
 
-
     public void addInstanceVariable(InstanceVariable instanceVariable) {
-        instanceVariables.add(instanceVariable);
+        fields.add(instanceVariable);
     }
 }
