@@ -74,7 +74,9 @@ public class SchemaToLineageTemplate {
 
     private InstanceVariable getInstanceVariable(String name) {
         return LineageBuilder.createInstanceVariableBuilder()
-                .inherit(name)
+                .name(name)
+                .confidence("0.9") // TODO calculate when finding from source schema
+                .type("inherited") // TODO find based on source schema
                 .addSource(new Source(name, source, sourceTimeStamp))
         .build();
     }

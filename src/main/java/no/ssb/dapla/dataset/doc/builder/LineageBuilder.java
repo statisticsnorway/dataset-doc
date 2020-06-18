@@ -53,8 +53,18 @@ public class LineageBuilder {
     public static class InstanceVariableBuilder {
         private final InstanceVariable instanceVariable = new InstanceVariable();
 
-        public InstanceVariableBuilder inherit(String name) {
+        public InstanceVariableBuilder name(String name) {
             instanceVariable.setName(name);
+            return this;
+        }
+
+        public InstanceVariableBuilder type(String type) {
+            instanceVariable.setType(type);
+            return this;
+        }
+
+        public InstanceVariableBuilder confidence(String confidence) {
+            instanceVariable.setConfidence(confidence);
             return this;
         }
 
