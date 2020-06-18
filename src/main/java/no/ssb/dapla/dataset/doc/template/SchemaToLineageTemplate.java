@@ -17,10 +17,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SchemaToLineageTemplate {
+public class SchemaToLineageTemplate extends SchemaTraverse<LogicalRecord> {
     private final Schema schema;
     private final List<SchemaWithPath> schemaWithPaths;
-    private final long sourceTimeStamp = 123456789L;
 
     public SchemaToLineageTemplate(List<SchemaWithPath> inputs, Schema outputSchema) {
         this.schemaWithPaths = inputs;
@@ -48,32 +47,22 @@ public class SchemaToLineageTemplate {
 
     private LogicalRecord traverse(SchemaBuddy schemaBuddy) {
         LogicalRecord root = LineageBuilder.createLogicalRecordBuilder()
-                .name("datasetName")
                 .build();
 
-        traverse(schemaBuddy, root, 0);
+        traverse(schemaBuddy, root);
         return root.getRoot(); // We don't need the first witch always is the spark_schema root
     }
 
-    private void traverse(SchemaBuddy schemaBuddy, LogicalRecord parentLogicalRecord, int level) {
-        if (schemaBuddy.isArrayType()) {
-            List<SchemaBuddy> children = schemaBuddy.getChildren();
-            if (children.size() != 1) {
-                throw new IllegalStateException("Avro Array can only have 1 child: was:" + schemaBuddy.toString(true) + "‰n");
-            }
-            traverse(children.get(0), parentLogicalRecord, level);
-            return;
-        }
+    @Override
+    protected LogicalRecord processStruct(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+        LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
+        parent.addLogicalRecord(childLogicalRecord);
+        return childLogicalRecord;
+    }
 
-        if (schemaBuddy.isBranch()) {
-            LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
-            parentLogicalRecord.addLogicalRecord(childLogicalRecord);
-            for (SchemaBuddy child : schemaBuddy.getChildren()) {
-                traverse(child, childLogicalRecord, level + 1);
-            }
-        } else {
-            parentLogicalRecord.addInstanceVariable(getInstanceVariable(schemaBuddy.getName()));
-        }
+    @Override
+    protected void processField(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+        parent.addInstanceVariable(getInstanceVariable(schemaBuddy.getName()));
     }
 
     private InstanceVariable getInstanceVariable(String name) {

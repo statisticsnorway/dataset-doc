@@ -3,7 +3,6 @@ package no.ssb.dapla.dataset.doc.template;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.ssb.avro.convert.core.SchemaBuddy;
 import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import org.apache.avro.Schema;
@@ -95,10 +94,6 @@ class SchemaToLineageTemplateTest {
                 .name("sum_innskudd").type().intType().noDefault()
                 .name("alder").type().stringType().noDefault()
                 .endRecord();
-
-        System.out.println(SchemaBuddy.parse(inputSchemaSkatt).toString(true));
-        System.out.println(SchemaBuddy.parse(inputSchemaFreg).toString(true));
-        System.out.println(SchemaBuddy.parse(outputSchema).toString(true));
 
         SchemaToLineageTemplate schemaToTemplate =
                 LineageBuilder.createSchemaToLineageBuilder()

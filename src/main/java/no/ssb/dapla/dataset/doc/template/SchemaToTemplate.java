@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SchemaToTemplate {
+public class SchemaToTemplate extends SchemaTraverse<LogicalRecord> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -105,33 +105,23 @@ public class SchemaToTemplate {
 
     private LogicalRecord traverse(SchemaBuddy schemaBuddy) {
         LogicalRecord root = SimpleBuilder.createLogicalRecordBuilder()
-                .name("datasetName")
                 .build();
 
-        traverse(schemaBuddy, root, 0);
+        traverse(schemaBuddy, root);
         return root.getLogicalRecords().get(0); // We don't need the first witch always is the spark_schema root
     }
 
-    private void traverse(SchemaBuddy schemaBuddy, LogicalRecord parentLogicalRecord, int level) {
-        if (schemaBuddy.isArrayType()) {
-            List<SchemaBuddy> children = schemaBuddy.getChildren();
-            if (children.size() != 1) {
-                throw new IllegalStateException("Avro Array can only have 1 child: was:" + schemaBuddy.toString(true) + "‰n");
-            }
-            traverse(children.get(0), parentLogicalRecord, level);
-            return;
-        }
-        String description = (String) schemaBuddy.getProp("description");
+    @Override
+    protected LogicalRecord processStruct(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+        LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
+        parent.addLogicalRecord(childLogicalRecord);
+        return childLogicalRecord;
+    }
 
-        if (schemaBuddy.isBranch()) {
-            LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
-            parentLogicalRecord.addLogicalRecord(childLogicalRecord);
-            for (SchemaBuddy child : schemaBuddy.getChildren()) {
-                traverse(child, childLogicalRecord, level + 1);
-            }
-        } else {
-            parentLogicalRecord.addInstanceVariable(getInstanceVariable(schemaBuddy.getName(), description));
-        }
+    @Override
+    protected void processField(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+        String description = (String) schemaBuddy.getProp("description");
+        parent.addInstanceVariable(getInstanceVariable(schemaBuddy.getName(), description));
     }
 
     private FilterProvider getFilterProvider() {
