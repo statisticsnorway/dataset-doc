@@ -1,6 +1,9 @@
 package no.ssb.dapla.dataset.doc.template;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.json.JSONException;
@@ -53,7 +56,7 @@ class SchemaToLineageTemplateTest {
     }
 
     @Test
-    void testWithOneLevel() {
+    void testWithOneLevel() throws JsonProcessingException {
         Schema schema = SchemaBuilder
                 .record("root").namespace("no.ssb.dataset")
                 .fields()
@@ -70,5 +73,7 @@ class SchemaToLineageTemplateTest {
 
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
         System.out.println(jsonString);
+
+//        Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
     }
 }

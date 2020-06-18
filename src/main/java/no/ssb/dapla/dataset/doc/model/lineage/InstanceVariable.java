@@ -2,31 +2,45 @@ package no.ssb.dapla.dataset.doc.model.lineage;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InstanceVariable extends Field {
 
     @JsonProperty
-    private String source;
+    String name;
 
     @JsonProperty
-    private String inherit;
+    private String type= "inherited";
 
     @JsonProperty
     private String confidence= "0.9";
 
-    public String getSource() {
-        return source;
+    @JsonProperty
+    private List<Source> sources = new ArrayList<>();
+
+    public String getName() {
+        return name;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getInherit() {
-        return inherit;
+    public List<Source> getSources() {
+        return sources;
     }
 
-    public void setInherit(String inherit) {
-        this.inherit = inherit;
+    public void addSource(Source source) {
+        sources.add(source);
+    }
+
+    public String getConfidence() {
+        return confidence;
+    }
+
+    public void setConfidence(String confidence) {
+        this.confidence = confidence;
     }
 
 }

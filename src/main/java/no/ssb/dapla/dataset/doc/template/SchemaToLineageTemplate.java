@@ -8,6 +8,7 @@ import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import no.ssb.dapla.dataset.doc.model.lineage.InstanceVariable;
 import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
+import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import org.apache.avro.Schema;
 
 import java.util.List;
@@ -73,8 +74,8 @@ public class SchemaToLineageTemplate {
     private InstanceVariable getInstanceVariable(String name) {
         return LineageBuilder.createInstanceVariableBuilder()
                 .inherit(name)
-                .source(source)
-                .build();
+                .addSource(new Source(name, source, "123456789"))
+        .build();
     }
 
     private LogicalRecord getLogicalRecord(String name) {

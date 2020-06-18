@@ -3,6 +3,7 @@ package no.ssb.dapla.dataset.doc.builder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import no.ssb.dapla.dataset.doc.model.lineage.InstanceVariable;
 import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
+import no.ssb.dapla.dataset.doc.model.lineage.Source;
 
 
 public class LineageBuilder {
@@ -53,12 +54,12 @@ public class LineageBuilder {
         private final InstanceVariable instanceVariable = new InstanceVariable();
 
         public InstanceVariableBuilder inherit(String name) {
-            instanceVariable.setInherit(name);
+            instanceVariable.setName(name);
             return this;
         }
 
-        public InstanceVariableBuilder source(String name) {
-            instanceVariable.setSource(name);
+        public InstanceVariableBuilder addSource(Source source) {
+            instanceVariable.addSource(source);
             return this;
         }
 
