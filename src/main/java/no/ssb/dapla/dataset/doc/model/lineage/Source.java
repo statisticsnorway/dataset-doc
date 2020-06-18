@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Source {
 
-    public Source(String field, String path, String version) {
+    public Source(String field, String path, long version) {
         this.field = field;
         this.path = path;
         this.version = version;
@@ -20,5 +20,5 @@ public class Source {
     private String path;
 
     @JsonProperty
-    private String version;
+    private long version;
 }

@@ -16,6 +16,7 @@ import java.util.List;
 public class SchemaToLineageTemplate {
     private final Schema schema;
     private final String source;
+    private final long sourceTimeStamp = 123456789L ;
 
     public SchemaToLineageTemplate(Schema schema, String source) {
         this.schema = schema;
@@ -74,7 +75,7 @@ public class SchemaToLineageTemplate {
     private InstanceVariable getInstanceVariable(String name) {
         return LineageBuilder.createInstanceVariableBuilder()
                 .inherit(name)
-                .addSource(new Source(name, source, "123456789"))
+                .addSource(new Source(name, source, sourceTimeStamp))
         .build();
     }
 

@@ -1,15 +1,15 @@
 package no.ssb.dapla.dataset.doc.model.lineage;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LogicalRecord extends Field {
 
-    @JsonProperty
-    private String type = "structure";
+    public LogicalRecord() {
+        type = "structure";
+    }
 
     @JsonIgnore
     private final List<LogicalRecord> logicalRecords = new ArrayList<>();

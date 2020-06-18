@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
-import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 
 class SchemaToLineageTemplateTest {
@@ -72,8 +71,10 @@ class SchemaToLineageTemplateTest {
                 new SchemaToLineageTemplate(schema, "/kilde/freg");
 
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
-        System.out.println(jsonString);
 
+        // Check that we can parse json
         Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
+        String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
+        System.out.println(jsonStringForDataSet);
     }
 }

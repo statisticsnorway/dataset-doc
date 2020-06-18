@@ -12,11 +12,11 @@ public class Field {
     String name;
 
     @JsonProperty
-    private String type;
+    protected String type;
 
     @JsonProperty
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private String confidence;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    protected String confidence;
 
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -42,4 +42,11 @@ public class Field {
         this.confidence = confidence;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }
