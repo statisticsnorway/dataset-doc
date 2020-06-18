@@ -11,16 +11,20 @@ import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import org.apache.avro.Schema;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class SchemaToLineageTemplate {
     private final Schema schema;
-    private final String source;
-    private final long sourceTimeStamp = 123456789L ;
+    private final List<SchemaWithPath> schemaWithPaths;
+    private final long sourceTimeStamp = 123456789L;
 
-    public SchemaToLineageTemplate(Schema schema, String source) {
-        this.schema = schema;
-        this.source = source;
+    public SchemaToLineageTemplate(List<SchemaWithPath> inputs, Schema outputSchema) {
+        this.schemaWithPaths = inputs;
+        this.schema = outputSchema;
     }
 
     public String generateTemplateAsJsonString() {
@@ -73,12 +77,22 @@ public class SchemaToLineageTemplate {
     }
 
     private InstanceVariable getInstanceVariable(String name) {
+        // TODO: calculate confidence when doing findSources
+        Collection<Source> sources = findSources(name);
+
         return LineageBuilder.createInstanceVariableBuilder()
                 .name(name)
                 .confidence("0.9") // TODO calculate when finding from source schema
-                .type("inherited") // TODO find based on source schema
-                .addSource(new Source(name, source, sourceTimeStamp))
-        .build();
+                .type("inherited") // For now we can't find what is derived
+                .addSources(sources)
+                .build();
+    }
+
+    private Collection<Source> findSources(String name) {
+        return schemaWithPaths.stream()
+                .map(schemaWithPath -> schemaWithPath.getSource(name))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private LogicalRecord getLogicalRecord(String name) {

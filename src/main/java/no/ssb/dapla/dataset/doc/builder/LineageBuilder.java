@@ -4,7 +4,13 @@ import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import no.ssb.dapla.dataset.doc.model.lineage.InstanceVariable;
 import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
+import no.ssb.dapla.dataset.doc.template.SchemaToLineageTemplate;
+import no.ssb.dapla.dataset.doc.template.SchemaWithPath;
+import org.apache.avro.Schema;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class LineageBuilder {
 
@@ -21,6 +27,29 @@ public class LineageBuilder {
 
     public static DatasetBuilder createDatasetBuilder() {
         return new DatasetBuilder();
+    }
+
+    public static SchemaToLineageBuilder createSchemaToLineageBuilder() {
+        return new SchemaToLineageBuilder();
+    }
+
+    public static class SchemaToLineageBuilder {
+        private final List<SchemaWithPath> schemaWithPaths = new ArrayList<>();
+        Schema outputSchema;
+
+        public SchemaToLineageBuilder addInput(SchemaWithPath schemaWithPath) {
+            schemaWithPaths.add(schemaWithPath);
+            return this;
+        }
+
+        public SchemaToLineageBuilder outputSchema(Schema outputSchema) {
+            this.outputSchema = outputSchema;
+            return this;
+        }
+
+        public SchemaToLineageTemplate build() {
+            return new SchemaToLineageTemplate(schemaWithPaths, outputSchema);
+        }
     }
 
     public static class DatasetBuilder {
@@ -70,6 +99,11 @@ public class LineageBuilder {
 
         public InstanceVariableBuilder addSource(Source source) {
             instanceVariable.addSource(source);
+            return this;
+        }
+
+        public InstanceVariableBuilder addSources(Collection<Source> sources) {
+            instanceVariable.addSources(sources);
             return this;
         }
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Field {
@@ -32,6 +33,10 @@ public class Field {
 
     public void addSource(Source source) {
         sources.add(source);
+    }
+
+    public void addSources(Collection<Source> sources) {
+        this.sources.addAll(sources);
     }
 
     public String getConfidence() {

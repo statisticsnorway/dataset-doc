@@ -3,6 +3,8 @@ package no.ssb.dapla.dataset.doc.template;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.ssb.avro.convert.core.SchemaBuddy;
+import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -10,22 +12,6 @@ import org.junit.jupiter.api.Test;
 
 class SchemaToLineageTemplateTest {
 
-    @Test
-    void testNoHierarchy() {
-        Schema schema = SchemaBuilder
-                .record("konto").namespace("no.ssb.dataset")
-                .fields()
-                .name("kontonummer").prop("description", "vilkårlig lang sekvens av tegn inkludert aksenter og spesielle tegn fra standardiserte tegnsett").type().stringType().noDefault()
-                .name("innskudd").prop("description", "9 sifret nummer gitt de som er registrert i Enhetsregisteret.").type().stringType().noDefault()
-                .name("gjeld").prop("description", "en sum av penger i hele kroner brukt i en kontekst. Dette kan være en transaksjon, saldo o.l.").type().optional().stringType()
-                .endRecord();
-
-        SchemaToLineageTemplate schemaToTemplate =
-                new SchemaToLineageTemplate(schema, "/kilde/konto");
-
-        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
-        System.out.println(jsonString);
-    }
 
     @Test
     void testWithTwoLevels() {
@@ -48,7 +34,12 @@ class SchemaToLineageTemplateTest {
                 .endRecord();
 
         SchemaToLineageTemplate schemaToTemplate =
-                new SchemaToLineageTemplate(schema, "/kilde/freg");
+                LineageBuilder.createSchemaToLineageBuilder()
+                        .addInput(new SchemaWithPath(schema, // use output schema for input for test to run for now
+                                "/kilde/freg",
+                                123456789))
+                        .outputSchema(schema)
+                        .build();
 
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
         System.out.println(jsonString);
@@ -68,7 +59,10 @@ class SchemaToLineageTemplateTest {
                 .endRecord();
 
         SchemaToLineageTemplate schemaToTemplate =
-                new SchemaToLineageTemplate(schema, "/kilde/freg");
+                LineageBuilder.createSchemaToLineageBuilder()
+                        .addInput(new SchemaWithPath(schema, "/kilde/freg", 123456789))
+                        .outputSchema(schema)
+                        .build();
 
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
 
@@ -77,4 +71,48 @@ class SchemaToLineageTemplateTest {
         String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
         System.out.println(jsonStringForDataSet);
     }
+
+    @Test
+    void testJoinTwoSources() throws JsonProcessingException {
+        Schema inputSchemaSkatt = SchemaBuilder
+                .record("root").namespace("no.ssb.dataset")
+                .fields()
+                .name("fnr").type().stringType().noDefault()
+                .name("sum_innskudd").type().intType().noDefault()
+                .endRecord();
+
+        Schema inputSchemaFreg = SchemaBuilder
+                .record("root").namespace("no.ssb.dataset")
+                .fields()
+                .name("fnr").type().stringType().noDefault()
+                .name("alder").type().stringType().noDefault()
+                .endRecord();
+
+        Schema outputSchema = SchemaBuilder
+                .record("root").namespace("no.ssb.dataset")
+                .fields()
+                .name("fnr").type().stringType().noDefault()
+                .name("sum_innskudd").type().intType().noDefault()
+                .name("alder").type().stringType().noDefault()
+                .endRecord();
+
+        System.out.println(SchemaBuddy.parse(inputSchemaSkatt).toString(true));
+        System.out.println(SchemaBuddy.parse(inputSchemaFreg).toString(true));
+        System.out.println(SchemaBuddy.parse(outputSchema).toString(true));
+
+        SchemaToLineageTemplate schemaToTemplate =
+                LineageBuilder.createSchemaToLineageBuilder()
+                        .addInput(new SchemaWithPath(inputSchemaSkatt, "/kilde/skatt/konto/innskudd", 123456789))
+                        .addInput(new SchemaWithPath(inputSchemaFreg, "/kilde/freg/alder", 123456789))
+                        .outputSchema(outputSchema)
+                        .build();
+
+        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
+
+        // Check that we can parse json
+        Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
+        String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
+        System.out.println(jsonStringForDataSet);
+    }
+
 }
