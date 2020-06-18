@@ -74,6 +74,6 @@ class SchemaToLineageTemplateTest {
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
         System.out.println(jsonString);
 
-//        Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
+        Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
     }
 }
