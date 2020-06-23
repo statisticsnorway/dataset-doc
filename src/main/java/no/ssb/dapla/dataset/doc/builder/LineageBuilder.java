@@ -33,6 +33,50 @@ public class LineageBuilder {
         return new SchemaToLineageBuilder();
     }
 
+    public static SourceBuilder crateSourceBuilder() {
+        return new SourceBuilder();
+    }
+
+    public static class SourceBuilder {
+        private String field;
+        private String path;
+        private String type;
+        private long version;
+        private float confidence;
+
+        public SourceBuilder field(String field) {
+            this.field = field;
+            return this;
+        }
+
+        public SourceBuilder path(String path) {
+            this.path = path;
+            return this;
+        }
+
+        public SourceBuilder version(long version) {
+            this.version = version;
+            return this;
+        }
+
+        public SourceBuilder confidence(float confidence) {
+            this.confidence = confidence;
+            return this;
+        }
+
+        public SourceBuilder type(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public Source build() {
+            Source source = new Source(field, path, version);
+            source.setConfidence(confidence);
+            source.setType(type);
+            return source;
+        }
+    }
+
     public static class SchemaToLineageBuilder {
         private final List<SchemaWithPath> schemaWithPaths = new ArrayList<>();
         Schema outputSchema;
@@ -92,7 +136,7 @@ public class LineageBuilder {
             return this;
         }
 
-        public InstanceVariableBuilder confidence(String confidence) {
+        public InstanceVariableBuilder confidence(Float confidence) {
             instanceVariable.setConfidence(confidence);
             return this;
         }

@@ -17,7 +17,7 @@ public class Field {
 
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    protected String confidence;
+    protected Float confidence;
 
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -35,15 +35,19 @@ public class Field {
         sources.add(source);
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void addSources(Collection<Source> sources) {
         this.sources.addAll(sources);
     }
 
-    public String getConfidence() {
+    public Float getConfidence() {
         return confidence;
     }
 
-    public void setConfidence(String confidence) {
+    public void setConfidence(float confidence) {
         this.confidence = confidence;
     }
 

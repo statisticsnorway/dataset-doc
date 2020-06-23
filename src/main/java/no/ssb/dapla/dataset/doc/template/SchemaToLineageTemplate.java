@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SchemaToLineageTemplate extends SchemaTraverse<LogicalRecord> {
@@ -50,7 +51,7 @@ public class SchemaToLineageTemplate extends SchemaTraverse<LogicalRecord> {
                 .build();
 
         traverse(schemaBuddy, root);
-        return root.getRoot(); // We don't need the first witch always is the spark_schema root
+        return root.getRoot(); // top element only used to have a start parent
     }
 
     @Override
@@ -66,13 +67,17 @@ public class SchemaToLineageTemplate extends SchemaTraverse<LogicalRecord> {
     }
 
     private InstanceVariable getInstanceVariable(String name) {
-        // TODO: calculate confidence when doing findSources
         Collection<Source> sources = findSources(name);
+
+        Optional<Float> confidence = sources.stream().map(Source::getConfidence).reduce(Float::sum);
+        float sum = confidence.orElse(0F);
+        float result = sum != 0F ? sum / sources.size() : 0F;
+        String type = sum != 0F ? "inherited" : "derived/created";
 
         return LineageBuilder.createInstanceVariableBuilder()
                 .name(name)
-                .confidence("0.9") // TODO calculate when finding from source schema
-                .type("inherited") // For now we can't find what is derived
+                .confidence(result) // TODO calculate when finding from source schema
+                .type(type) // For now we can't find what is derived
                 .addSources(sources)
                 .build();
     }

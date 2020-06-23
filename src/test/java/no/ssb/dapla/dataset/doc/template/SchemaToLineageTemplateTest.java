@@ -74,21 +74,21 @@ class SchemaToLineageTemplateTest {
     @Test
     void testJoinTwoSources() throws JsonProcessingException {
         Schema inputSchemaSkatt = SchemaBuilder
-                .record("root").namespace("no.ssb.dataset")
+                .record("spark_schema").namespace("no.ssb.dataset")
                 .fields()
                 .name("fnr").type().stringType().noDefault()
                 .name("sum_innskudd").type().intType().noDefault()
                 .endRecord();
 
         Schema inputSchemaFreg = SchemaBuilder
-                .record("root").namespace("no.ssb.dataset")
+                .record("spark_schema").namespace("no.ssb.dataset")
                 .fields()
                 .name("fnr").type().stringType().noDefault()
                 .name("alder").type().stringType().noDefault()
                 .endRecord();
 
         Schema outputSchema = SchemaBuilder
-                .record("root").namespace("no.ssb.dataset")
+                .record("spark_schema").namespace("no.ssb.dataset")
                 .fields()
                 .name("fnr").type().stringType().noDefault()
                 .name("sum_innskudd").type().intType().noDefault()
@@ -110,4 +110,50 @@ class SchemaToLineageTemplateTest {
         System.out.println(jsonStringForDataSet);
     }
 
+    @Test
+    void testJoinTwoSourcesFromComplexSchema() throws JsonProcessingException {
+        Schema inputSchemaSkatt = SchemaBuilder
+                .record("spark_schema").namespace("no.ssb.dataset")
+                .fields()
+                .name("fnr").type().stringType().noDefault()
+                .name("konto").type().optional().type(
+                        SchemaBuilder.record("konto")
+                                .fields()
+                                .name("innskudd").type().stringType().noDefault()
+                                .endRecord())
+                .endRecord();
+
+        Schema inputSchemaFreg = SchemaBuilder
+                .record("spark_schema").namespace("no.ssb.dataset")
+                .fields()
+                .name("fnr").type().stringType().noDefault()
+                .name("person").type().optional().type(
+                        SchemaBuilder.record("person")
+                                .fields()
+                                .name("alder").type().stringType().noDefault()
+                                .endRecord())
+                .endRecord();
+
+        Schema outputSchema = SchemaBuilder
+                .record("spark_schema").namespace("no.ssb.dataset")
+                .fields()
+                .name("fnr").type().stringType().noDefault()
+                .name("sum_innskudd").type().intType().noDefault()
+                .name("alder").type().stringType().noDefault()
+                .endRecord();
+
+        SchemaToLineageTemplate schemaToTemplate =
+                LineageBuilder.createSchemaToLineageBuilder()
+                        .addInput(new SchemaWithPath(inputSchemaSkatt, "/kilde/skatt/konto/innskudd", 123456789))
+                        .addInput(new SchemaWithPath(inputSchemaFreg, "/kilde/freg/alder", 123456789))
+                        .outputSchema(outputSchema)
+                        .build();
+
+        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
+
+        // Check that we can parse json
+        Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
+        String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
+        System.out.println(jsonStringForDataSet);
+    }
 }
