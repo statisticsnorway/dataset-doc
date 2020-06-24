@@ -104,17 +104,15 @@ public class SchemaToTemplate extends SchemaTraverse<LogicalRecord> {
     }
 
     private LogicalRecord traverse(SchemaBuddy schemaBuddy) {
-        LogicalRecord root = SimpleBuilder.createLogicalRecordBuilder()
-                .build();
-
-        traverse(schemaBuddy, root);
-        return root.getLogicalRecords().get(0); // We don't need the first witch always is the spark_schema root
+        return traverse(schemaBuddy, null);
     }
 
     @Override
     protected LogicalRecord processStruct(SchemaBuddy schemaBuddy, LogicalRecord parent) {
         LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
-        parent.addLogicalRecord(childLogicalRecord);
+        if (parent != null) {
+            parent.addLogicalRecord(childLogicalRecord);
+        }
         return childLogicalRecord;
     }
 

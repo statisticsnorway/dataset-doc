@@ -47,17 +47,15 @@ public class SchemaToLineageTemplate extends SchemaTraverse<LogicalRecord> {
     }
 
     private LogicalRecord traverse(SchemaBuddy schemaBuddy) {
-        LogicalRecord root = LineageBuilder.createLogicalRecordBuilder()
-                .build();
-
-        traverse(schemaBuddy, root);
-        return root.getRoot(); // top element only used to have a start parent
+        return traverse(schemaBuddy, null);
     }
 
     @Override
     protected LogicalRecord processStruct(SchemaBuddy schemaBuddy, LogicalRecord parent) {
         LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
-        parent.addLogicalRecord(childLogicalRecord);
+        if (parent != null) {
+            parent.addLogicalRecord(childLogicalRecord);
+        }
         return childLogicalRecord;
     }
 
