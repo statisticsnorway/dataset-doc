@@ -7,6 +7,7 @@ import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import org.apache.avro.Schema;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SchemaWithPath {
     final Schema schema;
@@ -29,10 +30,10 @@ public class SchemaWithPath {
         }
         // for now, just use the first match
         // TODO: Try to find the correct one in hierarchy if more matches and (Can look at other fields to do this)
-        String field = instanceVariables.get(0).getPath();
+        String paths = instanceVariables.stream().map(InstanceVariable::getPath).collect(Collectors.joining(","));
         float confidence = 0.9F; // TODO: calculate confidence based on if we have one field or more matches
         return LineageBuilder.crateSourceBuilder()
-                .field(field)
+                .field(paths)
                 .path(path)
                 .version(version)
                 .confidence(confidence)
