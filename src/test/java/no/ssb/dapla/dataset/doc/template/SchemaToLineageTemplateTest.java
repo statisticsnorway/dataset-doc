@@ -16,7 +16,7 @@ class SchemaToLineageTemplateTest {
     @Test
     void testWithTwoLevels() {
         Schema schema = SchemaBuilder
-                .record("root").namespace("no.ssb.dataset")
+                .record("spark_schema").namespace("no.ssb.dataset")
                 .fields()
                 .name("group").type().stringType().noDefault()
                 .name("person").type().optional().type(
@@ -48,7 +48,7 @@ class SchemaToLineageTemplateTest {
     @Test
     void testWithOneLevel() throws JsonProcessingException {
         Schema schema = SchemaBuilder
-                .record("root").namespace("no.ssb.dataset")
+                .record("spark_schema").namespace("no.ssb.dataset")
                 .fields()
                 .name("fnr").type().stringType().noDefault()
                 .name("konto").type().optional().type(
@@ -60,7 +60,7 @@ class SchemaToLineageTemplateTest {
 
         SchemaToLineageTemplate schemaToTemplate =
                 LineageBuilder.createSchemaToLineageBuilder()
-                        .addInput(new SchemaWithPath(schema, "/kilde/freg", 123456789))
+                        .addInput(new SchemaWithPath(schema, "/kilde/skatt", 123456789))
                         .outputSchema(schema)
                         .build();
 
@@ -182,5 +182,34 @@ class SchemaToLineageTemplateTest {
         String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
         System.out.println(jsonStringForDataSet);
     }
+
+    @Test
+    void testSkattRawTilKonto() throws JsonProcessingException {
+        Schema inputSchemaSkatt =  TestUtils.loadSchema("testdata/skatt-v0.68.avsc");
+
+        Schema outputSchema = SchemaBuilder
+                .record("spark_schema").namespace("no.ssb.dataset")
+                .fields()
+                .name("personidentifikator").type().stringType().noDefault()
+                .name("kontonummer").type().intType().noDefault()
+                .name("innskudd").type().intType().noDefault()
+                .name("gjeld").type().intType().noDefault()
+                .endRecord();
+
+        SchemaToLineageTemplate schemaToTemplate =
+                LineageBuilder.createSchemaToLineageBuilder()
+                        .addInput(new SchemaWithPath(inputSchemaSkatt, "/kilde/skatt", 123456789))
+                        .outputSchema(outputSchema)
+                        .build();
+
+        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
+
+        // Check that we can parse json
+        Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
+        String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
+        System.out.println(jsonStringForDataSet);
+    }
+
+
 
 }
