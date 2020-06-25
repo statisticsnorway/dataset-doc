@@ -17,10 +17,6 @@ public class FieldFinder extends SchemaTraverse<LogicalRecord> {
         root = traverse(schemaBuddy);
     }
 
-    private LogicalRecord traverse(SchemaBuddy schemaBuddy) {
-        return traverse(schemaBuddy, null);
-    }
-
     public List<InstanceVariable> find(String field) {
         List<InstanceVariable> instanceVariables = new ArrayList<>();
         search(field, root, instanceVariables);

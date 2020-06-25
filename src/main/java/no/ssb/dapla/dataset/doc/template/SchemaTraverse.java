@@ -8,6 +8,10 @@ public abstract class SchemaTraverse<T> {
 
     private T root;
 
+    protected T traverse(SchemaBuddy schema) {
+        return traverse(schema, null);
+    }
+
     protected T traverse(SchemaBuddy schema, T parent) {
         if (schema.isArrayType()) {
             List<SchemaBuddy> children = schema.getChildren();

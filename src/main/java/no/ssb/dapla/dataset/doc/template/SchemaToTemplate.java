@@ -103,10 +103,6 @@ public class SchemaToTemplate extends SchemaTraverse<LogicalRecord> {
                 .build();
     }
 
-    private LogicalRecord traverse(SchemaBuddy schemaBuddy) {
-        return traverse(schemaBuddy, null);
-    }
-
     @Override
     protected LogicalRecord processStruct(SchemaBuddy schemaBuddy, LogicalRecord parent) {
         LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
