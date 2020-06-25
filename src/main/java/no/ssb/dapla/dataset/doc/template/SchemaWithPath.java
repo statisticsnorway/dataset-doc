@@ -6,6 +6,7 @@ import no.ssb.dapla.dataset.doc.model.lineage.InstanceVariable;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import org.apache.avro.Schema;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,12 +29,13 @@ public class SchemaWithPath {
         if (instanceVariables.isEmpty()) {
             return null;
         }
-        // for now, just use the first match
-        // TODO: Try to find the correct one in hierarchy if more matches and (Can look at other fields to do this)
+        int fieldCount = instanceVariables.size();
         String paths = instanceVariables.stream().map(InstanceVariable::getPath).collect(Collectors.joining(","));
         float confidence = 0.9F; // TODO: calculate confidence based on if we have one field or more matches
+        List<String> fields = fieldCount > 1 ? instanceVariables.stream().map(InstanceVariable::getPath).collect(Collectors.toList()) : Collections.emptyList();
         return LineageBuilder.crateSourceBuilder()
-                .field(paths)
+                .field(fieldCount == 1 ? paths : "")
+                .fieldCandidates(fields)
                 .path(path)
                 .version(version)
                 .confidence(confidence)

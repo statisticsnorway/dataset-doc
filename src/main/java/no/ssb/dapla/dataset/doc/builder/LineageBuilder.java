@@ -43,9 +43,15 @@ public class LineageBuilder {
         private String type;
         private long version;
         private float confidence;
+        private List<String> fieldCandidates;
 
         public SourceBuilder field(String field) {
             this.field = field;
+            return this;
+        }
+
+        public SourceBuilder fieldCandidates(Collection<String> fields) {
+            this.fieldCandidates = new ArrayList<>(fields);
             return this;
         }
 
@@ -73,6 +79,7 @@ public class LineageBuilder {
             Source source = new Source(field, path, version);
             source.setConfidence(confidence);
             source.setType(type);
+            source.addFieldCandidates(fieldCandidates);
             return source;
         }
     }
