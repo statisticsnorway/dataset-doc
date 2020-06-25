@@ -3,7 +3,9 @@ package no.ssb.dapla.dataset.doc.template;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.ssb.avro.convert.core.SchemaBuddy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import org.apache.avro.Schema;
@@ -206,10 +208,9 @@ class SchemaToLineageTemplateTest {
 
         // Check that we can parse json
         Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
-        String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
-        System.out.println(jsonStringForDataSet);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonOutput = gson.toJson(JsonParser.parseString(jsonString));
+        System.out.println(jsonOutput);
     }
-
-
-
 }

@@ -12,4 +12,5 @@ module no.ssb.dapla.dataset.uri {
     opens no.ssb.dapla.dataset.doc.model.simple to com.fasterxml.jackson.databind;
     opens no.ssb.dapla.dataset.doc.model.lineage to com.fasterxml.jackson.databind;
     opens no.ssb.dapla.dataset.doc.model.gsim to com.fasterxml.jackson.databind;
+
 }

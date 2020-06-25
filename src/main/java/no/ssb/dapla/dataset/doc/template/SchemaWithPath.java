@@ -31,7 +31,7 @@ public class SchemaWithPath {
         }
         int fieldCount = instanceVariables.size();
         String paths = instanceVariables.stream().map(InstanceVariable::getPath).collect(Collectors.joining(","));
-        float confidence = 0.9F; // TODO: calculate confidence based on if we have one field or more matches
+        float confidence = 0.9F / fieldCount; // TODO: calculate confidence based on if we have one field or more matches
         List<String> fields = fieldCount > 1 ? instanceVariables.stream().map(InstanceVariable::getPath).collect(Collectors.toList()) : Collections.emptyList();
         return LineageBuilder.crateSourceBuilder()
                 .field(fieldCount == 1 ? paths : "")
