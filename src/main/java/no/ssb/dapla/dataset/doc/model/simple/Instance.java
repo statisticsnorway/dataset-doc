@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonFilter("InstanceVariable_MinimumFilter")
-public class InstanceVariable {
+public class Instance {
 
     @JsonProperty
     private String name;

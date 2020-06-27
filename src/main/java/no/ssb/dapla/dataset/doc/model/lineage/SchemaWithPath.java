@@ -1,9 +1,6 @@
-package no.ssb.dapla.dataset.doc.template;
+package no.ssb.dapla.dataset.doc.model.lineage;
 
 import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
-import no.ssb.dapla.dataset.doc.model.lineage.FieldFinder;
-import no.ssb.dapla.dataset.doc.model.lineage.InstanceVariable;
-import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import org.apache.avro.Schema;
 
 import java.util.Collections;

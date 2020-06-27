@@ -6,6 +6,7 @@ import no.ssb.dapla.dataset.doc.model.gsim.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.gsim.PersistenceProvider;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
+import no.ssb.dapla.dataset.doc.model.simple.Instance;
 
 public class SimpleToGsim {
     private final no.ssb.dapla.dataset.doc.model.simple.Dataset root;
@@ -78,16 +79,16 @@ public class SimpleToGsim {
 
         persistenceProvider.save(gsimLogicalRecord);
 
-        for (no.ssb.dapla.dataset.doc.model.simple.InstanceVariable instanceVariable : logicalRecord.getInstanceVariables()) {
+        for (Instance instance : logicalRecord.getInstances()) {
             InstanceVariable gsimInstanceVariable =
-                    createDefault(createId(logicalRecord, instanceVariable), instanceVariable.getName(), instanceVariable.getDescription())
+                    createDefault(createId(logicalRecord, instance), instance.getName(), instance.getDescription())
                             .instanceVariable()
-                            .shortName(instanceVariable.getName())
+                            .shortName(instance.getName())
                             .population("Population_DUMMY")
-                            .dataStructureComponentType(instanceVariable.getDataStructureComponentType(), "MEASURE")
-                            .dataStructureComponentRole(instanceVariable.getDataStructureComponentRole(), "ENTITY")
-                            .sentinelValueDomain(instanceVariable.getSentinelValueDomain(), "DescribedValueDomain_DUMMY")
-                            .representedVariable(instanceVariable.getRepresentedVariable(), "RepresentedVariable_DUMMY")
+                            .dataStructureComponentType(instance.getDataStructureComponentType(), "MEASURE")
+                            .dataStructureComponentRole(instance.getDataStructureComponentRole(), "ENTITY")
+                            .sentinelValueDomain(instance.getSentinelValueDomain(), "DescribedValueDomain_DUMMY")
+                            .representedVariable(instance.getRepresentedVariable(), "RepresentedVariable_DUMMY")
                             .build();
 
             persistenceProvider.save(gsimInstanceVariable);
@@ -104,7 +105,7 @@ public class SimpleToGsim {
     }
 
     private String createId(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord,
-                            no.ssb.dapla.dataset.doc.model.simple.InstanceVariable instanceVariable) {
-        return createId(logicalRecord) + "." + instanceVariable.getName();
+                            Instance instance) {
+        return createId(logicalRecord) + "." + instance.getName();
     }
 }

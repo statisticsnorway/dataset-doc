@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import no.ssb.avro.convert.core.SchemaBuddy;
 import no.ssb.dapla.dataset.doc.builder.SimpleBuilder;
 import no.ssb.dapla.dataset.doc.model.simple.Dataset;
-import no.ssb.dapla.dataset.doc.model.simple.InstanceVariable;
+import no.ssb.dapla.dataset.doc.model.simple.Instance;
 import no.ssb.dapla.dataset.doc.model.simple.LogicalRecord;
 import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
 import org.apache.avro.Schema;
@@ -121,7 +121,7 @@ public class SchemaToTemplate extends SchemaTraverse<LogicalRecord> {
                 .addFilter("InstanceVariable_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(instanceVariableFilter.toArray(new String[0])));
     }
 
-    private InstanceVariable getInstanceVariable(String name, String description) {
+    private Instance getInstanceVariable(String name, String description) {
         return SimpleBuilder.createInstanceVariableBuilder()
                 .name(name)
                 .description(description != null ? description : name)

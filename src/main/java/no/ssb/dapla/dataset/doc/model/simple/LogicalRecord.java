@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @JsonFilter("LogicalRecord_MinimumFilter")
 public class LogicalRecord implements TraverseField<LogicalRecord> {
     public interface CreateIdHandler {
-        String createId(InstanceVariable name);
+        String createId(Instance name);
     }
 
     @JsonProperty
@@ -22,9 +22,9 @@ public class LogicalRecord implements TraverseField<LogicalRecord> {
     @JsonProperty
     private String unitType;
 
-    @JsonProperty
+    @JsonProperty("instanceVariables")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final List<InstanceVariable> instanceVariables = new ArrayList<>();
+    private final List<Instance> instances = new ArrayList<>();
 
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -57,7 +57,6 @@ public class LogicalRecord implements TraverseField<LogicalRecord> {
         this.unitType = unitType;
     }
 
-
     public void addLogicalRecord(LogicalRecord logicalRecord) {
         logicalRecords.add(logicalRecord);
     }
@@ -66,15 +65,15 @@ public class LogicalRecord implements TraverseField<LogicalRecord> {
         return logicalRecords;
     }
 
-    public void addInstanceVariable(InstanceVariable instanceVariable) {
-        instanceVariables.add(instanceVariable);
+    public void addInstanceVariable(Instance instance) {
+        instances.add(instance);
     }
 
-    public List<InstanceVariable> getInstanceVariables() {
-        return instanceVariables;
+    public List<Instance> getInstances() {
+        return instances;
     }
 
     public List<String> getInstanceVariableIds(CreateIdHandler createIdHandler) {
-        return instanceVariables.stream().map(i -> "/" + createIdHandler.createId(i)).collect(Collectors.toList());
+        return instances.stream().map(i -> "/" + createIdHandler.createId(i)).collect(Collectors.toList());
     }
 }
