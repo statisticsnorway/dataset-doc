@@ -6,7 +6,9 @@ import no.ssb.dapla.dataset.doc.model.gsim.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.gsim.PersistenceProvider;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
+import no.ssb.dapla.dataset.doc.model.simple.Dataset;
 import no.ssb.dapla.dataset.doc.model.simple.Instance;
+import no.ssb.dapla.dataset.doc.model.simple.Record;
 
 public class SimpleToGsim {
     private final no.ssb.dapla.dataset.doc.model.simple.Dataset root;
@@ -30,7 +32,7 @@ public class SimpleToGsim {
                 .addProperty("versionValidFrom", date);
     }
 
-    public SimpleToGsim(no.ssb.dapla.dataset.doc.model.simple.Dataset root, String dataSetPath, PersistenceProvider persistenceProvider) {
+    public SimpleToGsim(Dataset root, String dataSetPath, PersistenceProvider persistenceProvider) {
         if (!dataSetPath.startsWith("/")) {
             throw new IllegalArgumentException("dataset path is expected to start with: '/' but was: " + dataSetPath);
         }
@@ -45,14 +47,14 @@ public class SimpleToGsim {
     }
 
     public void createGsimObjects() {
-        no.ssb.dapla.dataset.doc.model.simple.LogicalRecord rootLogicalRecord = this.root.getRoot();
-        UnitDataStructure unitDataStructure = createDefault(createId(rootLogicalRecord), rootLogicalRecord.getName(), null)
+        Record rootRecord = this.root.getRoot();
+        UnitDataStructure unitDataStructure = createDefault(createId(rootRecord), rootRecord.getName(), null)
                 .unitDataStructure()
-                .logicalRecord(createId(rootLogicalRecord))
+                .logicalRecord(createId(rootRecord))
                 .build();
         persistenceProvider.save(unitDataStructure);
 
-        UnitDataSet unitDataset = createDefault(createId(rootLogicalRecord), rootLogicalRecord.getName(), null)
+        UnitDataSet unitDataset = createDefault(createId(rootRecord), rootRecord.getName(), null)
                 .unitDataSet()
                 .unitDataStructure(unitDataStructure.getId())
                 .temporalityType("EVENT") // TODO: get this from correct place
@@ -61,27 +63,27 @@ public class SimpleToGsim {
                 .build();
         persistenceProvider.save(unitDataset);
 
-        processAll(rootLogicalRecord, null);
+        processAll(rootRecord, null);
     }
 
-    void processAll(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord, String parentLogicalRecordId) {
-        String logicalRecordId = parentLogicalRecordId == null ? createId(logicalRecord) : parentLogicalRecordId + "." + logicalRecord.getName();
+    void processAll(Record record, String parentLogicalRecordId) {
+        String logicalRecordId = parentLogicalRecordId == null ? createId(record) : parentLogicalRecordId + "." + record.getName();
         LogicalRecord gsimLogicalRecord =
-                createDefault(logicalRecordId, logicalRecord.getName(), null)
+                createDefault(logicalRecordId, record.getName(), null)
                         .logicalRecord()
                         .isPlaceholderRecord(false)// TODO: add and get from simple
-                        .unitType(logicalRecord.getUnitType(), "UnitType_DUMMY")
-                        .shortName(logicalRecord.getName())
-                        .instanceVariables(logicalRecord.getInstanceVariableIds(i -> createId(logicalRecord, i)))
+                        .unitType(record.getUnitType(), "UnitType_DUMMY")
+                        .shortName(record.getName())
+                        .instanceVariables(record.getInstanceVariableIds(i -> createId(record, i)))
                         .parent(parentLogicalRecordId)
                         .parentChildMultiplicity("ONE_MANY")
                         .build();
 
         persistenceProvider.save(gsimLogicalRecord);
 
-        for (Instance instance : logicalRecord.getInstances()) {
+        for (Instance instance : record.getInstances()) {
             InstanceVariable gsimInstanceVariable =
-                    createDefault(createId(logicalRecord, instance), instance.getName(), instance.getDescription())
+                    createDefault(createId(record, instance), instance.getName(), instance.getDescription())
                             .instanceVariable()
                             .shortName(instance.getName())
                             .population("Population_DUMMY")
@@ -94,18 +96,17 @@ public class SimpleToGsim {
             persistenceProvider.save(gsimInstanceVariable);
         }
 
-        for (no.ssb.dapla.dataset.doc.model.simple.LogicalRecord child : logicalRecord.getLogicalRecords()) {
+        for (Record child : record.getRecords()) {
             processAll(child, logicalRecordId);
         }
     }
 
-    private String createId(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord) {
+    private String createId(Record record) {
         String path = this.dataSetPath.substring(1); // Remove first slash
-        return path.replace("/", ".") + "." + logicalRecord.getPath();
+        return path.replace("/", ".") + "." + record.getPath();
     }
 
-    private String createId(no.ssb.dapla.dataset.doc.model.simple.LogicalRecord logicalRecord,
-                            Instance instance) {
-        return createId(logicalRecord) + "." + instance.getName();
+    private String createId(Record record, Instance instance) {
+        return createId(record) + "." + instance.getName();
     }
 }

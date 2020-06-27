@@ -2,10 +2,13 @@ package no.ssb.dapla.dataset.doc.builder;
 
 import no.ssb.dapla.dataset.doc.model.simple.Dataset;
 import no.ssb.dapla.dataset.doc.model.simple.Instance;
-import no.ssb.dapla.dataset.doc.model.simple.LogicalRecord;
+import no.ssb.dapla.dataset.doc.model.simple.Record;
 
 
 public class SimpleBuilder {
+
+    private SimpleBuilder() {
+    }
 
     public static LogicalRecordBuilder createLogicalRecordBuilder() {
         return new LogicalRecordBuilder();
@@ -22,7 +25,7 @@ public class SimpleBuilder {
     public static class DatasetBuilder {
         private final Dataset dataset = new Dataset();
 
-        public DatasetBuilder root(LogicalRecord path) {
+        public DatasetBuilder root(Record path) {
             dataset.setRoot(path);
             return this;
         }
@@ -33,20 +36,20 @@ public class SimpleBuilder {
     }
 
     public static class LogicalRecordBuilder {
-        private final LogicalRecord logicalRecord = new LogicalRecord();
+        private final Record record = new Record();
 
         public LogicalRecordBuilder name(String shortName) {
-            logicalRecord.setName(shortName);
+            record.setName(shortName);
             return this;
         }
 
         public LogicalRecordBuilder unitType(String unitTypeId) {
-            logicalRecord.setUnitType(unitTypeId);
+            record.setUnitType(unitTypeId);
             return this;
         }
 
-        public LogicalRecord build() {
-            return logicalRecord;
+        public Record build() {
+            return record;
         }
 
     }

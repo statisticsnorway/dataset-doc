@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonFilter("LogicalRecord_MinimumFilter")
-public class LogicalRecord implements TraverseField<LogicalRecord> {
+public class Record implements TraverseField<Record> {
     public interface CreateIdHandler {
         String createId(Instance name);
     }
@@ -26,13 +26,13 @@ public class LogicalRecord implements TraverseField<LogicalRecord> {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final List<Instance> instances = new ArrayList<>();
 
-    @JsonProperty
+    @JsonProperty("logicalRecords")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final List<LogicalRecord> logicalRecords = new ArrayList<>();
+    private final List<Record> records = new ArrayList<>();
 
     @Override
-    public void addChild(LogicalRecord child) {
-        logicalRecords.add(child);
+    public void addChild(Record child) {
+        records.add(child);
     }
 
     public String getName() {
@@ -57,12 +57,12 @@ public class LogicalRecord implements TraverseField<LogicalRecord> {
         this.unitType = unitType;
     }
 
-    public void addLogicalRecord(LogicalRecord logicalRecord) {
-        logicalRecords.add(logicalRecord);
+    public void addLogicalRecord(Record record) {
+        records.add(record);
     }
 
-    public List<LogicalRecord> getLogicalRecords() {
-        return logicalRecords;
+    public List<Record> getRecords() {
+        return records;
     }
 
     public void addInstanceVariable(Instance instance) {
