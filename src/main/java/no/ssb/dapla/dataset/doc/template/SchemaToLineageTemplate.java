@@ -8,6 +8,7 @@ import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import no.ssb.dapla.dataset.doc.model.lineage.InstanceVariable;
 import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
+import no.ssb.dapla.dataset.doc.model.lineage.SchemaWithPath;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
 import org.apache.avro.Schema;

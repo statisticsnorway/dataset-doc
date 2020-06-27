@@ -5,7 +5,7 @@ import no.ssb.dapla.dataset.doc.model.lineage.InstanceVariable;
 import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import no.ssb.dapla.dataset.doc.template.SchemaToLineageTemplate;
-import no.ssb.dapla.dataset.doc.template.SchemaWithPath;
+import no.ssb.dapla.dataset.doc.model.lineage.SchemaWithPath;
 import org.apache.avro.Schema;
 
 import java.util.ArrayList;
