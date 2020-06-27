@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import no.ssb.dapla.dataset.doc.traverse.TraverseField;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonFilter("LogicalRecord_MinimumFilter")
-public class LogicalRecord {
+public class LogicalRecord implements TraverseField<LogicalRecord> {
     public interface CreateIdHandler {
         String createId(InstanceVariable name);
     }
@@ -28,6 +29,11 @@ public class LogicalRecord {
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final List<LogicalRecord> logicalRecords = new ArrayList<>();
+
+    @Override
+    public void addChild(LogicalRecord child) {
+        logicalRecords.add(child);
+    }
 
     public String getName() {
         return name;

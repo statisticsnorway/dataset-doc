@@ -1,6 +1,7 @@
 package no.ssb.dapla.dataset.doc.model.lineage;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.ssb.dapla.dataset.doc.traverse.TraverseField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +9,10 @@ import java.util.ListIterator;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-public class LogicalRecord extends Field {
+public class LogicalRecord extends Field implements TraverseField<LogicalRecord> {
 
     public LogicalRecord() {
+        super();
         type = "structure"; // always structure for LogicalRecord
     }
 
@@ -37,8 +39,8 @@ public class LogicalRecord extends Field {
         return joiner.add(getName()).toString();
     }
 
-    public void addLogicalRecord(LogicalRecord logicalRecord) {
-        logicalRecord.parent = this;
+    @Override
+    public void addChild(LogicalRecord logicalRecord) {
         children.add(logicalRecord);
         fields.add(logicalRecord);
     }
@@ -66,5 +68,9 @@ public class LogicalRecord extends Field {
             currentParent = currentParent.parent;
         }
         return parentList;
+    }
+
+    public void setParent(LogicalRecord parent) {
+        this.parent = parent;
     }
 }

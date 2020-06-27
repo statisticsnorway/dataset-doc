@@ -11,6 +11,7 @@ import no.ssb.dapla.dataset.doc.builder.SimpleBuilder;
 import no.ssb.dapla.dataset.doc.model.simple.Dataset;
 import no.ssb.dapla.dataset.doc.model.simple.InstanceVariable;
 import no.ssb.dapla.dataset.doc.model.simple.LogicalRecord;
+import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
 import org.apache.avro.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,12 +105,8 @@ public class SchemaToTemplate extends SchemaTraverse<LogicalRecord> {
     }
 
     @Override
-    protected LogicalRecord processStruct(SchemaBuddy schemaBuddy, LogicalRecord parent) {
-        LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
-        if (parent != null) {
-            parent.addLogicalRecord(childLogicalRecord);
-        }
-        return childLogicalRecord;
+    protected LogicalRecord createChild(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+        return getLogicalRecord(schemaBuddy.getName());
     }
 
     @Override

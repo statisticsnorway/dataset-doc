@@ -124,6 +124,11 @@ public class LineageBuilder {
             return this;
         }
 
+        public LogicalRecordBuilder parent(LogicalRecord parent) {
+            logicalRecord.setParent(parent);
+            return this;
+        }
+
         public LogicalRecord build() {
             return logicalRecord;
         }

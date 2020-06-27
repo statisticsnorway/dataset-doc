@@ -2,7 +2,7 @@ package no.ssb.dapla.dataset.doc.model.lineage;
 
 import no.ssb.avro.convert.core.SchemaBuddy;
 import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
-import no.ssb.dapla.dataset.doc.template.SchemaTraverse;
+import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
 import org.apache.avro.Schema;
 
 import java.util.ArrayList;
@@ -31,14 +31,11 @@ public class FieldFinder extends SchemaTraverse<LogicalRecord> {
     }
 
     @Override
-    protected LogicalRecord processStruct(SchemaBuddy schemaBuddy, LogicalRecord parent) {
-        LogicalRecord childLogicalRecord = LineageBuilder.createLogicalRecordBuilder()
+    protected LogicalRecord createChild(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+        return LineageBuilder.createLogicalRecordBuilder()
+                .parent(parent)
                 .name(schemaBuddy.getName())
                 .build();
-        if (parent != null) {
-            parent.addLogicalRecord(childLogicalRecord);
-        }
-        return childLogicalRecord;
     }
 
     @Override

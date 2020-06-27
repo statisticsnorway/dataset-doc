@@ -9,6 +9,7 @@ import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import no.ssb.dapla.dataset.doc.model.lineage.InstanceVariable;
 import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
+import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
 import org.apache.avro.Schema;
 
 import java.util.ArrayList;
@@ -47,12 +48,8 @@ public class SchemaToLineageTemplate extends SchemaTraverse<LogicalRecord> {
     }
 
     @Override
-    protected LogicalRecord processStruct(SchemaBuddy schemaBuddy, LogicalRecord parent) {
-        LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
-        if (parent != null) {
-            parent.addLogicalRecord(childLogicalRecord);
-        }
-        return childLogicalRecord;
+    protected LogicalRecord createChild(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+        return getLogicalRecord(schemaBuddy.getName());
     }
 
     @Override
