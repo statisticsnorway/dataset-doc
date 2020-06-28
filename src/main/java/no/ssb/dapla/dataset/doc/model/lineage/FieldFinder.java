@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FieldFinder extends SchemaTraverse<LogicalRecord> {
+public class FieldFinder extends SchemaTraverse<Record> {
     final SchemaBuddy schemaBuddy;
-    final LogicalRecord root;
+    final Record root;
 
     public FieldFinder(Schema schema) {
         this.schemaBuddy = SchemaBuddy.parse(schema);
@@ -28,15 +28,15 @@ public class FieldFinder extends SchemaTraverse<LogicalRecord> {
         return result;
     }
 
-    private void search(String name, LogicalRecord parent, List<Instance> result) {
+    private void search(String name, Record parent, List<Instance> result) {
         result.addAll(parent.find(name));
-        for (LogicalRecord child : parent.getChildren()) {
+        for (Record child : parent.getChildren()) {
             search(name, child, result);
         }
     }
 
     @Override
-    protected LogicalRecord createChild(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+    protected Record createChild(SchemaBuddy schemaBuddy, Record parent) {
         return LineageBuilder.createLogicalRecordBuilder()
                 .parent(parent)
                 .name(schemaBuddy.getName())
@@ -44,7 +44,7 @@ public class FieldFinder extends SchemaTraverse<LogicalRecord> {
     }
 
     @Override
-    protected void processField(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+    protected void processField(SchemaBuddy schemaBuddy, Record parent) {
         Instance instance = LineageBuilder.createInstanceVariableBuilder()
                 .name(schemaBuddy.getName())
                 .build();

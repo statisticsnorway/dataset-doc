@@ -7,7 +7,7 @@ import no.ssb.avro.convert.core.SchemaBuddy;
 import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import no.ssb.dapla.dataset.doc.model.lineage.Instance;
-import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
+import no.ssb.dapla.dataset.doc.model.lineage.Record;
 import no.ssb.dapla.dataset.doc.model.lineage.SchemaWithPath;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class SchemaToLineageTemplate extends SchemaTraverse<LogicalRecord> {
+public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
     private final Schema schema;
     private final List<SchemaWithPath> schemaWithPaths;
 
@@ -42,19 +42,19 @@ public class SchemaToLineageTemplate extends SchemaTraverse<LogicalRecord> {
     private Dataset generateTemplate() {
         SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
 
-        LogicalRecord root = traverse(schemaBuddy);
+        Record root = traverse(schemaBuddy);
         return LineageBuilder.createDatasetBuilder()
                 .root(root)
                 .build();
     }
 
     @Override
-    protected LogicalRecord createChild(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+    protected Record createChild(SchemaBuddy schemaBuddy, Record parent) {
         return getLogicalRecord(schemaBuddy.getName());
     }
 
     @Override
-    protected void processField(SchemaBuddy schemaBuddy, LogicalRecord parent) {
+    protected void processField(SchemaBuddy schemaBuddy, Record parent) {
         parent.addInstanceVariable(getInstanceVariable(schemaBuddy.getName()));
     }
 
@@ -81,7 +81,7 @@ public class SchemaToLineageTemplate extends SchemaTraverse<LogicalRecord> {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private LogicalRecord getLogicalRecord(String name) {
+    private Record getLogicalRecord(String name) {
         return LineageBuilder.createLogicalRecordBuilder()
                 .name(name)
                 .build();

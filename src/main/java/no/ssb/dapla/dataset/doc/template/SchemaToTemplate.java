@@ -10,7 +10,6 @@ import no.ssb.avro.convert.core.SchemaBuddy;
 import no.ssb.dapla.dataset.doc.builder.SimpleBuilder;
 import no.ssb.dapla.dataset.doc.model.simple.Dataset;
 import no.ssb.dapla.dataset.doc.model.simple.Instance;
-import no.ssb.dapla.dataset.doc.model.simple.Record;
 import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
 import org.apache.avro.Schema;
 import org.slf4j.Logger;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SchemaToTemplate extends SchemaTraverse<Record> {
+public class SchemaToTemplate extends SchemaTraverse<no.ssb.dapla.dataset.doc.model.simple.Record> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -98,19 +97,19 @@ public class SchemaToTemplate extends SchemaTraverse<Record> {
     private Dataset generateTemplate() {
         SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
 
-        Record root = traverse(schemaBuddy);
+        no.ssb.dapla.dataset.doc.model.simple.Record root = traverse(schemaBuddy);
         return SimpleBuilder.createDatasetBuilder()
                 .root(root)
                 .build();
     }
 
     @Override
-    protected Record createChild(SchemaBuddy schemaBuddy, Record parent) {
+    protected no.ssb.dapla.dataset.doc.model.simple.Record createChild(SchemaBuddy schemaBuddy, no.ssb.dapla.dataset.doc.model.simple.Record parent) {
         return getLogicalRecord(schemaBuddy.getName());
     }
 
     @Override
-    protected void processField(SchemaBuddy schemaBuddy, Record parent) {
+    protected void processField(SchemaBuddy schemaBuddy, no.ssb.dapla.dataset.doc.model.simple.Record parent) {
         String description = (String) schemaBuddy.getProp("description");
         parent.addInstanceVariable(getInstanceVariable(schemaBuddy.getName(), description));
     }
@@ -135,7 +134,7 @@ public class SchemaToTemplate extends SchemaTraverse<Record> {
                 .build();
     }
 
-    private Record getLogicalRecord(String name) {
+    private no.ssb.dapla.dataset.doc.model.simple.Record getLogicalRecord(String name) {
         return SimpleBuilder.createLogicalRecordBuilder()
                 .name(name)
                 .unitType("UnitType_DUMMY")

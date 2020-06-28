@@ -9,24 +9,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LogicalRecord extends Field implements TraverseField<LogicalRecord>, ParentAware {
+public class Record extends Field implements TraverseField<Record>, ParentAware {
 
-    public LogicalRecord() {
+    public Record() {
         super();
         type = "structure"; // always structure for LogicalRecord
     }
 
     @JsonIgnore
-    private final List<LogicalRecord> children = new ArrayList<>();
+    private final List<Record> children = new ArrayList<>();
 
     @JsonIgnore
     private final List<Instance> instances = new ArrayList<>();
 
     @JsonIgnore
-    private LogicalRecord parent;
+    private Record parent;
 
     @JsonIgnore
-    public List<LogicalRecord> getChildren() {
+    public List<Record> getChildren() {
         return children;
     }
 
@@ -37,14 +37,14 @@ public class LogicalRecord extends Field implements TraverseField<LogicalRecord>
 
     @JsonIgnore
     public String getPath() {
-        PathTraverse<LogicalRecord> pathTraverse = new PathTraverse<>(this);
+        PathTraverse<Record> pathTraverse = new PathTraverse<>(this);
         return pathTraverse.getPath("spark_schema");
     }
 
     @Override
-    public void addChild(LogicalRecord logicalRecord) {
-        children.add(logicalRecord);
-        fields.add(logicalRecord);
+    public void addChild(Record record) {
+        children.add(record);
+        fields.add(record);
     }
 
     public List<Instance> find(String name) {
@@ -58,7 +58,7 @@ public class LogicalRecord extends Field implements TraverseField<LogicalRecord>
         instances.add(instance);
     }
 
-    public void setParent(LogicalRecord parent) {
+    public void setParent(Record parent) {
         this.parent = parent;
     }
 }

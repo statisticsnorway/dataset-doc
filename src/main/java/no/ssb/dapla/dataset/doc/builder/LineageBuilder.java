@@ -2,7 +2,7 @@ package no.ssb.dapla.dataset.doc.builder;
 
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import no.ssb.dapla.dataset.doc.model.lineage.Instance;
-import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
+import no.ssb.dapla.dataset.doc.model.lineage.Record;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import no.ssb.dapla.dataset.doc.template.SchemaToLineageTemplate;
 import no.ssb.dapla.dataset.doc.model.lineage.SchemaWithPath;
@@ -106,7 +106,7 @@ public class LineageBuilder {
     public static class DatasetBuilder {
         private final Dataset dataset = new Dataset();
 
-        public DatasetBuilder root(LogicalRecord path) {
+        public DatasetBuilder root(Record path) {
             dataset.setRoot(path);
             return this;
         }
@@ -117,20 +117,20 @@ public class LineageBuilder {
     }
 
     public static class LogicalRecordBuilder {
-        private final LogicalRecord logicalRecord = new LogicalRecord();
+        private final Record record = new Record();
 
         public LogicalRecordBuilder name(String shortName) {
-            logicalRecord.setName(shortName);
+            record.setName(shortName);
             return this;
         }
 
-        public LogicalRecordBuilder parent(LogicalRecord parent) {
-            logicalRecord.setParent(parent);
+        public LogicalRecordBuilder parent(Record parent) {
+            record.setParent(parent);
             return this;
         }
 
-        public LogicalRecord build() {
-            return logicalRecord;
+        public Record build() {
+            return record;
         }
 
     }
