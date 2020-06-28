@@ -39,12 +39,6 @@ public class Record implements TraverseField<Record> {
         return name;
     }
 
-    @JsonIgnore
-    public String getPath() {
-        // TODO: make this create path with parents
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
     }

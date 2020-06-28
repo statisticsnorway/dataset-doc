@@ -103,7 +103,7 @@ public class SimpleToGsim {
 
     private String createId(Record record) {
         String path = this.dataSetPath.substring(1); // Remove first slash
-        return path.replace("/", ".") + "." + record.getPath();
+        return path.replace("/", ".") + "." + record.getName();
     }
 
     private String createId(Record record, Instance instance) {
