@@ -2,7 +2,7 @@ package no.ssb.dapla.dataset.doc.model.lineage;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class InstanceVariable extends Field {
+public class Instance extends Field {
 
     @JsonIgnore
     private String path;

@@ -6,7 +6,6 @@ import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
 import org.apache.avro.Schema;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,16 +19,16 @@ public class FieldFinder extends SchemaTraverse<LogicalRecord> {
     }
 
     public List<String> getPaths(String field) {
-        return find(field).stream().map(InstanceVariable::getPath).collect(Collectors.toList());
+        return find(field).stream().map(Instance::getPath).collect(Collectors.toList());
     }
 
-    public List<InstanceVariable> find(String field) {
-        List<InstanceVariable> result = new ArrayList<>();
+    public List<Instance> find(String field) {
+        List<Instance> result = new ArrayList<>();
         search(field, root, result);
         return result;
     }
 
-    private void search(String name, LogicalRecord parent, List<InstanceVariable> result) {
+    private void search(String name, LogicalRecord parent, List<Instance> result) {
         result.addAll(parent.find(name));
         for (LogicalRecord child : parent.getChildren()) {
             search(name, child, result);
@@ -46,12 +45,12 @@ public class FieldFinder extends SchemaTraverse<LogicalRecord> {
 
     @Override
     protected void processField(SchemaBuddy schemaBuddy, LogicalRecord parent) {
-        InstanceVariable instanceVariable = LineageBuilder.createInstanceVariableBuilder()
+        Instance instance = LineageBuilder.createInstanceVariableBuilder()
                 .name(schemaBuddy.getName())
                 .build();
         // TODO: Find a better to deal with "spark_schema" root
         String path = parent.getPath().equals("spark_schema") ? "" : parent.getPath() + ".";
-        instanceVariable.setPath(path + schemaBuddy.getName());
-        parent.addInstanceVariable(instanceVariable);
+        instance.setPath(path + schemaBuddy.getName());
+        parent.addInstanceVariable(instance);
     }
 }

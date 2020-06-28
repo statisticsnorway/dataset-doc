@@ -22,14 +22,14 @@ public class SchemaWithPath {
     }
 
     public Source getSource(String name) {
-        List<InstanceVariable> instanceVariables = fieldFinder.find(name);
-        if (instanceVariables.isEmpty()) {
+        List<Instance> instances = fieldFinder.find(name);
+        if (instances.isEmpty()) {
             return null;
         }
-        int fieldCount = instanceVariables.size();
-        String paths = instanceVariables.stream().map(InstanceVariable::getPath).collect(Collectors.joining(","));
+        int fieldCount = instances.size();
+        String paths = instances.stream().map(Instance::getPath).collect(Collectors.joining(","));
         float confidence = 0.9F / fieldCount; // TODO: calculate confidence based on if we have one field or more matches
-        List<String> fields = fieldCount > 1 ? instanceVariables.stream().map(InstanceVariable::getPath).collect(Collectors.toList()) : Collections.emptyList();
+        List<String> fields = fieldCount > 1 ? instances.stream().map(Instance::getPath).collect(Collectors.toList()) : Collections.emptyList();
         return LineageBuilder.crateSourceBuilder()
                 .field(fieldCount == 1 ? paths : "")
                 .fieldCandidates(fields)

@@ -1,7 +1,7 @@
 package no.ssb.dapla.dataset.doc.builder;
 
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
-import no.ssb.dapla.dataset.doc.model.lineage.InstanceVariable;
+import no.ssb.dapla.dataset.doc.model.lineage.Instance;
 import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import no.ssb.dapla.dataset.doc.template.SchemaToLineageTemplate;
@@ -136,35 +136,35 @@ public class LineageBuilder {
     }
 
     public static class InstanceVariableBuilder {
-        private final InstanceVariable instanceVariable = new InstanceVariable();
+        private final Instance instance = new Instance();
 
         public InstanceVariableBuilder name(String name) {
-            instanceVariable.setName(name);
+            instance.setName(name);
             return this;
         }
 
         public InstanceVariableBuilder type(String type) {
-            instanceVariable.setType(type);
+            instance.setType(type);
             return this;
         }
 
         public InstanceVariableBuilder confidence(Float confidence) {
-            instanceVariable.setConfidence(confidence);
+            instance.setConfidence(confidence);
             return this;
         }
 
         public InstanceVariableBuilder addSource(Source source) {
-            instanceVariable.addSource(source);
+            instance.addSource(source);
             return this;
         }
 
         public InstanceVariableBuilder addSources(Collection<Source> sources) {
-            instanceVariable.addSources(sources);
+            instance.addSources(sources);
             return this;
         }
 
-        public InstanceVariable build() {
-            return instanceVariable;
+        public Instance build() {
+            return instance;
         }
     }
 }

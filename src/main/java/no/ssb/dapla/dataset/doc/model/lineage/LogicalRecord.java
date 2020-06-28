@@ -20,7 +20,7 @@ public class LogicalRecord extends Field implements TraverseField<LogicalRecord>
     private final List<LogicalRecord> children = new ArrayList<>();
 
     @JsonIgnore
-    private final List<InstanceVariable> instanceVariables = new ArrayList<>();
+    private final List<Instance> instances = new ArrayList<>();
 
     @JsonIgnore
     private LogicalRecord parent;
@@ -47,15 +47,15 @@ public class LogicalRecord extends Field implements TraverseField<LogicalRecord>
         fields.add(logicalRecord);
     }
 
-    public List<InstanceVariable> find(String name) {
-        return instanceVariables.stream()
+    public List<Instance> find(String name) {
+        return instances.stream()
                 .filter(i -> i.getName().equals(name))
                 .collect(Collectors.toList());
     }
 
-    public void addInstanceVariable(InstanceVariable instanceVariable) {
-        fields.add(instanceVariable);
-        instanceVariables.add(instanceVariable);
+    public void addInstanceVariable(Instance instance) {
+        fields.add(instance);
+        instances.add(instance);
     }
 
     public void setParent(LogicalRecord parent) {

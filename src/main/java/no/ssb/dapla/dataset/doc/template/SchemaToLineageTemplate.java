@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import no.ssb.avro.convert.core.SchemaBuddy;
 import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
-import no.ssb.dapla.dataset.doc.model.lineage.InstanceVariable;
+import no.ssb.dapla.dataset.doc.model.lineage.Instance;
 import no.ssb.dapla.dataset.doc.model.lineage.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.lineage.SchemaWithPath;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
@@ -58,7 +58,7 @@ public class SchemaToLineageTemplate extends SchemaTraverse<LogicalRecord> {
         parent.addInstanceVariable(getInstanceVariable(schemaBuddy.getName()));
     }
 
-    private InstanceVariable getInstanceVariable(String name) {
+    private Instance getInstanceVariable(String name) {
         Collection<Source> sources = findSources(name);
 
         Optional<Float> confidence = sources.stream().map(Source::getConfidence).reduce(Float::sum);
