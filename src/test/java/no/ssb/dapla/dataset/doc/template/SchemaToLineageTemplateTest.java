@@ -3,6 +3,7 @@ package no.ssb.dapla.dataset.doc.template;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
@@ -11,7 +12,11 @@ import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import no.ssb.dapla.dataset.doc.model.lineage.SchemaWithPath;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SchemaToLineageTemplateTest {
 
@@ -109,7 +114,10 @@ class SchemaToLineageTemplateTest {
 
         // Check that we can parse json
         Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
-        String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
+        String jsonStringForDataSet =
+                new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+                        .writeValueAsString(root);
+
         System.out.println(jsonStringForDataSet);
     }
 
@@ -162,7 +170,7 @@ class SchemaToLineageTemplateTest {
 
     @Test
     void testRawDataSimelarNames() throws JsonProcessingException {
-        Schema inputSchemaSkatt =  TestUtils.loadSchema("testdata/skatt-v0.68.avsc");
+        Schema inputSchemaSkatt = TestUtils.loadSchema("testdata/skatt-v0.68.avsc");
 
         Schema outputSchema = SchemaBuilder
                 .record("spark_schema").namespace("no.ssb.dataset")
@@ -186,8 +194,8 @@ class SchemaToLineageTemplateTest {
     }
 
     @Test
-    void testSkattRawTilKonto() throws JsonProcessingException {
-        Schema inputSchemaSkatt =  TestUtils.loadSchema("testdata/skatt-v0.68.avsc");
+    void checkSkattRawToKontoFields() throws JsonProcessingException, JSONException {
+        Schema inputSchemaSkatt = TestUtils.loadSchema("testdata/skatt-v0.68.avsc");
 
         Schema outputSchema = SchemaBuilder
                 .record("spark_schema").namespace("no.ssb.dataset")
@@ -206,11 +214,15 @@ class SchemaToLineageTemplateTest {
 
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
 
-        // Check that we can parse json
-        Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
-
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(JsonParser.parseString(jsonString));
-        System.out.println(jsonOutput);
+
+        // Check that we can parse json
+        Dataset root = new ObjectMapper().readValue(jsonOutput, Dataset.class);
+        assertThat(root.getRoot().getPath()).isEqualTo("spark_schema");
+
+        String expected = TestUtils.load("testdata/lineage/checkSkattRawToKontoFields.json");
+        assertThat(jsonOutput).isEqualTo(expected);
+        JSONAssert.assertEquals(expected, jsonOutput, true);
     }
 }

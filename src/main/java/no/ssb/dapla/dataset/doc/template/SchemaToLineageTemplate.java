@@ -3,6 +3,9 @@ package no.ssb.dapla.dataset.doc.template;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import no.ssb.avro.convert.core.SchemaBuddy;
 import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
@@ -32,8 +35,11 @@ public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
     public String generateTemplateAsJsonString() {
         try {
             Dataset dataset = generateTemplate();
-            return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+            String jacskonJson = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
                     .writeValueAsString(dataset);
+            // Need to use gson to format arrays with line break (Did not find out how to do this with Jackson)
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            return gson.toJson(JsonParser.parseString(jacskonJson));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
