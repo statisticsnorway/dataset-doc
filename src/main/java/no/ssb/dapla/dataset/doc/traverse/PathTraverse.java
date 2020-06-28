@@ -26,7 +26,8 @@ public class PathTraverse<T extends ParentAware> {
 
     public String getPath(String skip) {
         StringJoiner joiner = new StringJoiner(".");
-        for (ListIterator<String> iter = getParents(skip).listIterator(getParents(skip).size()); iter.hasPrevious(); ) {
+        List<String> parents = getParents(skip);
+        for (ListIterator<String> iter = parents.listIterator(parents.size()); iter.hasPrevious(); ) {
             joiner.add(iter.previous());
         }
         return joiner.add(node.getName()).toString();

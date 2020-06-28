@@ -28,8 +28,7 @@ class FieldFinderTest {
     void find() {
         FieldFinder fieldFinder = new FieldFinder(inputSchemaSkatt);
 
-        List<InstanceVariable> instanceVariables = fieldFinder.find("innskudd");
-        List<String> paths = instanceVariables.stream().map(InstanceVariable::getPath).collect(Collectors.toList());
+        List<String> paths = fieldFinder.getPaths("innskudd");
         assertThat(paths).isEqualTo(Collections.singletonList("konto.innskudd"));
     }
 
@@ -37,9 +36,8 @@ class FieldFinderTest {
     void find2FindFnr() {
         FieldFinder fieldFinder = new FieldFinder(inputSchemaSkatt);
 
-        List<InstanceVariable> instanceVariables = fieldFinder.find("fnr");
-        List<String> paths = instanceVariables.stream().map(InstanceVariable::getPath).collect(Collectors.toList());
-        System.out.println(paths);
+        List<String> paths = fieldFinder.getPaths("fnr");
+        assertThat(paths).isEqualTo(Collections.singletonList("fnr"));
     }
 
     @Test
