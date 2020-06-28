@@ -39,7 +39,7 @@ class SchemaTraverseTest {
             return name;
         }
 
-        private List<String> getParents() {
+        public List<String> getParents() {
             Field currentParent = parent;
             List<String> parentList = new ArrayList<>();
             while (currentParent != null) {

@@ -14,7 +14,7 @@ public class Source {
 
     @JsonProperty("field_candidates")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<String> fieldCandidates = new ArrayList<>();
+    private final List<String> fieldCandidates = new ArrayList<>();
 
     @JsonProperty
     private String field;

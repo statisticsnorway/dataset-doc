@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 
 class SchemaToLineageTemplateTest {
 
-
     @Test
     void testWithTwoLevels() {
         Schema schema = SchemaBuilder

@@ -1,15 +1,15 @@
 package no.ssb.dapla.dataset.doc.model.lineage;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.ssb.dapla.dataset.doc.traverse.ParentAware;
+import no.ssb.dapla.dataset.doc.traverse.PathTraverse;
 import no.ssb.dapla.dataset.doc.traverse.TraverseField;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-public class LogicalRecord extends Field implements TraverseField<LogicalRecord> {
+public class LogicalRecord extends Field implements TraverseField<LogicalRecord>, ParentAware {
 
     public LogicalRecord() {
         super();
@@ -30,13 +30,15 @@ public class LogicalRecord extends Field implements TraverseField<LogicalRecord>
         return children;
     }
 
+    @Override
+    public ParentAware getParent() {
+        return parent;
+    }
+
     @JsonIgnore
     public String getPath() {
-        StringJoiner joiner = new StringJoiner(".");
-        for (ListIterator<String> iter = getParents().listIterator(getParents().size()); iter.hasPrevious(); ) {
-            joiner.add(iter.previous());
-        }
-        return joiner.add(getName()).toString();
+        PathTraverse<LogicalRecord> pathTraverse = new PathTraverse<>(this);
+        return pathTraverse.getPath("spark_schema");
     }
 
     @Override
@@ -54,20 +56,6 @@ public class LogicalRecord extends Field implements TraverseField<LogicalRecord>
     public void addInstanceVariable(InstanceVariable instanceVariable) {
         fields.add(instanceVariable);
         instanceVariables.add(instanceVariable);
-    }
-
-    private List<String> getParents() {
-        LogicalRecord currentParent = parent;
-        List<String> parentList = new ArrayList<>();
-        while (currentParent != null) {
-            // don't add spark_schema
-            // TODO: find a better way to check this
-            if (!currentParent.getName().equals("spark_schema")) {
-                parentList.add(currentParent.name);
-            }
-            currentParent = currentParent.parent;
-        }
-        return parentList;
     }
 
     public void setParent(LogicalRecord parent) {
