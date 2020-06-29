@@ -1,11 +1,14 @@
 package no.ssb.dapla.dataset.doc.builder;
 
 import no.ssb.dapla.dataset.doc.model.simple.Dataset;
-import no.ssb.dapla.dataset.doc.model.simple.InstanceVariable;
-import no.ssb.dapla.dataset.doc.model.simple.LogicalRecord;
+import no.ssb.dapla.dataset.doc.model.simple.Instance;
+import no.ssb.dapla.dataset.doc.model.simple.Record;
 
 
 public class SimpleBuilder {
+
+    private SimpleBuilder() {
+    }
 
     public static LogicalRecordBuilder createLogicalRecordBuilder() {
         return new LogicalRecordBuilder();
@@ -22,7 +25,7 @@ public class SimpleBuilder {
     public static class DatasetBuilder {
         private final Dataset dataset = new Dataset();
 
-        public DatasetBuilder root(LogicalRecord path) {
+        public DatasetBuilder root(Record path) {
             dataset.setRoot(path);
             return this;
         }
@@ -33,75 +36,75 @@ public class SimpleBuilder {
     }
 
     public static class LogicalRecordBuilder {
-        private final LogicalRecord logicalRecord = new LogicalRecord();
+        private final Record record = new Record();
 
         public LogicalRecordBuilder name(String shortName) {
-            logicalRecord.setName(shortName);
+            record.setName(shortName);
             return this;
         }
 
         public LogicalRecordBuilder unitType(String unitTypeId) {
-            logicalRecord.setUnitType(unitTypeId);
+            record.setUnitType(unitTypeId);
             return this;
         }
 
-        public LogicalRecord build() {
-            return logicalRecord;
+        public Record build() {
+            return record;
         }
 
     }
 
     public static class InstanceVariableBuilder {
-        private final InstanceVariable instanceVariable = new InstanceVariable();
+        private final Instance instance = new Instance();
 
         public InstanceVariableBuilder dataStructureComponentType(String dataStructureComponentType) {
-            instanceVariable.setDataStructureComponentType(dataStructureComponentType);
+            instance.setDataStructureComponentType(dataStructureComponentType);
             return this;
         }
 
         public InstanceVariableBuilder identifierComponentIsComposite(boolean identifierComponentIsComposite) {
-            instanceVariable.setIdentifierComponentIsComposite(identifierComponentIsComposite);
+            instance.setIdentifierComponentIsComposite(identifierComponentIsComposite);
             return this;
         }
 
 
         public InstanceVariableBuilder identifierComponentIsUnique(boolean identifierComponentIsUnique) {
-            instanceVariable.setIdentifierComponentIsUnique(identifierComponentIsUnique);
+            instance.setIdentifierComponentIsUnique(identifierComponentIsUnique);
             return this;
         }
 
         public InstanceVariableBuilder dataStructureComponentRole(String dataStructureComponentRole) {
-            instanceVariable.setDataStructureComponentRole(dataStructureComponentRole);
+            instance.setDataStructureComponentRole(dataStructureComponentRole);
             return this;
         }
 
         public InstanceVariableBuilder representedVariable(String representedVariable) {
-            instanceVariable.setRepresentedVariable(representedVariable);
+            instance.setRepresentedVariable(representedVariable);
             return this;
         }
 
         public InstanceVariableBuilder name(String shortName) {
-            instanceVariable.setName(shortName);
+            instance.setName(shortName);
             return this;
         }
 
         public InstanceVariableBuilder population(String population) {
-            instanceVariable.setPopulation(population);
+            instance.setPopulation(population);
             return this;
         }
 
         public InstanceVariableBuilder sentinelValueDomain(String sentinelValueDomain) {
-            instanceVariable.setSentinelValueDomain(sentinelValueDomain);
+            instance.setSentinelValueDomain(sentinelValueDomain);
             return this;
         }
 
         public InstanceVariableBuilder description(String description) {
-            instanceVariable.setDescription(description);
+            instance.setDescription(description);
             return this;
         }
 
-        public InstanceVariable build() {
-            return instanceVariable;
+        public Instance build() {
+            return instance;
         }
     }
 }

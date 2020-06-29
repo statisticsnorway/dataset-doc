@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import no.ssb.dapla.dataset.doc.traverse.TraverseField;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonFilter("LogicalRecord_MinimumFilter")
-public class LogicalRecord {
+public class Record implements TraverseField<Record> {
     public interface CreateIdHandler {
-        String createId(InstanceVariable name);
+        String createId(Instance name);
     }
 
     @JsonProperty
@@ -21,21 +22,20 @@ public class LogicalRecord {
     @JsonProperty
     private String unitType;
 
-    @JsonProperty
+    @JsonProperty("instanceVariables")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final List<InstanceVariable> instanceVariables = new ArrayList<>();
+    private final List<Instance> instances = new ArrayList<>();
 
-    @JsonProperty
+    @JsonProperty("logicalRecords")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final List<LogicalRecord> logicalRecords = new ArrayList<>();
+    private final List<Record> records = new ArrayList<>();
 
-    public String getName() {
-        return name;
+    @Override
+    public void addChild(Record child) {
+        records.add(child);
     }
 
-    @JsonIgnore
-    public String getPath() {
-        // TODO: make this create path with parents
+    public String getName() {
         return name;
     }
 
@@ -51,24 +51,23 @@ public class LogicalRecord {
         this.unitType = unitType;
     }
 
-
-    public void addLogicalRecord(LogicalRecord logicalRecord) {
-        logicalRecords.add(logicalRecord);
+    public void addLogicalRecord(Record record) {
+        records.add(record);
     }
 
-    public List<LogicalRecord> getLogicalRecords() {
-        return logicalRecords;
+    public List<Record> getRecords() {
+        return records;
     }
 
-    public void addInstanceVariable(InstanceVariable instanceVariable) {
-        instanceVariables.add(instanceVariable);
+    public void addInstanceVariable(Instance instance) {
+        instances.add(instance);
     }
 
-    public List<InstanceVariable> getInstanceVariables() {
-        return instanceVariables;
+    public List<Instance> getInstances() {
+        return instances;
     }
 
     public List<String> getInstanceVariableIds(CreateIdHandler createIdHandler) {
-        return instanceVariables.stream().map(i -> "/" + createIdHandler.createId(i)).collect(Collectors.toList());
+        return instances.stream().map(i -> "/" + createIdHandler.createId(i)).collect(Collectors.toList());
     }
 }

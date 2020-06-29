@@ -1,8 +1,6 @@
 package no.ssb.dapla.dataset.doc.template;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import no.ssb.dapla.dataset.doc.model.gsim.IdentifiableArtefact;
+import org.apache.avro.Schema;
 import org.apache.commons.io.IOUtils;
 
 import java.io.FileNotFoundException;
@@ -10,11 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-class TestUtils {
+public class TestUtils {
 
-    static ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-
-    private static ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+    private static final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
     public static String load(String fileName) {
         try {
@@ -24,8 +20,12 @@ class TestUtils {
         }
     }
 
-    public static void compare(String fileName, IdentifiableArtefact identifiableArtefact) {
-
+    public static Schema loadSchema(String fileName) {
+        try {
+            return new Schema.Parser().parse(getInputStream(fileName));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static InputStream getInputStream(String fileName) throws FileNotFoundException {

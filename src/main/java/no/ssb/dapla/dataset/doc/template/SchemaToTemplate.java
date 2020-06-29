@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import no.ssb.avro.convert.core.SchemaBuddy;
 import no.ssb.dapla.dataset.doc.builder.SimpleBuilder;
 import no.ssb.dapla.dataset.doc.model.simple.Dataset;
-import no.ssb.dapla.dataset.doc.model.simple.InstanceVariable;
-import no.ssb.dapla.dataset.doc.model.simple.LogicalRecord;
+import no.ssb.dapla.dataset.doc.model.simple.Instance;
+import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
 import org.apache.avro.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SchemaToTemplate {
+public class SchemaToTemplate extends SchemaTraverse<no.ssb.dapla.dataset.doc.model.simple.Record> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -97,41 +97,21 @@ public class SchemaToTemplate {
     private Dataset generateTemplate() {
         SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
 
-        LogicalRecord root = traverse(schemaBuddy);
+        no.ssb.dapla.dataset.doc.model.simple.Record root = traverse(schemaBuddy);
         return SimpleBuilder.createDatasetBuilder()
                 .root(root)
                 .build();
     }
 
-    private LogicalRecord traverse(SchemaBuddy schemaBuddy) {
-        LogicalRecord root = SimpleBuilder.createLogicalRecordBuilder()
-                .name("datasetName")
-                .build();
-
-        traverse(schemaBuddy, root, 0);
-        return root.getLogicalRecords().get(0); // We don't need the first witch always is the spark_schema root
+    @Override
+    protected no.ssb.dapla.dataset.doc.model.simple.Record createChild(SchemaBuddy schemaBuddy, no.ssb.dapla.dataset.doc.model.simple.Record parent) {
+        return getLogicalRecord(schemaBuddy.getName());
     }
 
-    private void traverse(SchemaBuddy schemaBuddy, LogicalRecord parentLogicalRecord, int level) {
-        if (schemaBuddy.isArrayType()) {
-            List<SchemaBuddy> children = schemaBuddy.getChildren();
-            if (children.size() != 1) {
-                throw new IllegalStateException("Avro Array can only have 1 child: was:" + schemaBuddy.toString(true) + "‰n");
-            }
-            traverse(children.get(0), parentLogicalRecord, level);
-            return;
-        }
+    @Override
+    protected void processField(SchemaBuddy schemaBuddy, no.ssb.dapla.dataset.doc.model.simple.Record parent) {
         String description = (String) schemaBuddy.getProp("description");
-
-        if (schemaBuddy.isBranch()) {
-            LogicalRecord childLogicalRecord = getLogicalRecord(schemaBuddy.getName());
-            parentLogicalRecord.addLogicalRecord(childLogicalRecord);
-            for (SchemaBuddy child : schemaBuddy.getChildren()) {
-                traverse(child, childLogicalRecord, level + 1);
-            }
-        } else {
-            parentLogicalRecord.addInstanceVariable(getInstanceVariable(schemaBuddy.getName(), description));
-        }
+        parent.addInstanceVariable(getInstanceVariable(schemaBuddy.getName(), description));
     }
 
     private FilterProvider getFilterProvider() {
@@ -140,7 +120,7 @@ public class SchemaToTemplate {
                 .addFilter("InstanceVariable_MinimumFilter", SimpleBeanPropertyFilter.serializeAllExcept(instanceVariableFilter.toArray(new String[0])));
     }
 
-    private InstanceVariable getInstanceVariable(String name, String description) {
+    private Instance getInstanceVariable(String name, String description) {
         return SimpleBuilder.createInstanceVariableBuilder()
                 .name(name)
                 .description(description != null ? description : name)
@@ -154,7 +134,7 @@ public class SchemaToTemplate {
                 .build();
     }
 
-    private LogicalRecord getLogicalRecord(String name) {
+    private no.ssb.dapla.dataset.doc.model.simple.Record getLogicalRecord(String name) {
         return SimpleBuilder.createLogicalRecordBuilder()
                 .name(name)
                 .unitType("UnitType_DUMMY")
