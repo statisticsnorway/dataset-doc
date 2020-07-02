@@ -1,6 +1,7 @@
 package no.ssb.dapla.dataset.doc.traverse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.StringJoiner;
@@ -33,5 +34,10 @@ public class PathTraverse<T extends ParentAware> {
         return joiner.add(node.getName()).toString();
     }
 
-
+    String getIntendString() {
+        int size = getParents("").size();
+        if (size == 0) return "";
+        if (size == 1) return " |-- ";
+        return String.join("", Collections.nCopies(size - 1, " |   ")) + " |-- ";
+    }
 }

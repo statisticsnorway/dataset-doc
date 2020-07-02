@@ -6,23 +6,18 @@ import org.apache.avro.Schema;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.StringJoiner;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SchemaTraverseTest {
 
-    public static class Field implements TraverseField<Field> {
+    public static class Field implements TraverseField<Field>, ParentAware {
 
         private final List<Field> children = new ArrayList<>();
-        private Field parent;
-        private String name;
-
-        public Field() {
-
-        }
+        private final Field parent;
+        private final String name;
+        private PathTraverse<Field> pathTraverse = null;
 
         public Field(String name, Field parent) {
             this.name = name;
@@ -39,36 +34,22 @@ class SchemaTraverseTest {
             return name;
         }
 
-        public List<String> getParents() {
-            Field currentParent = parent;
-            List<String> parentList = new ArrayList<>();
-            while (currentParent != null) {
-                parentList.add(currentParent.name);
-                currentParent = currentParent.parent;
-            }
-            return parentList;
+        @Override
+        public ParentAware getParent() {
+            return parent;
         }
 
-        public String getPath() {
-            StringJoiner joiner = new StringJoiner(".");
-            for (ListIterator<String> iter = getParents().listIterator(getParents().size()); iter.hasPrevious(); ) {
-                joiner.add(iter.previous());
+        private PathTraverse<Field> getPathTraverse() {
+            if (pathTraverse == null) {
+                pathTraverse = new PathTraverse<>(this);
             }
-            return joiner.add(name).toString();
-        }
-
-        String getIntendString() {
-            int size = getParents().size();
-            if (size == 0) return "";
-            if (size == 1) return " |-- ";
-            return String.join("", Collections.nCopies(size - 1, " |   ")) + " |-- ";
+            return pathTraverse;
         }
 
         public String toString(boolean recursive) {
             StringBuilder sb = new StringBuilder();
-
             if (recursive) {
-                sb.append(String.format("%s%s%n", getIntendString(), name));
+                sb.append(String.format("%s%s%n", getPathTraverse().getIntendString(), name));
                 for (Field child : children) {
                     sb.append(child.toString(true));
                 }
@@ -77,8 +58,8 @@ class SchemaTraverseTest {
             }
             return sb.toString();
         }
-
     }
+
     static class MySchemaTraverse extends SchemaTraverse<Field> {
 
         @Override
@@ -94,11 +75,13 @@ class SchemaTraverseTest {
 
     @Test
     void traverse() {
-        Schema inputSchemaSkatt =  TestUtils.loadSchema("testdata/skatt-v0.68.avsc");
+        Schema inputSchemaSkatt = TestUtils.loadSchema("testdata/skatt-v0.68.avsc");
 
         MySchemaTraverse mySchemaTraverse = new MySchemaTraverse();
         Field traverse = mySchemaTraverse.traverse(SchemaBuddy.parse(inputSchemaSkatt));
-        System.out.println(traverse.toString(true));
+
+        String expected = TestUtils.load("testdata/PathTravereseResultSkatt-skatt-v0.68.txt");
+        assertThat(traverse.toString(true)).isEqualTo(expected);
 
     }
 }
