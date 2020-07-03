@@ -39,7 +39,7 @@ public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
                     .writeValueAsString(dataset);
             // Need to use gson to format arrays with line break (Did not find out how to do this with Jackson)
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            return gson.toJson(JsonParser.parseString(jacskonJson));
+            return gson.toJson(new JsonParser().parse(jacskonJson));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -56,7 +56,9 @@ public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
 
     @Override
     protected Record createChild(SchemaBuddy schemaBuddy, Record parent) {
-        return getLogicalRecord(schemaBuddy.getName());
+        return LineageBuilder.createLogicalRecordBuilder()
+                .name(schemaBuddy.getName())
+                .build();
     }
 
     @Override
@@ -85,11 +87,5 @@ public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
                 .map(schemaWithPath -> schemaWithPath.getSource(name))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    private Record getLogicalRecord(String name) {
-        return LineageBuilder.createLogicalRecordBuilder()
-                .name(name)
-                .build();
     }
 }

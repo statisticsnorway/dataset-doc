@@ -186,11 +186,12 @@ class SchemaToLineageTemplateTest {
                         .build();
 
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
+        System.out.println(jsonString);
 
         // Check that we can parse json
         Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
         String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
-        System.out.println(jsonStringForDataSet);
+//        System.out.println(jsonStringForDataSet);
     }
 
     @Test
@@ -215,7 +216,7 @@ class SchemaToLineageTemplateTest {
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String jsonOutput = gson.toJson(JsonParser.parseString(jsonString));
+        String jsonOutput = gson.toJson(new JsonParser().parse(jsonString));
 
         // Check that we can parse json
         Dataset root = new ObjectMapper().readValue(jsonOutput, Dataset.class);
