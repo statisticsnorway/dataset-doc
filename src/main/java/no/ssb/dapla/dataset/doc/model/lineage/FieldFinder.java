@@ -58,41 +58,47 @@ public class FieldFinder extends SchemaTraverse<FieldFinder.Record> {
                     .collect(Collectors.toList());
         }
 
+        public List<Field> findNearMatch(String name) {
+            return fields.stream()
+                    .filter(i -> i.isNearMatch(name))
+                    .collect(Collectors.toList());
+        }
+
+
     }
 
     static class Field {
         final String name;
+        final String path;
+
+        private float matchScore = 1.0F;
 
         public String getPath() {
             return path;
         }
 
-        final String path;
+        public float getMatchScore() {
+            return matchScore;
+        }
 
         public boolean isMatch(String name) {
             return name.equals(this.name);
         }
 
-//        public boolean checkPartialMatchAndSetConfidence(String name) {
-//            if (confidence != null) {
-//                System.out.println("Confidence should not be set, was:" + confidence);
-////            throw new IllegalStateException("Confidence should not be set, was:" + confidence);
-//            }
-//            float existingConfidence = confidence != null ? confidence : 1.0F;
-//            if (this.name.equals(name)) {
-//                setConfidence(existingConfidence);
-//                return true;
-//            }
-//            if (this.name.contains(name)) {
-//                setConfidence(existingConfidence * (name.length() / (float) this.name.length()));
-//                return true;
-//            }
-//            if (name.contains(this.name)) {
-//                setConfidence(existingConfidence * (this.name.length() / (float) name.length()));
-//                return true;
-//            }
-//            return false;
-//        }
+        public boolean isNearMatch(String name) {
+            if (this.name.equals(name)) {
+                throw new IllegalStateException("isNearMatch should not be used for exact match");
+            }
+            if (this.name.contains(name)) {
+                matchScore = name.length() / (float) this.name.length();
+                return true;
+            }
+            if (name.contains(this.name)) {
+                matchScore = this.name.length() / (float) name.length();
+                return true;
+            }
+            return false;
+        }
 
 
         public Field(String name, String path) {
@@ -119,10 +125,23 @@ public class FieldFinder extends SchemaTraverse<FieldFinder.Record> {
         return result;
     }
 
+    public List<Field> findNearMatches(String field) {
+        List<Field> result = new ArrayList<>();
+        searchNearMatches(field, root, result);
+        return result;
+    }
+
     private void search(String name, Record parent, List<Field> result) {
         result.addAll(parent.find(name));
         for (Record child : parent.getChildren()) {
             search(name, child, result);
+        }
+    }
+
+    private void searchNearMatches(String name, Record parent, List<Field> result) {
+        result.addAll(parent.findNearMatch(name));
+        for (Record child : parent.getChildren()) {
+            searchNearMatches(name, child, result);
         }
     }
 

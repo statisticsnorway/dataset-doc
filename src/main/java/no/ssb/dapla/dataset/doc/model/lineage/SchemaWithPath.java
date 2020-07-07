@@ -22,20 +22,35 @@ public class SchemaWithPath {
     }
 
     public Source getSource(String name) {
-        List<FieldFinder.Field> instances = fieldFinder.find(name);
-        if (instances.isEmpty()) {
+        List<FieldFinder.Field> fields = fieldFinder.find(name);
+        if (fields.isEmpty()) {
+            return getSource(fieldFinder.findNearMatches(name));
+        }
+        return getSource(fields);
+    }
+
+    private Source getSource(List<FieldFinder.Field> fields) {
+        if (fields.isEmpty()) {
             return null;
         }
-        int fieldCount = instances.size();
-        String paths = instances.stream().map(FieldFinder.Field::getPath).collect(Collectors.joining(","));
-        float confidence = 0.9F / fieldCount; // TODO: calculate confidence based on if we have one field or more matches
-        List<String> fields = fieldCount > 1 ? instances.stream().map(FieldFinder.Field::getPath).collect(Collectors.toList()) : Collections.emptyList();
+        int fieldCount = fields.size();
+        String paths = fields.stream().map(FieldFinder.Field::getPath).collect(Collectors.joining(","));
+        Float matchScore = fields.stream().map(FieldFinder.Field::getMatchScore).reduce((aFloat, aFloat2) -> aFloat * aFloat2).orElse(0F);
+        float confidence = (0.9F / fieldCount) * matchScore; // TODO: calculate confidence based on if we have one field or more matches
+        List<String> fieldCandidates = getFieldCandidates(fields, fieldCount, matchScore);
         return LineageBuilder.crateSourceBuilder()
-                .field(fieldCount == 1 ? paths : "")
-                .fieldCandidates(fields)
+                .field(fieldCount == 1 && matchScore == 1.0F ? paths : "")
+                .fieldCandidates(fieldCandidates)
                 .path(path)
                 .version(version)
                 .confidence(confidence)
                 .build();
+    }
+
+    private List<String> getFieldCandidates(List<FieldFinder.Field> fields, int fieldCount, Float matchScore) {
+        if (fieldCount > 1 || matchScore < 1.0F ) {
+            return fields.stream().map(FieldFinder.Field::getPath).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }
