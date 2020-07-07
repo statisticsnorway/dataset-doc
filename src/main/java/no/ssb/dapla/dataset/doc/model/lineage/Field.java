@@ -10,7 +10,7 @@ import java.util.List;
 public class Field {
 
     @JsonProperty
-    String name;
+    protected String name;
 
     @JsonProperty
     protected String type;

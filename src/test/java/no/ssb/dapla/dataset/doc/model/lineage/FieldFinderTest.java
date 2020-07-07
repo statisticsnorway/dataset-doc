@@ -46,13 +46,13 @@ class FieldFinderTest {
 
         FieldFinder fieldFinder = new FieldFinder(schema);
 
-        List<Instance> instances = fieldFinder.find("organisasjonsnummer");
-        List<String> paths = instances.stream().map(Instance::getPath).collect(Collectors.toList());
+        List<FieldFinder.Field> instances = fieldFinder.find("organisasjonsnummer");
+        List<String> paths = instances.stream().map(FieldFinder.Field::getPath).collect(Collectors.toList());
         assertThat(paths.size()).isEqualTo(12);
 
-        fieldFinder.find("organisasjonsnummer").stream().map(Instance::getPath).forEach(System.out::println);
+        fieldFinder.find("organisasjonsnummer").stream().map(FieldFinder.Field::getPath).forEach(System.out::println);
         System.out.println("----------------------");
-        fieldFinder.find("personidentifikator").stream().map(Instance::getPath).forEach(System.out::println);
+        fieldFinder.find("personidentifikator").stream().map(FieldFinder.Field::getPath).forEach(System.out::println);
     }
 
 }

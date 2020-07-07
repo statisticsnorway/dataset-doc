@@ -161,6 +161,7 @@ class SchemaToLineageTemplateTest {
                         .build();
 
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
+        System.out.println(jsonString);
 
         // Check that we can parse json
         Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
@@ -217,10 +218,6 @@ class SchemaToLineageTemplateTest {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(new JsonParser().parse(jsonString));
-
-        // Check that we can parse json
-        Dataset root = new ObjectMapper().readValue(jsonOutput, Dataset.class);
-        assertThat(root.getRoot().getPath()).isEqualTo("spark_schema");
 
         String expected = TestUtils.load("testdata/lineage/checkSkattRawToKontoFields.json");
         assertThat(jsonOutput).isEqualTo(expected);
