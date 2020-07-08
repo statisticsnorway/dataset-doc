@@ -109,10 +109,6 @@ public class FieldFinder extends SchemaTraverse<FieldFinder.Record> {
         root = traverse(schemaBuddy);
     }
 
-    public List<String> getPaths(String field) {
-        return find(field).stream().map(Field::getPath).collect(Collectors.toList());
-    }
-
     public List<Field> find(String field) {
         List<Field> result = new ArrayList<>();
         search(field, root, result);
