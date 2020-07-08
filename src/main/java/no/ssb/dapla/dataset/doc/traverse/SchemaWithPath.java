@@ -49,7 +49,7 @@ public class SchemaWithPath {
         int fieldCount = validMatches.size();
         String paths = validMatches.stream().map(FieldFinder.Field::getPath).collect(Collectors.joining(","));
         float matchScore = validMatches.stream().map(FieldFinder.Field::getMatchScore).reduce((a, b) -> a * b).orElse(0F);
-        float confidence = (MAX_AUTO_MATCH_CONFIDENCE / fieldCount) * matchScore; // TODO: calculate confidence based on if we have one field or more matches
+        float confidence = (MAX_AUTO_MATCH_CONFIDENCE / fieldCount) * matchScore;
         List<String> fieldCandidates = getFieldCandidates(validMatches, fieldCount, matchScore);
         return LineageBuilder.crateSourceBuilder()
                 .field(fieldCount == 1 && matchScore == FULL_MATCH_SCORE ? paths : "")
@@ -58,7 +58,6 @@ public class SchemaWithPath {
                 .version(version)
                 .confidence(confidence)
                 .matchScore(matchScore)
-                .type(matchScore == FULL_MATCH_SCORE ? "inherited" : "derived/created")
                 .build();
     }
 

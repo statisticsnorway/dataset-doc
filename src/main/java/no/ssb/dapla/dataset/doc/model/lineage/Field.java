@@ -2,11 +2,13 @@ package no.ssb.dapla.dataset.doc.model.lineage;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@JsonPropertyOrder({ "name", "type", "type_candidates", "confidence", "fields" })
 public class Field {
 
     @JsonProperty

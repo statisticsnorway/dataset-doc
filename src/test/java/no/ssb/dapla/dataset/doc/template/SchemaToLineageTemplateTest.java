@@ -122,7 +122,7 @@ class SchemaToLineageTemplateTest {
     }
 
     @Test
-    void testJoinTwoSourcesFromComplexSchema() throws JsonProcessingException {
+    void testJoinTwoSourcesFromComplexSchema() throws JsonProcessingException, JSONException {
         Schema inputSchemaSkatt = SchemaBuilder
                 .record("spark_schema").namespace("no.ssb.dataset")
                 .fields()
@@ -161,7 +161,10 @@ class SchemaToLineageTemplateTest {
                         .build();
 
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
-        System.out.println(jsonString);
+
+        String expected = TestUtils.load("testdata/lineage/lineage-partial-match.json");
+        assertThat(jsonString).isEqualTo(expected);
+        JSONAssert.assertEquals(expected, jsonString, true);
 
         // Check that we can parse json
         Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
