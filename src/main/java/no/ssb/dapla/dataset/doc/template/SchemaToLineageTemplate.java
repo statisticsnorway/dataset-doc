@@ -75,6 +75,7 @@ public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
                 .name(name)
                 .confidence(sourceConfidence.getAverageConfidenceOfSources())
                 .type(sourceConfidence.getFieldType())
+                .addTypeCandidates(sourceConfidence.getTypeCandidates())
                 .addSources(sources)
                 .build();
     }

@@ -15,6 +15,10 @@ public class Field {
     @JsonProperty
     protected String type;
 
+    @JsonProperty("type_candidates")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private final List<String> typeCandidates = new ArrayList<>();
+
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
     protected Float confidence;
@@ -58,4 +62,9 @@ public class Field {
     public void setType(String type) {
         this.type = type;
     }
+
+    public void addTypeCandidates(Collection<String> fields) {
+        typeCandidates.addAll(fields);
+    }
+
 }

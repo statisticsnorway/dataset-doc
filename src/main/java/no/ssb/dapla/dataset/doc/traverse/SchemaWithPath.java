@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 public class SchemaWithPath {
     static final float REQUIRED_MATCH_SCORE = 0.5F;// 1.0F is full match
+    static final float FULL_MATCH_SCORE = 1.0F;// 1.0F is full match
+    static final float MAX_AUTO_MATCH_CONFIDENCE = 0.9F;
 
     final Schema schema;
     final String path;
@@ -43,18 +45,20 @@ public class SchemaWithPath {
             return null;
         }
 
+        // TODO: move this calculation into a method class to add better testing
         int fieldCount = validMatches.size();
         String paths = validMatches.stream().map(FieldFinder.Field::getPath).collect(Collectors.joining(","));
         float matchScore = validMatches.stream().map(FieldFinder.Field::getMatchScore).reduce((a, b) -> a * b).orElse(0F);
-        float confidence = (0.9F / fieldCount) * matchScore; // TODO: calculate confidence based on if we have one field or more matches
+        float confidence = (MAX_AUTO_MATCH_CONFIDENCE / fieldCount) * matchScore; // TODO: calculate confidence based on if we have one field or more matches
         List<String> fieldCandidates = getFieldCandidates(validMatches, fieldCount, matchScore);
         return LineageBuilder.crateSourceBuilder()
-                .field(fieldCount == 1 && matchScore == 1.0F ? paths : "")
+                .field(fieldCount == 1 && matchScore == FULL_MATCH_SCORE ? paths : "")
                 .fieldCandidates(fieldCandidates)
                 .path(path)
                 .version(version)
                 .confidence(confidence)
-                .type(matchScore == 1.0f ? "inherited" : "derived/created")
+                .matchScore(matchScore)
+                .type(matchScore == FULL_MATCH_SCORE ? "inherited" : "derived/created")
                 .build();
     }
 
