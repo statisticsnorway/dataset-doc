@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 
 public class FieldFinder extends SchemaTraverse<FieldFinder.Record> {
 
-    static class Record implements TraverseField<FieldFinder.Record>, ParentAware {
+    protected static class Record implements TraverseField<FieldFinder.Record>, ParentAware {
         final Record parent;
         final String name;
         private final List<Record> children = new ArrayList<>();
         private final List<Field> fields = new ArrayList<>();
 
-        public Record(Record parent, String name) {
+        private Record(Record parent, String name) {
             this.parent = parent;
             this.name = name;
         }
@@ -59,13 +59,16 @@ public class FieldFinder extends SchemaTraverse<FieldFinder.Record> {
                     .filter(i -> i.isNearMatch(name))
                     .collect(Collectors.toList());
         }
-
-
     }
 
     static class Field {
         final String name;
         final String path;
+
+        public Field(String name, String path) {
+            this.name = name;
+            this.path = path;
+        }
 
         private float matchScore = 1.0F;
 
@@ -96,11 +99,6 @@ public class FieldFinder extends SchemaTraverse<FieldFinder.Record> {
             return false;
         }
 
-
-        public Field(String name, String path) {
-            this.name = name;
-            this.path = path;
-        }
     }
 
     final SchemaBuddy schemaBuddy;

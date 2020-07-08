@@ -25,12 +25,12 @@ public class SchemaWithPath {
     public Source getSource(String name) {
         List<FieldFinder.Field> fields = fieldFinder.find(name);
         if (fields.isEmpty()) {
-            return getSource(fieldFinder.findNearMatches(name));
+            return findSource(fieldFinder.findNearMatches(name));
         }
-        return getSource(fields);
+        return findSource(fields);
     }
 
-    private Source getSource(List<FieldFinder.Field> fields) {
+    private Source findSource(List<FieldFinder.Field> fields) {
         if (fields.isEmpty()) {
             return null;
         }
@@ -49,7 +49,7 @@ public class SchemaWithPath {
     }
 
     private List<String> getFieldCandidates(List<FieldFinder.Field> fields, int fieldCount, Float matchScore) {
-        if (fieldCount > 1 || matchScore < 1.0F ) {
+        if (fieldCount > 1 || matchScore < 1.0F) {
             return fields.stream().map(FieldFinder.Field::getPath).collect(Collectors.toList());
         }
         return Collections.emptyList();
