@@ -40,6 +40,10 @@ public class Source {
     public Source() {
     }
 
+    public String getField() {
+        return field;
+    }
+
     public float getConfidence() {
         return confidence;
     }
@@ -58,5 +62,13 @@ public class Source {
 
     public void addFieldCandidates(Collection<String> fields) {
         fieldCandidates.addAll(fields);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public List<String> getFieldCandidates() {
+        return fieldCandidates;
     }
 }
