@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
-import no.ssb.dapla.dataset.doc.model.lineage.SchemaWithPath;
+import no.ssb.dapla.dataset.doc.traverse.SchemaWithPath;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.json.JSONException;

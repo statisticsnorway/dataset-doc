@@ -1,10 +1,6 @@
-package no.ssb.dapla.dataset.doc.model.lineage;
+package no.ssb.dapla.dataset.doc.traverse;
 
 import no.ssb.avro.convert.core.SchemaBuddy;
-import no.ssb.dapla.dataset.doc.traverse.ParentAware;
-import no.ssb.dapla.dataset.doc.traverse.PathTraverse;
-import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
-import no.ssb.dapla.dataset.doc.traverse.TraverseField;
 import org.apache.avro.Schema;
 
 import java.util.ArrayList;

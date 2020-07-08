@@ -1,6 +1,7 @@
-package no.ssb.dapla.dataset.doc.model.lineage;
+package no.ssb.dapla.dataset.doc.traverse;
 
 import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
+import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import org.apache.avro.Schema;
 
 import java.util.Collections;
