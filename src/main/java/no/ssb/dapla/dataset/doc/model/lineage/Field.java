@@ -2,18 +2,24 @@ package no.ssb.dapla.dataset.doc.model.lineage;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@JsonPropertyOrder({ "name", "type", "type_candidates", "confidence", "fields" })
 public class Field {
 
     @JsonProperty
-    String name;
+    protected String name;
 
     @JsonProperty
     protected String type;
+
+    @JsonProperty("type_candidates")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private final List<String> typeCandidates = new ArrayList<>();
 
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -58,4 +64,9 @@ public class Field {
     public void setType(String type) {
         this.type = type;
     }
+
+    public void addTypeCandidates(Collection<String> fields) {
+        typeCandidates.addAll(fields);
+    }
+
 }

@@ -29,7 +29,14 @@ public class Source {
     private float confidence;
 
     @JsonIgnore
+    private float matchScore;
+
+    @JsonIgnore
     private String type;
+
+    public long getVersion() {
+        return version;
+    }
 
     public Source(String field, String path, long version) {
         this.field = field;
@@ -38,6 +45,10 @@ public class Source {
     }
 
     public Source() {
+    }
+
+    public String getField() {
+        return field;
     }
 
     public float getConfidence() {
@@ -58,5 +69,21 @@ public class Source {
 
     public void addFieldCandidates(Collection<String> fields) {
         fieldCandidates.addAll(fields);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public List<String> getFieldCandidates() {
+        return fieldCandidates;
+    }
+
+    public float getMatchScore() {
+        return matchScore;
+    }
+
+    public void setMatchScore(float matchScore) {
+        this.matchScore = matchScore;
     }
 }

@@ -5,7 +5,7 @@ import no.ssb.dapla.dataset.doc.model.lineage.Instance;
 import no.ssb.dapla.dataset.doc.model.lineage.Record;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import no.ssb.dapla.dataset.doc.template.SchemaToLineageTemplate;
-import no.ssb.dapla.dataset.doc.model.lineage.SchemaWithPath;
+import no.ssb.dapla.dataset.doc.traverse.SchemaWithPath;
 import org.apache.avro.Schema;
 
 import java.util.ArrayList;
@@ -43,6 +43,7 @@ public class LineageBuilder {
         private String type;
         private long version;
         private float confidence;
+        private float matchScore;
         private List<String> fieldCandidates;
 
         public SourceBuilder field(String field) {
@@ -75,9 +76,15 @@ public class LineageBuilder {
             return this;
         }
 
+        public SourceBuilder matchScore(float matchScore) {
+            this.matchScore = matchScore;
+            return this;
+        }
+
         public Source build() {
             Source source = new Source(field, path, version);
             source.setConfidence(confidence);
+            source.setMatchScore(matchScore);
             source.setType(type);
             source.addFieldCandidates(fieldCandidates);
             return source;
@@ -155,6 +162,11 @@ public class LineageBuilder {
 
         public InstanceVariableBuilder addSource(Source source) {
             instance.addSource(source);
+            return this;
+        }
+
+        public InstanceVariableBuilder addTypeCandidates(Collection<String> typeCandidates) {
+            instance.addTypeCandidates(typeCandidates);
             return this;
         }
 

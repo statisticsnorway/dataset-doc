@@ -11,7 +11,8 @@ import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import no.ssb.dapla.dataset.doc.model.lineage.Instance;
 import no.ssb.dapla.dataset.doc.model.lineage.Record;
-import no.ssb.dapla.dataset.doc.model.lineage.SchemaWithPath;
+import no.ssb.dapla.dataset.doc.model.lineage.SourceConfidence;
+import no.ssb.dapla.dataset.doc.traverse.SchemaWithPath;
 import no.ssb.dapla.dataset.doc.model.lineage.Source;
 import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
 import org.apache.avro.Schema;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
@@ -69,15 +69,13 @@ public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
     private Instance getInstanceVariable(String name) {
         Collection<Source> sources = findSources(name);
 
-        Optional<Float> confidence = sources.stream().map(Source::getConfidence).reduce(Float::sum);
-        float sum = confidence.orElse(0F);
-        float result = sum != 0F ? sum / sources.size() : 0F;
-        String type = sum != 0F ? "inherited" : "derived/created";
+        SourceConfidence sourceConfidence = new SourceConfidence(sources);
 
         return LineageBuilder.createInstanceVariableBuilder()
                 .name(name)
-                .confidence(result) // TODO calculate when finding from source schema
-                .type(type) // For now we can't find what is derived
+                .confidence(sourceConfidence.getAverageConfidenceOfSources())
+                .type(sourceConfidence.getFieldType())
+                .addTypeCandidates(sourceConfidence.getTypeCandidates())
                 .addSources(sources)
                 .build();
     }

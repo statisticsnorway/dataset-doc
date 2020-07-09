@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import no.ssb.dapla.dataset.doc.builder.LineageBuilder;
 import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
-import no.ssb.dapla.dataset.doc.model.lineage.SchemaWithPath;
+import no.ssb.dapla.dataset.doc.traverse.SchemaWithPath;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.json.JSONException;
@@ -122,7 +122,7 @@ class SchemaToLineageTemplateTest {
     }
 
     @Test
-    void testJoinTwoSourcesFromComplexSchema() throws JsonProcessingException {
+    void testJoinTwoSourcesFromComplexSchema() throws JsonProcessingException, JSONException {
         Schema inputSchemaSkatt = SchemaBuilder
                 .record("spark_schema").namespace("no.ssb.dataset")
                 .fields()
@@ -162,10 +162,13 @@ class SchemaToLineageTemplateTest {
 
         String jsonString = schemaToTemplate.generateTemplateAsJsonString();
 
+        String expected = TestUtils.load("testdata/lineage/lineage-partial-match.json");
+        assertThat(jsonString).isEqualTo(expected);
+        JSONAssert.assertEquals(expected, jsonString, true);
+
         // Check that we can parse json
         Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
         String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
-        System.out.println(jsonStringForDataSet);
     }
 
     @Test
@@ -217,10 +220,6 @@ class SchemaToLineageTemplateTest {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(new JsonParser().parse(jsonString));
-
-        // Check that we can parse json
-        Dataset root = new ObjectMapper().readValue(jsonOutput, Dataset.class);
-        assertThat(root.getRoot().getPath()).isEqualTo("spark_schema");
 
         String expected = TestUtils.load("testdata/lineage/checkSkattRawToKontoFields.json");
         assertThat(jsonOutput).isEqualTo(expected);
