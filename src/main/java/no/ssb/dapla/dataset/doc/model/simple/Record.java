@@ -20,7 +20,7 @@ public class Record implements TraverseField<Record> {
     private String name;
 
     @JsonProperty
-    private String unitType;
+    private Info unitType;
 
     @JsonProperty("instanceVariables")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -43,11 +43,11 @@ public class Record implements TraverseField<Record> {
         this.name = name;
     }
 
-    public String getUnitType() {
+    public Info getUnitType() {
         return unitType;
     }
 
-    public void setUnitType(String unitType) {
+    public void setUnitType(Info unitType) {
         this.unitType = unitType;
     }
 

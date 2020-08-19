@@ -10,6 +10,7 @@ import no.ssb.avro.convert.core.SchemaBuddy;
 import no.ssb.dapla.dataset.doc.builder.SimpleBuilder;
 import no.ssb.dapla.dataset.doc.model.simple.Dataset;
 import no.ssb.dapla.dataset.doc.model.simple.Instance;
+import no.ssb.dapla.dataset.doc.model.simple.Record;
 import no.ssb.dapla.dataset.doc.traverse.SchemaTraverse;
 import org.apache.avro.Schema;
 import org.slf4j.Logger;
@@ -19,29 +20,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SchemaToTemplate extends SchemaTraverse<no.ssb.dapla.dataset.doc.model.simple.Record> {
+public class SchemaToTemplate extends SchemaTraverse<Record> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final Schema schema;
+    private ConceptNameLookup conceptNameLookup;
     private final List<String> instanceVariableFilter = new ArrayList<>();
     private final List<String> logicalRecordFilter = new ArrayList<>();
 
-    /**
-     * @param schema
-     * @param path
-     * @deprecated (Path is no longer necessary)
-     */
-    @Deprecated
-    public SchemaToTemplate(Schema schema, String path) {
-        this.schema = schema;
-        if (path != null) {
-            log.warn("Path {} will not be used", path);
-        }
-    }
-
     public SchemaToTemplate(Schema schema) {
         this.schema = schema;
+    }
+
+    public SchemaToTemplate(Schema schema, ConceptNameLookup conceptNameLookup) {
+        this.schema = schema;
+        this.conceptNameLookup = conceptNameLookup;
     }
 
     public SchemaToTemplate withInstanceVariableFilter(String... ignoreFields) {
@@ -121,7 +115,7 @@ public class SchemaToTemplate extends SchemaTraverse<no.ssb.dapla.dataset.doc.mo
     }
 
     private Instance getInstanceVariable(String name, String description) {
-        return SimpleBuilder.createInstanceVariableBuilder()
+        return SimpleBuilder.createInstanceVariableBuilder(conceptNameLookup)
                 .name(name)
                 .description(description != null ? description : name)
                 .dataStructureComponentType("MEASURE")
@@ -135,7 +129,7 @@ public class SchemaToTemplate extends SchemaTraverse<no.ssb.dapla.dataset.doc.mo
     }
 
     private no.ssb.dapla.dataset.doc.model.simple.Record getLogicalRecord(String name) {
-        return SimpleBuilder.createLogicalRecordBuilder()
+        return SimpleBuilder.createLogicalRecordBuilder(conceptNameLookup)
                 .name(name)
                 .unitType("UnitType_DUMMY")
                 .build();

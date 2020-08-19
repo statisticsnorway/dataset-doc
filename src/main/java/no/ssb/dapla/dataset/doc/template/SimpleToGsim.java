@@ -72,7 +72,7 @@ public class SimpleToGsim {
                 createDefault(logicalRecordId, record.getName(), null)
                         .logicalRecord()
                         .isPlaceholderRecord(false)// TODO: add and get from simple
-                        .unitType(record.getUnitType(), "UnitType_DUMMY")
+                        .unitType(record.getUnitType().getValue(), "UnitType_DUMMY")
                         .shortName(record.getName())
                         .instanceVariables(record.getInstanceVariableIds(i -> createId(record, i)))
                         .parent(parentLogicalRecordId)
@@ -86,11 +86,11 @@ public class SimpleToGsim {
                     createDefault(createId(record, instance), instance.getName(), instance.getDescription())
                             .instanceVariable()
                             .shortName(instance.getName())
-                            .population("Population_DUMMY")
+                            .population(instance.getPopulation().getValue())
                             .dataStructureComponentType(instance.getDataStructureComponentType(), "MEASURE")
                             .dataStructureComponentRole(instance.getDataStructureComponentRole(), "ENTITY")
-                            .sentinelValueDomain(instance.getSentinelValueDomain(), "DescribedValueDomain_DUMMY")
-                            .representedVariable(instance.getRepresentedVariable(), "RepresentedVariable_DUMMY")
+                            .sentinelValueDomain(instance.getSentinelValueDomain().getValue(), "DescribedValueDomain_DUMMY")
+                            .representedVariable(instance.getRepresentedVariable().getValue(), "RepresentedVariable_DUMMY")
                             .build();
 
             persistenceProvider.save(gsimInstanceVariable);

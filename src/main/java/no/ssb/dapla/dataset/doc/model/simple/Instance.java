@@ -3,6 +3,10 @@ package no.ssb.dapla.dataset.doc.model.simple;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @JsonFilter("InstanceVariable_MinimumFilter")
 public class Instance {
 
@@ -13,13 +17,13 @@ public class Instance {
     private String description;
 
     @JsonProperty
-    private String population;
+    private Info population;
 
     @JsonProperty
-    private String dataStructureComponentRole;
+    private Info dataStructureComponentRole;
 
     @JsonProperty
-    private String dataStructureComponentType;
+    private Info dataStructureComponentType;
 
     @JsonProperty
     private boolean identifierComponentIsComposite;
@@ -28,10 +32,10 @@ public class Instance {
     private boolean identifierComponentIsUnique;
 
     @JsonProperty
-    private String representedVariable;
+    private Info representedVariable;
 
     @JsonProperty
-    private String sentinelValueDomain;
+    private Info sentinelValueDomain;
 
     public String getName() {
         return name;
@@ -49,28 +53,27 @@ public class Instance {
         this.description = description;
     }
 
-    public String getPopulation() {
+    public Info getPopulation() {
         return population;
     }
 
-    public void setPopulation(String population) {
+    public void setPopulation(Info population) {
         this.population = population;
     }
 
-
-    public String getDataStructureComponentRole() {
+    public Info getDataStructureComponentRole() {
         return dataStructureComponentRole;
     }
 
-    public void setDataStructureComponentRole(String dataStructureComponentRole) {
+    public void setDataStructureComponentRole(Info dataStructureComponentRole) {
         this.dataStructureComponentRole = dataStructureComponentRole;
     }
 
-    public String getDataStructureComponentType() {
+    public Info getDataStructureComponentType() {
         return dataStructureComponentType;
     }
 
-    public void setDataStructureComponentType(String dataStructureComponentType) {
+    public void setDataStructureComponentType(Info dataStructureComponentType) {
         this.dataStructureComponentType = dataStructureComponentType;
     }
 
@@ -90,19 +93,19 @@ public class Instance {
         this.identifierComponentIsUnique = identifierComponentIsUnique;
     }
 
-    public String getRepresentedVariable() {
+    public Info getRepresentedVariable() {
         return representedVariable;
     }
 
-    public void setRepresentedVariable(String representedVariable) {
+    public void setRepresentedVariable(Info representedVariable) {
         this.representedVariable = representedVariable;
     }
 
-    public String getSentinelValueDomain() {
+    public Info getSentinelValueDomain() {
         return sentinelValueDomain;
     }
 
-    public void setSentinelValueDomain(String sentinelValueDomain) {
+    public void setSentinelValueDomain(Info sentinelValueDomain) {
         this.sentinelValueDomain = sentinelValueDomain;
     }
 }

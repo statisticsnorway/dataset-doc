@@ -15,6 +15,7 @@ import no.ssb.dapla.dataset.doc.model.gsim.TransformableInput;
 import no.ssb.dapla.dataset.doc.model.gsim.TransformedOutput;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
+import no.ssb.dapla.dataset.doc.model.simple.Info;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -305,9 +306,9 @@ public class GsimBuilder {
             this.baseBuilder = baseBuilder;
         }
 
-        public InstanceVariableBuilder dataStructureComponentType(String dataStructureComponentType, String defaultValue) {
+        public InstanceVariableBuilder dataStructureComponentType(Info dataStructureComponentType, String defaultValue) {
             if (dataStructureComponentType != null) {
-                instanceVariable.setDataStructureComponentType(dataStructureComponentType);
+                instanceVariable.setDataStructureComponentType(dataStructureComponentType.getValue());
             } else {
                 instanceVariable.setDataStructureComponentType(defaultValue);
             }
@@ -333,9 +334,9 @@ public class GsimBuilder {
             return this;
         }
 
-        public InstanceVariableBuilder dataStructureComponentRole(String dataStructureComponentRole, String defaultValue) {
+        public InstanceVariableBuilder dataStructureComponentRole(Info dataStructureComponentRole, String defaultValue) {
             if (dataStructureComponentRole != null) {
-                instanceVariable.setDataStructureComponentRole(dataStructureComponentRole);
+                instanceVariable.setDataStructureComponentRole(dataStructureComponentRole.getValue());
             } else {
                 instanceVariable.setDataStructureComponentRole(defaultValue);
             }
