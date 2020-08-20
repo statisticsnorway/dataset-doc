@@ -122,20 +122,20 @@ class SchemaToTemplateTest {
             public Map<String, String> getNameToIds(String conceptType) {
                 switch (conceptType) {
                     case "Population":
-                        return Map.of("All families 2018-01-01", "some-id-could-be-guid",
-                                "Population_DUMMY", "Population_DUMMY-id");
+                        return Map.of( "some-id-could-be-guid", "All families 2018-01-01",
+                                "Population_DUMMY", "Population_default") ;
                     case "RepresentedVariable":
-                        return Map.of("NationalFamilyIdentifier", "some-id-could-be-guid",
-                                "RepresentedVariable_DUMMY", "RepresentedVariable_DUMMY-id");
+                        return Map.of( "some-id-could-be-guid", "NationalFamilyIdentifier",
+                                "RepresentedVariable_DUMMY", "RepresentedVariable_default");
                     case "EnumeratedValueDomain":
-                        return Map.of("Standard for gruppering av familier", "some-id-could-be-guid",
-                                "EnumeratedValueDomain_DUMMY", "EnumeratedValueDomain_DUMMY-id");
+                        return Map.of( "some-id-could-be-guid", "Standard for gruppering av familier",
+                                "EnumeratedValueDomain_DUMMY", "EnumeratedValueDomain_default");
                     case "DescribedValueDomain":
-                        return Map.of("Heltall", "some-id-could-be-guid",
-                                "DescribedValueDomain_DUMMY", "DescribedValueDomain_DUMMY-id");
+                        return Map.of("some-id-could-be-guid", "Heltall",
+                                "DescribedValueDomain_DUMMY-id", "DescribedValueDomain_DUMMY");
                     case "UnitType":
-                        return Map.of("Heltall", "some-id-could-be-guid",
-                                "UnitType_DUMMY", "UnitType_DUMMY-id");
+                        return Map.of("some-id-could-be-guid", "Heltall",
+                                "UnitType_DUMMY", "UnitType_default" );
                     default:
                         throw new IllegalArgumentException("");
                 }

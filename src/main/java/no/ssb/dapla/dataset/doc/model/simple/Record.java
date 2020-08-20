@@ -1,7 +1,6 @@
 package no.ssb.dapla.dataset.doc.model.simple;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.ssb.dapla.dataset.doc.traverse.TraverseField;
@@ -20,7 +19,7 @@ public class Record implements TraverseField<Record> {
     private String name;
 
     @JsonProperty
-    private Info unitType;
+    private TypeInfo unitType;
 
     @JsonProperty("instanceVariables")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -43,11 +42,11 @@ public class Record implements TraverseField<Record> {
         this.name = name;
     }
 
-    public Info getUnitType() {
+    public TypeInfo getUnitType() {
         return unitType;
     }
 
-    public void setUnitType(Info unitType) {
+    public void setUnitType(TypeInfo unitType) {
         this.unitType = unitType;
     }
 

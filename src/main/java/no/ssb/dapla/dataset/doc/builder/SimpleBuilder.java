@@ -1,7 +1,8 @@
 package no.ssb.dapla.dataset.doc.builder;
 
 import no.ssb.dapla.dataset.doc.model.simple.Dataset;
-import no.ssb.dapla.dataset.doc.model.simple.Info;
+import no.ssb.dapla.dataset.doc.model.simple.EnumInfo;
+import no.ssb.dapla.dataset.doc.model.simple.TypeInfo;
 import no.ssb.dapla.dataset.doc.model.simple.Instance;
 import no.ssb.dapla.dataset.doc.model.simple.Record;
 import no.ssb.dapla.dataset.doc.template.ConceptNameLookup;
@@ -58,8 +59,8 @@ public class SimpleBuilder {
 
         public LogicalRecordBuilder unitType(String unitTypeId) {
             Map<String, String> nameToIds = conceptNameLookup.getNameToIds("UnitType");
-            Info info = new Info(unitTypeId, "UnitType", nameToIds);
-            record.setUnitType(info);
+            TypeInfo typeInfo = new TypeInfo(unitTypeId, "UnitType", nameToIds);
+            record.setUnitType(typeInfo);
             return this;
         }
 
@@ -81,7 +82,7 @@ public class SimpleBuilder {
 
         public InstanceVariableBuilder dataStructureComponentType(String dataStructureComponentType) {
             List<String> enumList = conceptNameLookup.getGsimSchemaEnum(LDS_SCHEMA_NAME, "dataStructureComponentType");
-            Info info = new Info(dataStructureComponentType, "string", enumList);
+            EnumInfo info = new EnumInfo(dataStructureComponentType, enumList);
             instance.setDataStructureComponentType(info);
             return this;
         }
@@ -99,15 +100,15 @@ public class SimpleBuilder {
 
         public InstanceVariableBuilder dataStructureComponentRole(String dataStructureComponentRole) {
             List<String> enumList = conceptNameLookup.getGsimSchemaEnum(LDS_SCHEMA_NAME, "dataStructureComponentRole");
-            Info info = new Info(dataStructureComponentRole, "string", enumList);
+            EnumInfo info = new EnumInfo(dataStructureComponentRole, enumList);
             instance.setDataStructureComponentRole(info);
             return this;
         }
 
         public InstanceVariableBuilder representedVariable(String representedVariable) {
             Map<String, String> nameToIds = conceptNameLookup.getNameToIds("RepresentedVariable");
-            Info info = new Info(representedVariable, "RepresentedVariable", nameToIds);
-            instance.setRepresentedVariable(info);
+            TypeInfo typeInfo = new TypeInfo(representedVariable, "RepresentedVariable", nameToIds);
+            instance.setRepresentedVariable(typeInfo);
             return this;
         }
 
@@ -118,8 +119,8 @@ public class SimpleBuilder {
 
         public InstanceVariableBuilder population(String population) {
             Map<String, String> nameToIds = conceptNameLookup.getNameToIds("Population");
-            Info info = new Info(population, "Population", nameToIds);
-            instance.setPopulation(info);
+            TypeInfo typeInfo = new TypeInfo(population, "Population", nameToIds);
+            instance.setPopulation(typeInfo);
             return this;
         }
 
@@ -127,8 +128,8 @@ public class SimpleBuilder {
             HashMap<String, String> result = new HashMap<>();
             result.putAll(conceptNameLookup.getNameToIds("EnumeratedValueDomain"));
             result.putAll(conceptNameLookup.getNameToIds("DescribedValueDomain"));
-            Info info = new Info(sentinelValueDomain, "EnumeratedValueDomain,DescribedValueDomain", result);
-            instance.setSentinelValueDomain(info);
+            TypeInfo typeInfo = new TypeInfo(sentinelValueDomain, "EnumeratedValueDomain,DescribedValueDomain", result);
+            instance.setSentinelValueDomain(typeInfo);
             return this;
         }
 
