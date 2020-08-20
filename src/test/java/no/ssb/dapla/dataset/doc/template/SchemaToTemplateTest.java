@@ -123,20 +123,22 @@ class SchemaToTemplateTest {
             public Map<String, String> getNameToIds(String conceptType) {
                 switch (conceptType) {
                     case "Population":
-                        return Map.of( "some-id-could-be-guid", "All families 2018-01-01",
-                                "Population_DUMMY", "Population_default") ;
+                        return Map.of("some-id-could-be-guid", "All families 2018-01-01",
+                                "Population_DUMMY", "Population_default");
                     case "RepresentedVariable":
-                        return Map.of( "some-id-could-be-guid", "NationalFamilyIdentifier",
+                        return Map.of("some-id-could-be-guid", "NationalFamilyIdentifier",
                                 "RepresentedVariable_DUMMY", "RepresentedVariable_default");
                     case "EnumeratedValueDomain":
-                        return Map.of( "some-id-could-be-guid", "Standard for gruppering av familier",
+                        return Map.of("some-id-could-be-guid", "Standard for gruppering av familier",
                                 "EnumeratedValueDomain_DUMMY", "EnumeratedValueDomain_default");
                     case "DescribedValueDomain":
                         return Map.of("some-id-could-be-guid", "Heltall",
-                                "DescribedValueDomain_DUMMY-id", "DescribedValueDomain_DUMMY");
+                                "DescribedValueDomain_DUMMY", "DescribedValueDomain_default",
+                                "ValueDomain_DUMMY", "ValueDomain_default"
+                        );
                     case "UnitType":
                         return Map.of("some-id-could-be-guid", "Heltall",
-                                "UnitType_DUMMY", "UnitType_default" );
+                                "UnitType_DUMMY", "UnitType_default");
                     default:
                         throw new IllegalArgumentException("");
                 }

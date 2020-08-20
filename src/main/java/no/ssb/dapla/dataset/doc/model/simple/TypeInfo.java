@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @JsonPropertyOrder({"value", "type"})
 public class TypeInfo {
@@ -16,7 +18,7 @@ public class TypeInfo {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty("candidates")
-    private Map<String, String> candidatesNameToId;
+    private List<Candidate> candidatesNameToId;
 
     public TypeInfo() {
     }
@@ -24,7 +26,8 @@ public class TypeInfo {
     public TypeInfo(String id, String type, Map<String, String> candidatesNameToId) {
         this.id = id;
         this.type = type;
-        this.candidatesNameToId = candidatesNameToId;
+        this.candidatesNameToId = candidatesNameToId.entrySet().stream()
+                .map(e -> new Candidate(e.getKey(), e.getValue())).collect(Collectors.toList());
     }
 
     public String getId() {
