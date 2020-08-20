@@ -57,6 +57,12 @@ public class SimpleBuilder {
             return this;
         }
 
+        public LogicalRecordBuilder description(String description) {
+            record.setDescription(description);
+            return this;
+        }
+
+
         public LogicalRecordBuilder unitType(String unitTypeId) {
             Map<String, String> nameToIds = conceptNameLookup.getNameToIds("UnitType");
             TypeInfo typeInfo = new TypeInfo(unitTypeId, "UnitType", nameToIds);

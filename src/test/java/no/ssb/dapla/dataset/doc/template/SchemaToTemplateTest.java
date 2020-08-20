@@ -110,6 +110,7 @@ class SchemaToTemplateTest {
     void testOneLevel() throws JSONException {
         Schema schema = SchemaBuilder
                 .record("konto").namespace("no.ssb.dataset")
+                .prop("description", "Inneholder kontoer av forskjellig art.")
                 .fields()
                 .name("kontonummer").prop("description", "vilkårlig lang sekvens av tegn inkludert aksenter og spesielle tegn fra standardiserte tegnsett").type().stringType().noDefault()
                 .name("innskudd").prop("description", "9 sifret nummer gitt de som er registrert i Enhetsregisteret.").type().stringType().noDefault()

@@ -91,19 +91,20 @@ public class SchemaToTemplate extends SchemaTraverse<Record> {
     private Dataset generateTemplate() {
         SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
 
-        no.ssb.dapla.dataset.doc.model.simple.Record root = traverse(schemaBuddy);
+        Record root = traverse(schemaBuddy);
         return SimpleBuilder.createDatasetBuilder()
                 .root(root)
                 .build();
     }
 
     @Override
-    protected no.ssb.dapla.dataset.doc.model.simple.Record createChild(SchemaBuddy schemaBuddy, no.ssb.dapla.dataset.doc.model.simple.Record parent) {
-        return getLogicalRecord(schemaBuddy.getName());
+    protected Record createChild(SchemaBuddy schemaBuddy, Record parent) {
+        String description = (String) schemaBuddy.getProp("description");
+        return getLogicalRecord(schemaBuddy.getName(), description);
     }
 
     @Override
-    protected void processField(SchemaBuddy schemaBuddy, no.ssb.dapla.dataset.doc.model.simple.Record parent) {
+    protected void processField(SchemaBuddy schemaBuddy, Record parent) {
         String description = (String) schemaBuddy.getProp("description");
         parent.addInstanceVariable(getInstanceVariable(schemaBuddy.getName(), description));
     }
@@ -128,9 +129,10 @@ public class SchemaToTemplate extends SchemaTraverse<Record> {
                 .build();
     }
 
-    private no.ssb.dapla.dataset.doc.model.simple.Record getLogicalRecord(String name) {
+    private Record getLogicalRecord(String name, String description) {
         return SimpleBuilder.createLogicalRecordBuilder(conceptNameLookup)
                 .name(name)
+                .description(description)
                 .unitType("UnitType_DUMMY")
                 .build();
     }

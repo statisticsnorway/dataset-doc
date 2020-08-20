@@ -3,6 +3,7 @@ package no.ssb.dapla.dataset.doc.model.simple;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import no.ssb.dapla.dataset.doc.traverse.TraverseField;
 
 import java.util.ArrayList;
@@ -10,13 +11,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonFilter("LogicalRecord_MinimumFilter")
+@JsonPropertyOrder({"name", "description", "unitType", "instances", "records"})
 public class Record implements TraverseField<Record> {
     public interface CreateIdHandler {
+
         String createId(Instance name);
     }
-
     @JsonProperty
     private String name;
+
+    @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private String description;
 
     @JsonProperty
     private TypeInfo unitType;
@@ -40,6 +46,14 @@ public class Record implements TraverseField<Record> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public TypeInfo getUnitType() {
