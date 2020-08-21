@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import no.ssb.dapla.dataset.doc.model.gsim.IdentifiableArtefact;
 import no.ssb.dapla.dataset.doc.model.gsim.LogicalRecord;
-import no.ssb.dapla.dataset.doc.model.simple.Dataset;
 import no.ssb.dapla.dataset.doc.model.simple.Record;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;

@@ -1,6 +1,5 @@
 package no.ssb.dapla.dataset.doc.builder;
 
-import no.ssb.dapla.dataset.doc.model.simple.Dataset;
 import no.ssb.dapla.dataset.doc.model.simple.EnumInfo;
 import no.ssb.dapla.dataset.doc.model.simple.TypeInfo;
 import no.ssb.dapla.dataset.doc.model.simple.Instance;
@@ -23,23 +22,6 @@ public class SimpleBuilder {
 
     public static InstanceVariableBuilder createInstanceVariableBuilder(ConceptNameLookup conceptNameLookup) {
         return new InstanceVariableBuilder(conceptNameLookup);
-    }
-
-    public static DatasetBuilder createDatasetBuilder() {
-        return new DatasetBuilder();
-    }
-
-    public static class DatasetBuilder {
-        private final Dataset dataset = new Dataset();
-
-        public DatasetBuilder root(Record path) {
-            dataset.setRoot(path);
-            return this;
-        }
-
-        public Dataset build() {
-            return dataset;
-        }
     }
 
     public static class LogicalRecordBuilder {

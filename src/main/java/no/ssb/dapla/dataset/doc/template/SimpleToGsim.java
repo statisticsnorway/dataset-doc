@@ -6,16 +6,14 @@ import no.ssb.dapla.dataset.doc.model.gsim.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.gsim.PersistenceProvider;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
-import no.ssb.dapla.dataset.doc.model.simple.Dataset;
 import no.ssb.dapla.dataset.doc.model.simple.Instance;
 import no.ssb.dapla.dataset.doc.model.simple.Record;
 
 public class SimpleToGsim {
-    private no.ssb.dapla.dataset.doc.model.simple.Dataset root;
     private final String dataSetPath;
     private final PersistenceProvider persistenceProvider;
     private String userName = "Unknown";
-    private Record rootRecord;
+    private final Record rootRecord;
 
     public GsimBuilder.BaseBuilder createDefault(String id, String name, String description) {
         // for now just add hardcoded default values
@@ -33,17 +31,7 @@ public class SimpleToGsim {
                 .addProperty("versionValidFrom", date);
     }
 
-    public SimpleToGsim(Dataset root, String dataSetPath, PersistenceProvider persistenceProvider) {
-        if (!dataSetPath.startsWith("/")) {
-            throw new IllegalArgumentException("dataset path is expected to start with: '/' but was: " + dataSetPath);
-        }
-        this.root = root;
-        this.dataSetPath = dataSetPath;
-        this.persistenceProvider = persistenceProvider;
-    }
-
     public SimpleToGsim(Record rootRecord, String dataSetPath, PersistenceProvider persistenceProvider) {
-        this.rootRecord = rootRecord;
         if (!dataSetPath.startsWith("/")) {
             throw new IllegalArgumentException("dataset path is expected to start with: '/' but was: " + dataSetPath);
         }
