@@ -35,7 +35,6 @@ class SchemaWithPathTest {
         assertThat(s.getField()).isEqualTo("konto.innskudd");
         assertThat(s.getFieldCandidates()).hasSize(0);
         assertThat(s.getConfidence()).isEqualTo(0.9F);
-        assertThat(s.getType()).isEqualTo("inherited");
     }
 
     @Test
@@ -46,7 +45,6 @@ class SchemaWithPathTest {
         assertThat(s.getFieldCandidates().get(0)).isEqualTo("konto.innskudd");
         assertThat(s.getConfidence()).isLessThan(0.9F);
         assertThat(s.getConfidence()).isGreaterThan(0.5F);
-        assertThat(s.getType()).isEqualTo("derived/created");
     }
 
     @Test
@@ -57,7 +55,6 @@ class SchemaWithPathTest {
         assertThat(s.getFieldCandidates().get(0)).isEqualTo("konto.innskudd");
         assertThat(s.getConfidence()).isLessThan(0.6F);
         assertThat(s.getConfidence()).isGreaterThan(0.5F);
-        assertThat(s.getType()).isEqualTo("derived/created");
     }
 
     @Test

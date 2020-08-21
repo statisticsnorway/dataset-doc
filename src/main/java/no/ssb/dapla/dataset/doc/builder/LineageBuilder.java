@@ -40,7 +40,6 @@ public class LineageBuilder {
     public static class SourceBuilder {
         private String field;
         private String path;
-        private String type;
         private long version;
         private float confidence;
         private float matchScore;
@@ -71,11 +70,6 @@ public class LineageBuilder {
             return this;
         }
 
-        public SourceBuilder type(String type) {
-            this.type = type;
-            return this;
-        }
-
         public SourceBuilder matchScore(float matchScore) {
             this.matchScore = matchScore;
             return this;
@@ -85,7 +79,6 @@ public class LineageBuilder {
             Source source = new Source(field, path, version);
             source.setConfidence(confidence);
             source.setMatchScore(matchScore);
-            source.setType(type);
             source.addFieldCandidates(fieldCandidates);
             return source;
         }
