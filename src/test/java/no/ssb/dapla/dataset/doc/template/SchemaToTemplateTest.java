@@ -1,6 +1,5 @@
 package no.ssb.dapla.dataset.doc.template;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -39,8 +38,7 @@ class SchemaToTemplateTest {
                 .withDoSimpleFiltering(true)
                 .addInstanceVariableFilter("description");
 
-        ObjectNode rootNode = new ObjectMapper().createObjectNode();
-        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
+        ObjectNode logicalRecordRoot = new ObjectMapper().createObjectNode();
         logicalRecordRoot.put("name", "root");
         ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
         ivs.addObject().put("name", "group");
@@ -63,7 +61,7 @@ class SchemaToTemplateTest {
         }
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
 
-        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
+        JSONAssert.assertEquals(jsonString, logicalRecordRoot.toPrettyString(), false);
     }
 
     @Test
@@ -88,8 +86,7 @@ class SchemaToTemplateTest {
                 .addInstanceVariableFilter("description");
 
         System.out.println(schemaToTemplate.generateSimpleTemplateAsJsonString());
-        ObjectNode rootNode = new ObjectMapper().createObjectNode();
-        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
+        ObjectNode logicalRecordRoot = new ObjectMapper().createObjectNode();
         logicalRecordRoot.put("name", "root");
         ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
         ivs.addObject().put("name", "id");
@@ -103,7 +100,7 @@ class SchemaToTemplateTest {
         }
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
 
-        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
+        JSONAssert.assertEquals(jsonString, logicalRecordRoot.toPrettyString(), false);
     }
 
     @Test
@@ -170,22 +167,8 @@ class SchemaToTemplateTest {
                 new SchemaToTemplate(schema, conceptNameLookup).withDoSimpleFiltering(false);
 
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
-        System.out.println(jsonString);
+        String json = TestUtils.load("testdata/template/simple.json");
 
-        ObjectNode rootNode = new ObjectMapper().createObjectNode();
-        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
-        logicalRecordRoot.put("name", "konto");
-        ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
-        ivs.addObject()
-                .put("name", "kontonummer")
-                .put("description", "vilkårlig lang sekvens av tegn inkludert aksenter og spesielle tegn fra standardiserte tegnsett");
-        ivs.addObject()
-                .put("name", "innskudd")
-                .put("description", "9 sifret nummer gitt de som er registrert i Enhetsregisteret.");
-        ivs.addObject()
-                .put("name", "gjeld")
-                .put("description", "en sum av penger i hele kroner brukt i en kontekst. Dette kan være en transaksjon, saldo o.l.");
-
-//        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
+        JSONAssert.assertEquals(jsonString, json, false);
     }
 }

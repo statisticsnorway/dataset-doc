@@ -15,6 +15,8 @@ import no.ssb.dapla.dataset.doc.model.gsim.TransformableInput;
 import no.ssb.dapla.dataset.doc.model.gsim.TransformedOutput;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
+import no.ssb.dapla.dataset.doc.model.simple.EnumInfo;
+import no.ssb.dapla.dataset.doc.model.simple.TypeInfo;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -242,12 +244,9 @@ public class GsimBuilder {
             return this;
         }
 
-        public LogicalRecordBuilder unitType(String unitTypeId, String defaultValue) {
-            if (unitTypeId != null) {
-                logicalRecord.setUnitType("/UnitType/" + unitTypeId);
-            } else {
-                logicalRecord.setUnitType("/UnitType/" + defaultValue);
-            }
+        public LogicalRecordBuilder unitType(TypeInfo unitTypeId, String defaultValue) {
+            String value = unitTypeId != null ? unitTypeId.getId() : defaultValue;
+            logicalRecord.setUnitType("/UnitType/" + value);
             return this;
         }
 
@@ -299,18 +298,15 @@ public class GsimBuilder {
 
     public static class InstanceVariableBuilder {
         private final BaseBuilder baseBuilder;
-        private InstanceVariable instanceVariable = new InstanceVariable();
+        private final InstanceVariable instanceVariable = new InstanceVariable();
 
         public InstanceVariableBuilder(BaseBuilder baseBuilder) {
             this.baseBuilder = baseBuilder;
         }
 
-        public InstanceVariableBuilder dataStructureComponentType(String dataStructureComponentType, String defaultValue) {
-            if (dataStructureComponentType != null) {
-                instanceVariable.setDataStructureComponentType(dataStructureComponentType);
-            } else {
-                instanceVariable.setDataStructureComponentType(defaultValue);
-            }
+        public InstanceVariableBuilder dataStructureComponentType(EnumInfo dataStructureComponentType, String defaultValue) {
+            String value = dataStructureComponentType != null ? dataStructureComponentType.getValue() : defaultValue;
+            instanceVariable.setDataStructureComponentType(value);
             return this;
         }
 
@@ -319,12 +315,9 @@ public class GsimBuilder {
             return this;
         }
 
-        public InstanceVariableBuilder sentinelValueDomain(String sentinelValueDomain, String defaultValue) {
-            if (sentinelValueDomain != null) {
-                instanceVariable.setSentinelValueDomain("/DescribedValueDomain/" + sentinelValueDomain);
-            } else {
-                instanceVariable.setSentinelValueDomain("/DescribedValueDomain/" + defaultValue);
-            }
+        public InstanceVariableBuilder sentinelValueDomain(TypeInfo sentinelValueDomain, String defaultValue) {
+            String value = sentinelValueDomain != null ? sentinelValueDomain.getId() : defaultValue;
+            instanceVariable.setSentinelValueDomain("/DescribedValueDomain/" + value);
             return this;
         }
 
@@ -333,21 +326,15 @@ public class GsimBuilder {
             return this;
         }
 
-        public InstanceVariableBuilder dataStructureComponentRole(String dataStructureComponentRole, String defaultValue) {
-            if (dataStructureComponentRole != null) {
-                instanceVariable.setDataStructureComponentRole(dataStructureComponentRole);
-            } else {
-                instanceVariable.setDataStructureComponentRole(defaultValue);
-            }
+        public InstanceVariableBuilder dataStructureComponentRole(EnumInfo dataStructureComponentRole, String defaultValue) {
+            String value = dataStructureComponentRole != null ? dataStructureComponentRole.getValue() : defaultValue;
+            instanceVariable.setDataStructureComponentRole(value);
             return this;
         }
 
-        public InstanceVariableBuilder representedVariable(String representedVariable, String defaultValue) {
-            if (representedVariable != null) {
-                instanceVariable.setRepresentedVariable("/RepresentedVariable/" + representedVariable);
-            } else {
-                instanceVariable.setRepresentedVariable("/RepresentedVariable/" + defaultValue);
-            }
+        public InstanceVariableBuilder representedVariable(TypeInfo representedVariable, String defaultValue) {
+            String value = representedVariable != null ? representedVariable.getId() : defaultValue;
+            instanceVariable.setRepresentedVariable("/RepresentedVariable/" + value);
             return this;
         }
 
@@ -356,8 +343,9 @@ public class GsimBuilder {
             return this;
         }
 
-        public InstanceVariableBuilder population(String population) {
-            baseBuilder.addProperty("population", "/Population/" + population);
+        public InstanceVariableBuilder population(TypeInfo population, String defaultValue) {
+            String value = population != null ? population.getId() : defaultValue;
+            baseBuilder.addProperty("population", "/Population/" + value);
             return this;
         }
 
