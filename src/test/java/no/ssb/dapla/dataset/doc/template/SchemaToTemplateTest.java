@@ -1,6 +1,5 @@
 package no.ssb.dapla.dataset.doc.template;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -9,6 +8,9 @@ import org.apache.avro.SchemaBuilder;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+
+import java.util.List;
+import java.util.Map;
 
 class SchemaToTemplateTest {
 
@@ -36,8 +38,7 @@ class SchemaToTemplateTest {
                 .withDoSimpleFiltering(true)
                 .addInstanceVariableFilter("description");
 
-        ObjectNode rootNode = new ObjectMapper().createObjectNode();
-        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
+        ObjectNode logicalRecordRoot = new ObjectMapper().createObjectNode();
         logicalRecordRoot.put("name", "root");
         ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
         ivs.addObject().put("name", "group");
@@ -60,7 +61,7 @@ class SchemaToTemplateTest {
         }
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
 
-        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
+        JSONAssert.assertEquals(jsonString, logicalRecordRoot.toPrettyString(), false);
     }
 
     @Test
@@ -85,8 +86,7 @@ class SchemaToTemplateTest {
                 .addInstanceVariableFilter("description");
 
         System.out.println(schemaToTemplate.generateSimpleTemplateAsJsonString());
-        ObjectNode rootNode = new ObjectMapper().createObjectNode();
-        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
+        ObjectNode logicalRecordRoot = new ObjectMapper().createObjectNode();
         logicalRecordRoot.put("name", "root");
         ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
         ivs.addObject().put("name", "id");
@@ -100,39 +100,75 @@ class SchemaToTemplateTest {
         }
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
 
-        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
+        JSONAssert.assertEquals(jsonString, logicalRecordRoot.toPrettyString(), false);
     }
 
     @Test
     void testOneLevel() throws JSONException {
         Schema schema = SchemaBuilder
                 .record("konto").namespace("no.ssb.dataset")
+                .prop("description", "Inneholder kontoer av forskjellig art.")
                 .fields()
                 .name("kontonummer").prop("description", "vilkårlig lang sekvens av tegn inkludert aksenter og spesielle tegn fra standardiserte tegnsett").type().stringType().noDefault()
                 .name("innskudd").prop("description", "9 sifret nummer gitt de som er registrert i Enhetsregisteret.").type().stringType().noDefault()
                 .name("gjeld").prop("description", "en sum av penger i hele kroner brukt i en kontekst. Dette kan være en transaksjon, saldo o.l.").type().optional().stringType()
                 .endRecord();
 
+
+        ConceptNameLookup conceptNameLookup = new ConceptNameLookup() {
+            @Override
+            public Map<String, String> getNameToIds(String conceptType) {
+                switch (conceptType) {
+                    case "Population":
+                        return Map.of("some-id-could-be-guid", "All families 2018-01-01",
+                                "Population_DUMMY", "Population_default");
+                    case "RepresentedVariable":
+                        return Map.of("some-id-could-be-guid", "NationalFamilyIdentifier",
+                                "RepresentedVariable_DUMMY", "RepresentedVariable_default");
+                    case "EnumeratedValueDomain":
+                        return Map.of("some-id-could-be-guid", "Standard for gruppering av familier",
+                                "EnumeratedValueDomain_DUMMY", "EnumeratedValueDomain_default");
+                    case "DescribedValueDomain":
+                        return Map.of("some-id-could-be-guid", "Heltall",
+                                "DescribedValueDomain_DUMMY", "DescribedValueDomain_default",
+                                "ValueDomain_DUMMY", "ValueDomain_default"
+                        );
+                    case "UnitType":
+                        return Map.of("some-id-could-be-guid", "Heltall",
+                                "UnitType_DUMMY", "UnitType_default");
+                    default:
+                        throw new IllegalArgumentException("");
+                }
+            }
+
+            @Override
+            public List<String> getGsimSchemaEnum(String conceptType, String enumType) {
+                switch (conceptType) {
+                    case "InstanceVariable":
+                        return processInstanceVariable(enumType);
+                    default:
+                        throw new IllegalArgumentException("");
+                }
+            }
+
+            private List<String> processInstanceVariable(String enumType) {
+                switch (enumType) {
+                    case "dataStructureComponentType":
+                        return List.of("IDENTIFIER", "MEASURE", "ATTRIBUTE");
+                    case "dataStructureComponentRole":
+                        return List.of("ENTITY", "IDENTITY", "COUNT", "TIME", "GEO");
+                    default:
+                        throw new IllegalArgumentException("");
+                }
+            }
+        };
+
         SchemaToTemplate schemaToTemplate =
-                new SchemaToTemplate(schema).withDoSimpleFiltering(true);
+                new SchemaToTemplate(schema, conceptNameLookup).withDoSimpleFiltering(false);
 
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
-        System.out.println(jsonString);
+        String json = TestUtils.load("testdata/template/simple.json");
 
-        ObjectNode rootNode = new ObjectMapper().createObjectNode();
-        ObjectNode logicalRecordRoot = rootNode.putObject("logical-record-root");
-        logicalRecordRoot.put("name", "konto");
-        ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
-        ivs.addObject()
-                .put("name", "kontonummer")
-                .put("description", "vilkårlig lang sekvens av tegn inkludert aksenter og spesielle tegn fra standardiserte tegnsett");
-        ivs.addObject()
-                .put("name", "innskudd")
-                .put("description", "9 sifret nummer gitt de som er registrert i Enhetsregisteret.");
-        ivs.addObject()
-                .put("name", "gjeld")
-                .put("description", "en sum av penger i hele kroner brukt i en kontekst. Dette kan være en transaksjon, saldo o.l.");
-
-        JSONAssert.assertEquals(jsonString, rootNode.toPrettyString(), false);
+        JSONAssert.assertEquals(jsonString, json, false);
     }
 }

@@ -2,8 +2,10 @@ package no.ssb.dapla.dataset.doc.model.simple;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonFilter("InstanceVariable_MinimumFilter")
+@JsonPropertyOrder({"name", "description", "identifierComponentIsComposite", "identifierComponentIsUnique", "dataStructureComponentRole", "dataStructureComponentType"})
 public class Instance {
 
     @JsonProperty
@@ -13,25 +15,25 @@ public class Instance {
     private String description;
 
     @JsonProperty
-    private String population;
-
-    @JsonProperty
-    private String dataStructureComponentRole;
-
-    @JsonProperty
-    private String dataStructureComponentType;
-
-    @JsonProperty
     private boolean identifierComponentIsComposite;
 
     @JsonProperty
     private boolean identifierComponentIsUnique;
 
     @JsonProperty
-    private String representedVariable;
+    private EnumInfo dataStructureComponentRole;
 
     @JsonProperty
-    private String sentinelValueDomain;
+    private EnumInfo dataStructureComponentType;
+
+    @JsonProperty
+    private TypeInfo population;
+
+    @JsonProperty
+    private TypeInfo representedVariable;
+
+    @JsonProperty
+    private TypeInfo sentinelValueDomain;
 
     public String getName() {
         return name;
@@ -49,28 +51,27 @@ public class Instance {
         this.description = description;
     }
 
-    public String getPopulation() {
+    public TypeInfo getPopulation() {
         return population;
     }
 
-    public void setPopulation(String population) {
+    public void setPopulation(TypeInfo population) {
         this.population = population;
     }
 
-
-    public String getDataStructureComponentRole() {
+    public EnumInfo getDataStructureComponentRole() {
         return dataStructureComponentRole;
     }
 
-    public void setDataStructureComponentRole(String dataStructureComponentRole) {
+    public void setDataStructureComponentRole(EnumInfo dataStructureComponentRole) {
         this.dataStructureComponentRole = dataStructureComponentRole;
     }
 
-    public String getDataStructureComponentType() {
+    public EnumInfo getDataStructureComponentType() {
         return dataStructureComponentType;
     }
 
-    public void setDataStructureComponentType(String dataStructureComponentType) {
+    public void setDataStructureComponentType(EnumInfo dataStructureComponentType) {
         this.dataStructureComponentType = dataStructureComponentType;
     }
 
@@ -90,19 +91,19 @@ public class Instance {
         this.identifierComponentIsUnique = identifierComponentIsUnique;
     }
 
-    public String getRepresentedVariable() {
+    public TypeInfo getRepresentedVariable() {
         return representedVariable;
     }
 
-    public void setRepresentedVariable(String representedVariable) {
+    public void setRepresentedVariable(TypeInfo representedVariable) {
         this.representedVariable = representedVariable;
     }
 
-    public String getSentinelValueDomain() {
+    public TypeInfo getSentinelValueDomain() {
         return sentinelValueDomain;
     }
 
-    public void setSentinelValueDomain(String sentinelValueDomain) {
+    public void setSentinelValueDomain(TypeInfo sentinelValueDomain) {
         this.sentinelValueDomain = sentinelValueDomain;
     }
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import no.ssb.dapla.dataset.doc.model.gsim.IdentifiableArtefact;
 import no.ssb.dapla.dataset.doc.model.gsim.LogicalRecord;
-import no.ssb.dapla.dataset.doc.model.simple.Dataset;
+import no.ssb.dapla.dataset.doc.model.simple.Record;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -23,39 +23,37 @@ class SimpleToGsimTest {
     final private static String TEST_DATA_FOLDER = "testdata/gsim_files";
 
     String json = "{\n" +
-            "  \"logical-record-root\" : {\n" +
-            "    \"name\" : \"root\",\n" +
+            "  \"name\" : \"root\",\n" +
+            "  \"logicalRecords\" : [ {\n" +
+            "    \"name\" : \"person\",\n" +
             "    \"logicalRecords\" : [ {\n" +
-            "      \"name\" : \"person\",\n" +
-            "      \"logicalRecords\" : [ {\n" +
-            "        \"name\" : \"address\",\n" +
-            "        \"logicalRecords\" : [ ],\n" +
-            "        \"instanceVariables\" : [ {\n" +
-            "          \"name\" : \"street\",\n" +
-            "          \"description\" : \"street\"\n" +
-            "        }, {\n" +
-            "          \"name\" : \"postcode\",\n" +
-            "          \"description\" : \"postcode\"\n" +
-            "        } ]\n" +
-            "      } ],\n" +
+            "      \"name\" : \"address\",\n" +
+            "      \"logicalRecords\" : [ ],\n" +
             "      \"instanceVariables\" : [ {\n" +
-            "        \"name\" : \"name\",\n" +
-            "        \"description\" : \"name\"\n" +
+            "        \"name\" : \"street\",\n" +
+            "        \"description\" : \"street\"\n" +
             "      }, {\n" +
-            "        \"name\" : \"sex\",\n" +
-            "        \"description\" : \"sex\"\n" +
+            "        \"name\" : \"postcode\",\n" +
+            "        \"description\" : \"postcode\"\n" +
             "      } ]\n" +
             "    } ],\n" +
             "    \"instanceVariables\" : [ {\n" +
-            "      \"name\" : \"group\",\n" +
-            "      \"description\" : \"group\"\n" +
+            "      \"name\" : \"name\",\n" +
+            "      \"description\" : \"name\"\n" +
+            "    }, {\n" +
+            "      \"name\" : \"sex\",\n" +
+            "      \"description\" : \"sex\"\n" +
             "    } ]\n" +
-            "  }\n" +
+            "  } ],\n" +
+            "  \"instanceVariables\" : [ {\n" +
+            "    \"name\" : \"group\",\n" +
+            "    \"description\" : \"group\"\n" +
+            "  } ]\n" +
             "}\n";
 
     @Test
     void createGsimObjectsFor2Levels_AndWriteToFiles() throws JsonProcessingException {
-        Dataset root = new ObjectMapper().readValue(json, Dataset.class);
+        Record root = new ObjectMapper().readValue(json, Record.class);
 
         // to generate files
         //new File(TEST_DATA_FOLDER).mkdirs();
@@ -71,7 +69,6 @@ class SimpleToGsimTest {
     @Test
     void createGsimObjectsForZeroLevels() throws JsonProcessingException {
         String json = "{\n" +
-                "  \"logical-record-root\" : {\n" +
                 "    \"name\" : \"konto\",\n" +
                 "    \"instanceVariables\" : [ {\n" +
                 "      \"name\" : \"kontonummer\",\n" +
@@ -86,7 +83,7 @@ class SimpleToGsimTest {
                 "  }\n" +
                 "}\n";
 
-        Dataset root = new ObjectMapper().readValue(json, Dataset.class);
+        Record root = new ObjectMapper().readValue(json, Record.class);
         List<String> list = Arrays.asList(
                 "/InstanceVariable/path.to.dataset.konto.kontonummer",
                 "/InstanceVariable/path.to.dataset.konto.innskudd",
@@ -125,6 +122,17 @@ class SimpleToGsimTest {
         assertThat(gsimNames).isEmpty();
     }
 
+    @Test
+    void checkFullFormatSimpleToGsim() throws JsonProcessingException {
+        String json = TestUtils.load("testdata/template/simple.json");
+        Record root = new ObjectMapper().readValue(json, Record.class);
+
+        new SimpleToGsim(root, "/path/to/dataset", identifiableArtefact -> {
+            String fileName = String.format("testdata/template/gsim_result/%s_%s.json", identifiableArtefact.getGsimName(), identifiableArtefact.getName());
+            String expected = TestUtils.load(fileName);
+            assertThat(getJson(identifiableArtefact)).isEqualTo(expected);
+        }).createGsimObjects();
+    }
 
     String getJson(IdentifiableArtefact identifiableArtefact) {
         try {

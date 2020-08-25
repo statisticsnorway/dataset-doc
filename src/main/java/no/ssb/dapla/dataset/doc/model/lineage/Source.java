@@ -31,9 +31,6 @@ public class Source {
     @JsonIgnore
     private float matchScore;
 
-    @JsonIgnore
-    private String type;
-
     public long getVersion() {
         return version;
     }
@@ -57,14 +54,6 @@ public class Source {
 
     public void setConfidence(float confidence) {
         this.confidence = confidence;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public void addFieldCandidates(Collection<String> fields) {

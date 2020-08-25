@@ -8,6 +8,7 @@ module no.ssb.dapla.dataset.uri {
     requires gson;
 
     exports no.ssb.dapla.dataset.doc.model.simple;
+    exports no.ssb.dapla.dataset.doc.template;
     exports no.ssb.dapla.dataset.doc.model.gsim;
 
     opens no.ssb.dapla.dataset.doc.model.simple to com.fasterxml.jackson.databind, gson;

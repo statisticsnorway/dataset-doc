@@ -6,15 +6,14 @@ import no.ssb.dapla.dataset.doc.model.gsim.LogicalRecord;
 import no.ssb.dapla.dataset.doc.model.gsim.PersistenceProvider;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataSet;
 import no.ssb.dapla.dataset.doc.model.gsim.UnitDataStructure;
-import no.ssb.dapla.dataset.doc.model.simple.Dataset;
 import no.ssb.dapla.dataset.doc.model.simple.Instance;
 import no.ssb.dapla.dataset.doc.model.simple.Record;
 
 public class SimpleToGsim {
-    private final no.ssb.dapla.dataset.doc.model.simple.Dataset root;
     private final String dataSetPath;
     private final PersistenceProvider persistenceProvider;
     private String userName = "Unknown";
+    private final Record rootRecord;
 
     public GsimBuilder.BaseBuilder createDefault(String id, String name, String description) {
         // for now just add hardcoded default values
@@ -32,11 +31,11 @@ public class SimpleToGsim {
                 .addProperty("versionValidFrom", date);
     }
 
-    public SimpleToGsim(Dataset root, String dataSetPath, PersistenceProvider persistenceProvider) {
+    public SimpleToGsim(Record rootRecord, String dataSetPath, PersistenceProvider persistenceProvider) {
         if (!dataSetPath.startsWith("/")) {
             throw new IllegalArgumentException("dataset path is expected to start with: '/' but was: " + dataSetPath);
         }
-        this.root = root;
+        this.rootRecord = rootRecord;
         this.dataSetPath = dataSetPath;
         this.persistenceProvider = persistenceProvider;
     }
@@ -47,7 +46,7 @@ public class SimpleToGsim {
     }
 
     public void createGsimObjects() {
-        Record rootRecord = this.root.getRoot();
+        Record rootRecord = this.rootRecord;
         UnitDataStructure unitDataStructure = createDefault(createId(rootRecord), rootRecord.getName(), null)
                 .unitDataStructure()
                 .logicalRecord(createId(rootRecord))
@@ -86,7 +85,7 @@ public class SimpleToGsim {
                     createDefault(createId(record, instance), instance.getName(), instance.getDescription())
                             .instanceVariable()
                             .shortName(instance.getName())
-                            .population("Population_DUMMY")
+                            .population(instance.getPopulation(), "Population_DUMMY")
                             .dataStructureComponentType(instance.getDataStructureComponentType(), "MEASURE")
                             .dataStructureComponentRole(instance.getDataStructureComponentRole(), "ENTITY")
                             .sentinelValueDomain(instance.getSentinelValueDomain(), "DescribedValueDomain_DUMMY")

@@ -1,9 +1,9 @@
 package no.ssb.dapla.dataset.doc.model.simple;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import no.ssb.dapla.dataset.doc.traverse.TraverseField;
 
 import java.util.ArrayList;
@@ -11,16 +11,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonFilter("LogicalRecord_MinimumFilter")
+@JsonPropertyOrder({"name", "description", "unitType", "instances", "records"})
 public class Record implements TraverseField<Record> {
     public interface CreateIdHandler {
+
         String createId(Instance name);
     }
-
     @JsonProperty
     private String name;
 
     @JsonProperty
-    private String unitType;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private String description;
+
+    @JsonProperty
+    private TypeInfo unitType;
 
     @JsonProperty("instanceVariables")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -43,11 +48,19 @@ public class Record implements TraverseField<Record> {
         this.name = name;
     }
 
-    public String getUnitType() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TypeInfo getUnitType() {
         return unitType;
     }
 
-    public void setUnitType(String unitType) {
+    public void setUnitType(TypeInfo unitType) {
         this.unitType = unitType;
     }
 
