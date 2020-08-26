@@ -15,14 +15,7 @@
     <repositories>
         <repository>
             <id>ssb-bip-releases</id>
-            <url>https://nexus.prod-bip-ci.ssb.no/repository/maven-releases/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ssb-bip-snapshots</id>
-            <url>https://nexus.prod-bip-ci.ssb.no/repository/maven-snapshots/</url>
+            <url>https://nexus.prod-bip-ci.ssb.no/repository/maven-public/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
