@@ -40,11 +40,13 @@ class SchemaToTemplateTest {
 
         ObjectNode logicalRecordRoot = new ObjectMapper().createObjectNode();
         logicalRecordRoot.put("name", "root");
+        logicalRecordRoot.put("description", "");
         ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
         ivs.addObject().put("name", "group");
         ArrayNode lrs = logicalRecordRoot.putArray("logicalRecords");
         ObjectNode personLR = lrs.addObject();
         personLR.put("name", "person");
+        personLR.put("description", "");
         {
             ArrayNode personIVs = personLR.putArray("instanceVariables");
             personIVs.addObject().put("name", "name");
@@ -53,6 +55,7 @@ class SchemaToTemplateTest {
             ArrayNode addressLogicalRecords = personLR.putArray("logicalRecords");
             ObjectNode addressLR = addressLogicalRecords.addObject();
             addressLR.put("name", "address");
+            addressLR.put("description", "");
             {
                 ArrayNode addressIVs = addressLR.putArray("instanceVariables");
                 addressIVs.addObject().put("name", "street");
@@ -88,11 +91,13 @@ class SchemaToTemplateTest {
         System.out.println(schemaToTemplate.generateSimpleTemplateAsJsonString());
         ObjectNode logicalRecordRoot = new ObjectMapper().createObjectNode();
         logicalRecordRoot.put("name", "root");
+        logicalRecordRoot.put("description", "");
         ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
         ivs.addObject().put("name", "id");
         ArrayNode lrs = logicalRecordRoot.putArray("logicalRecords");
         ObjectNode personLR = lrs.addObject();
         personLR.put("name", "person");
+        personLR.put("description", "");
         {
             ArrayNode personIVs = personLR.putArray("instanceVariables");
             personIVs.addObject().put("name", "name");
