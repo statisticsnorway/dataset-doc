@@ -21,7 +21,6 @@ public class Record implements TraverseField<Record> {
     private String name;
 
     @JsonProperty
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String description;
 
     @JsonProperty
@@ -49,7 +48,7 @@ public class Record implements TraverseField<Record> {
     }
 
     public String getDescription() {
-        return description;
+        return description == null ? "" : description;
     }
 
     public void setDescription(String description) {
