@@ -36,7 +36,11 @@ public class TypeInfo {
     // Fix to avoid gui crash on emptyListForNow
     private void makeSureWeHaveOneElement() {
         if (candidates.isEmpty()) {
-            candidates.add(new Candidate(type + "_DUMMY", type + "_generated"));
+            String[] types = type.split(",");
+            this.id = types[0] + "_DUMMY";
+            for (String typeCandidates : types) {
+                candidates.add(new Candidate(typeCandidates + "_DUMMY", typeCandidates + "_generated"));
+            }
         }
     }
 
