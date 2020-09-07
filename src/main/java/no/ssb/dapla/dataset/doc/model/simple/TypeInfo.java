@@ -31,6 +31,13 @@ public class TypeInfo {
                     .map(e -> new Candidate(e.getKey(), e.getValue())).collect(Collectors.toList());
         }
         makeSureWeHaveOneElement();
+        makeSureWeHaveCorrectSelectedId();
+    }
+
+    private void makeSureWeHaveCorrectSelectedId() {
+        if (candidates.stream().noneMatch(candidate -> candidate.id.equals(id))) {
+            id = candidates.get(0).id;
+        }
     }
 
     // Fix to avoid gui crash on emptyListForNow
