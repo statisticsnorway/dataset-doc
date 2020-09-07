@@ -1,6 +1,5 @@
 package no.ssb.dapla.dataset.doc.model.simple;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -16,9 +15,8 @@ public class TypeInfo {
     @JsonProperty("concept-type")
     private String type;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty("candidates")
-    private List<Candidate> candidatesNameToId;
+    private List<Candidate> candidates;
 
     public TypeInfo() {
     }
@@ -26,8 +24,20 @@ public class TypeInfo {
     public TypeInfo(String id, String type, Map<String, String> candidatesNameToId) {
         this.id = id;
         this.type = type;
-        this.candidatesNameToId = candidatesNameToId.entrySet().stream()
-                .map(e -> new Candidate(e.getKey(), e.getValue())).collect(Collectors.toList());
+        if (candidatesNameToId == null) {
+            this.candidates = List.of();
+        } else {
+            this.candidates = candidatesNameToId.entrySet().stream()
+                    .map(e -> new Candidate(e.getKey(), e.getValue())).collect(Collectors.toList());
+        }
+        makeSureWeHaveOneElement();
+    }
+
+    // Fix to avoid gui crash on emptyListForNow
+    private void makeSureWeHaveOneElement() {
+        if (candidates.isEmpty()) {
+            candidates.add(new Candidate(type + "_DUMMY", type + "_generated"));
+        }
     }
 
     public String getId() {

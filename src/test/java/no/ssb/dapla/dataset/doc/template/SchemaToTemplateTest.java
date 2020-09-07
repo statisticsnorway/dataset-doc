@@ -176,4 +176,34 @@ class SchemaToTemplateTest {
 
         JSONAssert.assertEquals(jsonString, json, false);
     }
+
+    @Test
+    void testConceptNameLookup() throws JSONException {
+        Schema schema = SchemaBuilder
+                .record("konto").namespace("no.ssb.dataset")
+                .prop("description", "Inneholder kontoer av forskjellig art.")
+                .fields()
+                .name("kontonummer").prop("description", "vilkårlig lang sekvens av tegn inkludert aksenter og spesielle tegn fra standardiserte tegnsett").type().stringType().noDefault()
+                .endRecord();
+
+
+        ConceptNameLookup conceptNameLookup = new ConceptNameLookup() {
+            @Override
+            public Map<String, String> getNameToIds(String conceptType) {
+                return Map.of();
+            }
+
+            @Override
+            public List<String> getGsimSchemaEnum(String conceptType, String enumType) {
+                return List.of();
+            }
+        };
+
+        SchemaToTemplate schemaToTemplate =
+                new SchemaToTemplate(schema, conceptNameLookup).withDoSimpleFiltering(false);
+
+        String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
+        // TODO: make proper test
+        System.out.println(jsonString);
+    }
 }
