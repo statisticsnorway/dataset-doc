@@ -12,7 +12,6 @@ public class EnumInfo {
     @JsonProperty("selected-enum")
     private String value;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty("enums")
     private List<String> enums;
 
