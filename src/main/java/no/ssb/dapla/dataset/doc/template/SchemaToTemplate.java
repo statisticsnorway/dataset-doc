@@ -114,7 +114,7 @@ public class SchemaToTemplate extends SchemaTraverse<Record> {
     private Instance getInstanceVariable(String name, String description) {
         return SimpleBuilder.createInstanceVariableBuilder(conceptNameLookup)
                 .name(name)
-                .description(description != null ? description : name)
+                .description(description != null ? description : "")
                 .dataStructureComponentType("MEASURE")
                 .identifierComponentIsComposite(false)
                 .identifierComponentIsUnique(false)
