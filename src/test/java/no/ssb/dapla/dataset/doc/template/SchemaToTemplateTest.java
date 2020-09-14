@@ -1,8 +1,11 @@
 package no.ssb.dapla.dataset.doc.template;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
+import no.ssb.dapla.dataset.doc.model.simple.Record;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.json.JSONException;
@@ -11,6 +14,8 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.List;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SchemaToTemplateTest {
 
@@ -39,7 +44,7 @@ class SchemaToTemplateTest {
                 .addInstanceVariableFilter("description");
 
         ObjectNode logicalRecordRoot = new ObjectMapper().createObjectNode();
-        logicalRecordRoot.put("name", "root");
+        logicalRecordRoot.put("name", "");
         logicalRecordRoot.put("description", "");
         ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
         ivs.addObject().put("name", "group");
@@ -90,7 +95,7 @@ class SchemaToTemplateTest {
 
         System.out.println(schemaToTemplate.generateSimpleTemplateAsJsonString());
         ObjectNode logicalRecordRoot = new ObjectMapper().createObjectNode();
-        logicalRecordRoot.put("name", "root");
+        logicalRecordRoot.put("name", "");
         logicalRecordRoot.put("description", "");
         ArrayNode ivs = logicalRecordRoot.putArray("instanceVariables");
         ivs.addObject().put("name", "id");
@@ -172,7 +177,7 @@ class SchemaToTemplateTest {
                 new SchemaToTemplate(schema, conceptNameLookup).withDoSimpleFiltering(false);
 
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
-        String json = TestUtils.load("testdata/template/simple.json");
+        String json = TestUtils.load("testdata/template/default.json");
 
         JSONAssert.assertEquals(jsonString, json, false);
     }
@@ -205,5 +210,22 @@ class SchemaToTemplateTest {
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
         // TODO: make proper test
         System.out.println(jsonString);
+    }
+
+    @Test
+    void checkThatRootRecordNameIsEmptyString() throws JsonProcessingException {
+        Schema schema = SchemaBuilder
+                .record("spark_schema").namespace("no.ssb.dataset")
+                .fields()
+                .name("kontonummer").type().stringType().noDefault()
+                .endRecord();
+
+        SchemaToTemplate schemaToTemplate =
+                new SchemaToTemplate(schema).withDoSimpleFiltering(false);
+
+        String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
+
+        Record root = new ObjectMapper().readValue(jsonString, Record.class);
+        assertThat(root.getName()).isEmpty();
     }
 }

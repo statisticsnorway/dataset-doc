@@ -96,7 +96,9 @@ public class SchemaToTemplate extends SchemaTraverse<Record> {
     @Override
     protected Record createChild(SchemaBuddy schemaBuddy, Record parent) {
         String description = (String) schemaBuddy.getProp("description");
-        return getLogicalRecord(schemaBuddy.getName(), description);
+        // Make sure we don't use spark_schema as suggested dataset and root logical record name
+        String name = parent == null ? "" : schemaBuddy.getName();
+        return getLogicalRecord(name, description);
     }
 
     @Override
