@@ -47,13 +47,13 @@ public class SimpleToGsim {
 
     public void createGsimObjects() {
         Record rootRecord = this.rootRecord;
-        UnitDataStructure unitDataStructure = createDefault(createId(rootRecord), rootRecord.getName(), null)
+        UnitDataStructure unitDataStructure = createDefault(createId(rootRecord), rootRecord.getName(), rootRecord.getDescription())
                 .unitDataStructure()
                 .logicalRecord(createId(rootRecord))
                 .build();
         persistenceProvider.save(unitDataStructure);
 
-        UnitDataSet unitDataset = createDefault(createId(rootRecord), rootRecord.getName(), null)
+        UnitDataSet unitDataset = createDefault(createId(rootRecord), rootRecord.getName(), rootRecord.getDescription())
                 .unitDataSet()
                 .unitDataStructure(unitDataStructure.getId())
                 .temporalityType("EVENT") // TODO: get this from correct place
@@ -68,7 +68,7 @@ public class SimpleToGsim {
     void processAll(Record record, String parentLogicalRecordId) {
         String logicalRecordId = parentLogicalRecordId == null ? createId(record) : parentLogicalRecordId + "." + record.getName();
         LogicalRecord gsimLogicalRecord =
-                createDefault(logicalRecordId, record.getName(), null)
+                createDefault(logicalRecordId, record.getName(), record.getDescription())
                         .logicalRecord()
                         .isPlaceholderRecord(false)// TODO: add and get from simple
                         .unitType(record.getUnitType(), "UnitType_DUMMY")

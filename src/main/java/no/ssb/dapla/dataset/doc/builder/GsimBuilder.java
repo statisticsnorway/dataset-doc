@@ -86,7 +86,7 @@ public class GsimBuilder {
             if (name != null) {
                 identifiableArtefact.setUnknowProperty("name", createListOfMap(languageCode, name));
             }
-            if (description != null) {
+            if (description != null && !description.isEmpty()) {
                 identifiableArtefact.setUnknowProperty("description", createListOfMap(languageCode, description));
             }
             if (id == null) {
