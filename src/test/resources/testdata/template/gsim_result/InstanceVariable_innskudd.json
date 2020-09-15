@@ -1,10 +1,10 @@
 {
   "id" : "path.to.dataset.konto.innskudd",
   "shortName" : "innskudd",
-  "dataStructureComponentRole" : "ENTITY",
-  "dataStructureComponentType" : "MEASURE",
-  "identifierComponentIsComposite" : false,
-  "identifierComponentIsUnique" : false,
+  "dataStructureComponentRole" : "COUNT",
+  "dataStructureComponentType" : "IDENTIFIER",
+  "identifierComponentIsComposite" : true,
+  "identifierComponentIsUnique" : true,
   "representedVariable" : "/RepresentedVariable/RepresentedVariable_DUMMY",
   "sentinelValueDomain" : "/DescribedValueDomain/ValueDomain_DUMMY",
   "name" : [ {
