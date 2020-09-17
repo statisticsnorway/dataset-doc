@@ -51,6 +51,16 @@
           }
         ]
       }
+    ],
+    "sources": [
+      {
+        "path": "/kilde/skatt/konto/innskudd",
+        "version": 123456789
+      },
+      {
+        "path": "/kilde/freg/alder",
+        "version": 123456789
+      }
     ]
   }
 }

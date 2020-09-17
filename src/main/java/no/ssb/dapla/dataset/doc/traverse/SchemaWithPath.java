@@ -26,6 +26,10 @@ public class SchemaWithPath {
         this.version = version;
     }
 
+    public Source asSource() {
+        return new Source(null, path, version);
+    }
+
     public Source getSource(String name) {
         List<FieldFinder.Field> fields = fieldFinder.find(name);
         if (fields.isEmpty()) {
