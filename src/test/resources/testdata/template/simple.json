@@ -67,14 +67,14 @@
   }, {
     "name" : "innskudd",
     "description" : "9 sifret nummer gitt de som er registrert i Enhetsregisteret.",
-    "identifierComponentIsComposite" : false,
-    "identifierComponentIsUnique" : false,
+    "identifierComponentIsComposite" : true,
+    "identifierComponentIsUnique" : true,
     "dataStructureComponentRole" : {
-      "selected-enum" : "ENTITY",
+      "selected-enum" : "COUNT",
       "enums" : [ "ENTITY", "IDENTITY", "COUNT", "TIME", "GEO" ]
     },
     "dataStructureComponentType" : {
-      "selected-enum" : "MEASURE",
+      "selected-enum" : "IDENTIFIER",
       "enums" : [ "IDENTIFIER", "MEASURE", "ATTRIBUTE" ]
     },
     "population" : {
