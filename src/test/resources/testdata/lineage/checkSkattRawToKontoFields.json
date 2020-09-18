@@ -68,6 +68,12 @@
           }
         ]
       }
+    ],
+    "sources": [
+      {
+        "path": "/kilde/skatt",
+        "version": 123456789
+      }
     ]
   }
 }

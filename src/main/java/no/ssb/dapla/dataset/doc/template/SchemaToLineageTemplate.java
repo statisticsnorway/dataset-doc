@@ -26,10 +26,12 @@ import java.util.stream.Collectors;
 public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
     private final Schema schema;
     private final List<SchemaWithPath> schemaWithPaths;
+    boolean simple;
 
-    public SchemaToLineageTemplate(List<SchemaWithPath> inputs, Schema outputSchema) {
+    public SchemaToLineageTemplate(List<SchemaWithPath> inputs, Schema outputSchema, boolean simple) {
         this.schemaWithPaths = inputs;
         this.schema = outputSchema;
+        this.simple = simple;
     }
 
     public String generateTemplateAsJsonString() {
@@ -48,7 +50,12 @@ public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
     private Dataset generateTemplate() {
         SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
 
-        Record root = traverse(schemaBuddy);
+        Record root;
+        if (!simple) {
+            root = traverse(schemaBuddy);
+        } else {
+            root = createChild(schemaBuddy, null);
+        }
         return LineageBuilder.createDatasetBuilder()
                 .root(root)
                 .build();
@@ -58,6 +65,7 @@ public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
     protected Record createChild(SchemaBuddy schemaBuddy, Record parent) {
         return LineageBuilder.createLogicalRecordBuilder()
                 .name(schemaBuddy.getName())
+                .addSources(getAllSources())
                 .build();
     }
 
@@ -84,6 +92,12 @@ public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
         return schemaWithPaths.stream()
                 .map(schemaWithPath -> schemaWithPath.getSource(name))
                 .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private Collection<Source> getAllSources() {
+        return schemaWithPaths.stream()
+                .map(SchemaWithPath::asSource)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 }

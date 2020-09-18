@@ -53,7 +53,7 @@ class SchemaToLineageTemplateTest {
     }
 
     @Test
-    void testWithOneLevel() throws JsonProcessingException {
+    void testWithOneLevel() throws JsonProcessingException, JSONException {
         Schema schema = SchemaBuilder
                 .record("spark_schema").namespace("no.ssb.dataset")
                 .fields()
@@ -77,6 +77,40 @@ class SchemaToLineageTemplateTest {
         Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
         String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
         System.out.println(jsonStringForDataSet);
+        String expected = TestUtils.load("testdata/lineage/one-level.json");
+        assertThat(jsonString).isEqualTo(expected);
+        JSONAssert.assertEquals(expected, jsonString, true);
+    }
+
+    @Test
+    void testWithOneLevelSourceOnly() throws JsonProcessingException, JSONException {
+        Schema schema = SchemaBuilder
+                .record("spark_schema").namespace("no.ssb.dataset")
+                .fields()
+                .name("fnr").type().stringType().noDefault()
+                .name("konto").type().optional().type(
+                        SchemaBuilder.record("konto")
+                                .fields()
+                                .name("saldo").type().stringType().noDefault()
+                                .endRecord())
+                .endRecord();
+
+        SchemaToLineageTemplate schemaToTemplate =
+                LineageBuilder.createSchemaToLineageBuilder()
+                        .addInput(new SchemaWithPath(schema, "/kilde/skatt", 123456789))
+                        .outputSchema(schema)
+                        .simple(true)
+                        .build();
+
+        String jsonString = schemaToTemplate.generateTemplateAsJsonString();
+
+        // Check that we can parse json
+        Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
+        String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
+        System.out.println(jsonStringForDataSet);
+        String expected = TestUtils.load("testdata/lineage/one-level-simple.json");
+        assertThat(jsonString).isEqualTo(expected);
+        JSONAssert.assertEquals(expected, jsonString, true);
     }
 
     @Test
@@ -169,6 +203,7 @@ class SchemaToLineageTemplateTest {
         // Check that we can parse json
         Dataset root = new ObjectMapper().readValue(jsonString, Dataset.class);
         String jsonStringForDataSet = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
+        System.out.println(jsonStringForDataSet);
     }
 
     @Test

@@ -87,6 +87,7 @@ public class LineageBuilder {
     public static class SchemaToLineageBuilder {
         private final List<SchemaWithPath> schemaWithPaths = new ArrayList<>();
         Schema outputSchema;
+        boolean simple = false;
 
         public SchemaToLineageBuilder addInput(SchemaWithPath schemaWithPath) {
             schemaWithPaths.add(schemaWithPath);
@@ -98,8 +99,13 @@ public class LineageBuilder {
             return this;
         }
 
+        public SchemaToLineageBuilder simple(boolean simple) {
+            this.simple = simple;
+            return this;
+        }
+
         public SchemaToLineageTemplate build() {
-            return new SchemaToLineageTemplate(schemaWithPaths, outputSchema);
+            return new SchemaToLineageTemplate(schemaWithPaths, outputSchema, simple);
         }
     }
 
@@ -121,6 +127,11 @@ public class LineageBuilder {
 
         public LogicalRecordBuilder name(String shortName) {
             record.setName(shortName);
+            return this;
+        }
+
+        public LogicalRecordBuilder addSources(Collection<Source> sources) {
+            record.addSources(sources);
             return this;
         }
 
