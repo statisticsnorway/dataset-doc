@@ -8,14 +8,12 @@ module no.ssb.dapla.dataset.doc {
     requires gson;
 
     exports no.ssb.dapla.dataset.doc.model.simple;
-    exports no.ssb.dapla.dataset.doc.model.gsim;
     exports no.ssb.dapla.dataset.doc.template;
     exports no.ssb.dapla.dataset.doc.builder;
     exports no.ssb.dapla.dataset.doc.traverse;
 
     opens no.ssb.dapla.dataset.doc.model.simple to com.fasterxml.jackson.databind, gson;
     opens no.ssb.dapla.dataset.doc.model.lineage to com.fasterxml.jackson.databind, gson;
-    opens no.ssb.dapla.dataset.doc.model.gsim to com.fasterxml.jackson.databind, gson;
 
     opens no.ssb.dapla.dataset.doc.traverse;
     opens no.ssb.dapla.dataset.doc.template;
