@@ -25,6 +25,10 @@ public class Source {
     @JsonProperty
     private long version;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("dataset")
+    private String dataset;// gsim dataset id
+
     @JsonIgnore
     private float confidence;
 
@@ -74,5 +78,13 @@ public class Source {
 
     public void setMatchScore(float matchScore) {
         this.matchScore = matchScore;
+    }
+
+    public String getDataset() {
+        return dataset;
+    }
+
+    public void setDataset(String dataset) {
+        this.dataset = dataset;
     }
 }

@@ -9,6 +9,7 @@ module no.ssb.dapla.dataset.doc {
 
     exports no.ssb.dapla.dataset.doc.model.simple;
     exports no.ssb.dapla.dataset.doc.model.gsim;
+    exports no.ssb.dapla.dataset.doc.model.lds;
     exports no.ssb.dapla.dataset.doc.template;
     exports no.ssb.dapla.dataset.doc.builder;
     exports no.ssb.dapla.dataset.doc.traverse;

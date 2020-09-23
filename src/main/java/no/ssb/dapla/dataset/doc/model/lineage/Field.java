@@ -25,6 +25,10 @@ public class Field {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     protected Float confidence;
 
+    public List<Source> getSources() {
+        return sources;
+    }
+
     @JsonProperty
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected List<Source> sources = new ArrayList<>();
