@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@JsonPropertyOrder({ "field_candidates", "field", "path", "version" })
+@JsonPropertyOrder({"field_candidates", "field", "path", "version"})
 public class Source {
 
     @JsonProperty("field_candidates")
@@ -24,10 +24,6 @@ public class Source {
 
     @JsonProperty
     private long version;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("dataset")
-    private String dataset;// gsim dataset id
 
     @JsonIgnore
     private float confidence;
@@ -80,11 +76,4 @@ public class Source {
         this.matchScore = matchScore;
     }
 
-    public String getDataset() {
-        return dataset;
-    }
-
-    public void setDataset(String dataset) {
-        this.dataset = dataset;
-    }
 }
