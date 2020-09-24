@@ -3,7 +3,7 @@ module no.ssb.dapla.dataset.doc {
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.annotation;
 
-    requires avro;
+    requires org.apache.avro;
     requires avro.buddy.core;
     requires gson;
 
