@@ -11,6 +11,7 @@ module no.ssb.dapla.dataset.doc {
     exports no.ssb.dapla.dataset.doc.template;
     exports no.ssb.dapla.dataset.doc.builder;
     exports no.ssb.dapla.dataset.doc.traverse;
+    exports no.ssb.dapla.dataset.doc.model.lineage;
 
     opens no.ssb.dapla.dataset.doc.model.simple to com.fasterxml.jackson.databind, gson;
     opens no.ssb.dapla.dataset.doc.model.lineage to com.fasterxml.jackson.databind, gson;
