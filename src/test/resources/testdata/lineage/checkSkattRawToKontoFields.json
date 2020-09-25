@@ -6,7 +6,7 @@
       {
         "name": "personidentifikator",
         "type": "inherited",
-        "confidence": 0.45,
+        "confidence": 0.44999998807907104,
         "sources": [
           {
             "field_candidates": [
@@ -22,7 +22,7 @@
       {
         "name": "kontonummer",
         "type": "inherited",
-        "confidence": 0.12857142,
+        "confidence": 0.12857142090797424,
         "sources": [
           {
             "field_candidates": [
@@ -43,7 +43,7 @@
       {
         "name": "innskudd",
         "type": "inherited",
-        "confidence": 0.9,
+        "confidence": 0.8999999761581421,
         "sources": [
           {
             "field": "SkattemeldingUtflatet.konto.innskudd",
@@ -55,7 +55,7 @@
       {
         "name": "gjeld",
         "type": "inherited",
-        "confidence": 0.45,
+        "confidence": 0.44999998807907104,
         "sources": [
           {
             "field_candidates": [

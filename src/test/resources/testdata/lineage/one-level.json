@@ -6,7 +6,7 @@
       {
         "name": "fnr",
         "type": "inherited",
-        "confidence": 0.9,
+        "confidence": 0.8999999761581421,
         "sources": [
           {
             "field": "fnr",
@@ -22,7 +22,7 @@
           {
             "name": "saldo",
             "type": "inherited",
-            "confidence": 0.9,
+            "confidence": 0.8999999761581421,
             "sources": [
               {
                 "field": "konto.saldo",

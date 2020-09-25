@@ -6,7 +6,7 @@
       {
         "name": "fnr",
         "type": "inherited",
-        "confidence": 0.9,
+        "confidence": 0.8999999761581421,
         "sources": [
           {
             "field": "fnr",
@@ -27,7 +27,7 @@
           "created",
           "derived"
         ],
-        "confidence": 0.6,
+        "confidence": 0.6000000238418579,
         "sources": [
           {
             "field_candidates": [
@@ -42,7 +42,7 @@
       {
         "name": "alder",
         "type": "inherited",
-        "confidence": 0.9,
+        "confidence": 0.8999999761581421,
         "sources": [
           {
             "field": "person.alder",
