@@ -26,10 +26,10 @@ public class Source {
     private long version;
 
     @JsonIgnore
-    private float confidence;
+    private double confidence;
 
     @JsonIgnore
-    private float matchScore;
+    private double matchScore;
 
     public long getVersion() {
         return version;
@@ -48,11 +48,11 @@ public class Source {
         return field;
     }
 
-    public float getConfidence() {
+    public double getConfidence() {
         return confidence;
     }
 
-    public void setConfidence(float confidence) {
+    public void setConfidence(double confidence) {
         this.confidence = confidence;
     }
 
@@ -68,11 +68,11 @@ public class Source {
         return fieldCandidates;
     }
 
-    public float getMatchScore() {
+    public double getMatchScore() {
         return matchScore;
     }
 
-    public void setMatchScore(float matchScore) {
+    public void setMatchScore(double matchScore) {
         this.matchScore = matchScore;
     }
 

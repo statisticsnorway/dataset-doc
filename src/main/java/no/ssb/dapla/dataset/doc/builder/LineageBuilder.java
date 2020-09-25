@@ -159,7 +159,7 @@ public class LineageBuilder {
             return this;
         }
 
-        public InstanceVariableBuilder confidence(Float confidence) {
+        public InstanceVariableBuilder confidence(Double confidence) {
             instance.setConfidence(confidence);
             return this;
         }
