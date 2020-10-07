@@ -47,7 +47,7 @@ public class SchemaToLineageTemplate extends SchemaTraverse<Record> {
         }
     }
 
-    private Dataset generateTemplate() {
+    public Dataset generateTemplate() {
         SchemaBuddy schemaBuddy = SchemaBuddy.parse(schema);
 
         Record root;

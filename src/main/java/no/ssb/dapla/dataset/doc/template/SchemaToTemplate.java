@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class SchemaToTemplate extends SchemaTraverse<Record> {
 
@@ -25,17 +26,22 @@ public class SchemaToTemplate extends SchemaTraverse<Record> {
 
     private final Schema schema;
     private final ConceptNameLookup conceptNameLookup;
+    private final Suggester suggester;
     private final List<String> instanceVariableFilter = new ArrayList<>();
     private final List<String> logicalRecordFilter = new ArrayList<>();
 
     public SchemaToTemplate(Schema schema) {
-        this.schema = schema;
-        this.conceptNameLookup = new DummyConceptNameLookup();
+        this(schema, new DummyConceptNameLookup(), new EmptySuggester());
     }
 
     public SchemaToTemplate(Schema schema, ConceptNameLookup conceptNameLookup) {
+        this(schema, conceptNameLookup, new EmptySuggester());
+    }
+
+    public SchemaToTemplate(Schema schema, ConceptNameLookup conceptNameLookup, Suggester suggester) {
         this.schema = schema;
         this.conceptNameLookup = conceptNameLookup;
+        this.suggester = suggester;
     }
 
     public SchemaToTemplate withInstanceVariableFilter(String... ignoreFields) {
@@ -50,21 +56,21 @@ public class SchemaToTemplate extends SchemaTraverse<Record> {
         return this;
     }
 
-    public SchemaToTemplate withLogicalRecordFilterFilter(String... ignoreFields) {
+    public SchemaToTemplate withLogicalRecordFilter(String... ignoreFields) {
         if (!logicalRecordFilter.isEmpty()) {
             throw new IllegalStateException("LogicalRecord already contains " + ignoreFields + ". use addLogicalRecordFilter to add");
         }
-        return addLogicalRecordFilterFilter(ignoreFields);
+        return addLogicalRecordFilter(ignoreFields);
     }
 
-    public SchemaToTemplate addLogicalRecordFilterFilter(String... ignoreFields) {
+    public SchemaToTemplate addLogicalRecordFilter(String... ignoreFields) {
         logicalRecordFilter.addAll(Arrays.asList(ignoreFields));
         return this;
     }
 
     public SchemaToTemplate withDoSimpleFiltering(boolean simpleFiltering) {
         if (simpleFiltering) {
-            return withLogicalRecordFilterFilter("unitType")
+            return withLogicalRecordFilter("unitType")
                     .withInstanceVariableFilter(
                             "dataStructureComponentRole",
                             "dataStructureComponentType",
@@ -114,24 +120,44 @@ public class SchemaToTemplate extends SchemaTraverse<Record> {
     }
 
     private Instance getInstanceVariable(String name, String description) {
-        return SimpleBuilder.createInstanceVariableBuilder(conceptNameLookup)
-                .name(name)
-                .description(description != null ? description : "")
-                .dataStructureComponentType("MEASURE")
-                .identifierComponentIsComposite(false)
-                .identifierComponentIsUnique(false)
-                .dataStructureComponentRole("ENTITY")
-                .representedVariable("RepresentedVariable_DUMMY")
-                .sentinelValueDomain("ValueDomain_DUMMY")
-                .population("Population_DUMMY")
-                .build();
+        Optional<Instance> suggested = suggester.suggestInstanceVariable(name);
+        if (suggested.isPresent()) {
+            Instance instance = suggested.get();
+            instance.setName(name);
+            if (description != null) {
+                instance.setDescription(description);
+            }
+            return instance;
+        } else {
+            return SimpleBuilder.createInstanceVariableBuilder(conceptNameLookup)
+                    .name(name)
+                    .description(description != null ? description : "")
+                    .dataStructureComponentType("MEASURE")
+                    .identifierComponentIsComposite(false)
+                    .identifierComponentIsUnique(false)
+                    .dataStructureComponentRole("ENTITY")
+                    .representedVariable("RepresentedVariable_DUMMY")
+                    .sentinelValueDomain("ValueDomain_DUMMY")
+                    .population("Population_DUMMY")
+                    .build();
+        }
     }
 
     private Record getLogicalRecord(String name, String description) {
-        return SimpleBuilder.createLogicalRecordBuilder(conceptNameLookup)
-                .name(name)
-                .description(description)
-                .unitType("UnitType_DUMMY")
-                .build();
+        Optional<Record> suggested = suggester.suggestRecord(name);
+        if (suggested.isPresent()) {
+            Record record = suggested.get();
+            record.setName(name);
+            if (description != null) {
+                record.setDescription(description);
+            }
+            return record;
+        } else {
+            return SimpleBuilder.createLogicalRecordBuilder(conceptNameLookup)
+                    .name(name)
+                    .description(description)
+                    .unitType("UnitType_DUMMY")
+                    .build();
+        }
     }
 }

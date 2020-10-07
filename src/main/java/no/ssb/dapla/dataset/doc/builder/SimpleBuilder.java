@@ -5,6 +5,7 @@ import no.ssb.dapla.dataset.doc.model.simple.TypeInfo;
 import no.ssb.dapla.dataset.doc.model.simple.Instance;
 import no.ssb.dapla.dataset.doc.model.simple.Record;
 import no.ssb.dapla.dataset.doc.template.ConceptNameLookup;
+import no.ssb.dapla.dataset.doc.template.Suggester;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +26,6 @@ public class SimpleBuilder {
     }
 
     public static class LogicalRecordBuilder {
-        static final String LDS_SCHEMA_NAME = "LogicalRecord";
-
         private final Record record = new Record();
         private final ConceptNameLookup conceptNameLookup;
 

@@ -4,16 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
+import no.ssb.dapla.dataset.doc.model.simple.EnumInfo;
+import no.ssb.dapla.dataset.doc.model.simple.Instance;
 import no.ssb.dapla.dataset.doc.model.simple.Record;
+import no.ssb.dapla.dataset.doc.model.simple.TypeInfo;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -227,5 +231,44 @@ class SchemaToTemplateTest {
 
         Record root = new ObjectMapper().readValue(jsonString, Record.class);
         assertThat(root.getName()).isEmpty();
+    }
+
+    @Test
+    void checkThatSuggestedValuesAreUsed() throws JsonProcessingException {
+        Schema schema = SchemaBuilder
+                .record("spark_schema").namespace("no.ssb.dataset")
+                .fields()
+                .name("kontonummer").type().stringType().noDefault()
+                .endRecord();
+
+        Suggester suggester = new Suggester() {
+            @Override
+            public Optional<Instance> suggestInstanceVariable(String name) {
+                final Instance instance = new Instance();
+                instance.setDescription("Suggested variable description");
+                instance.setDataStructureComponentType(new EnumInfo("dataStructureComponentType", List.of("dataStructureComponentType")));
+                instance.setIdentifierComponentIsComposite(false);
+                instance.setIdentifierComponentIsUnique(true);
+                instance.setDataStructureComponentRole(new EnumInfo("dataStructureComponentRole", List.of("dataStructureComponentRole")));
+                instance.setPopulation(new TypeInfo("1", "type", Map.of("1", "population")));
+                instance.setRepresentedVariable(new TypeInfo("2", "type", Map.of("2", "representedVariable")));
+                instance.setSentinelValueDomain(new TypeInfo("3", "type", Map.of("3", "sentinelValueDomain")));
+                return Optional.of(instance);
+            }
+
+            @Override
+            public Optional<Record> suggestRecord(String name) {
+                final Record record = new Record();
+                record.setDescription("Suggested deataset description");
+                record.setUnitType(new TypeInfo("00", "type", Map.of("00", "unitType")));
+                return Optional.of(record);
+            }
+        };
+
+        SchemaToTemplate schemaToTemplate =
+                new SchemaToTemplate(schema, new DummyConceptNameLookup(), suggester).withDoSimpleFiltering(false);
+
+        String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
+        System.out.println(jsonString);
     }
 }
