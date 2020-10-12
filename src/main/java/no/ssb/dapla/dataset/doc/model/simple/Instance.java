@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonFilter("InstanceVariable_MinimumFilter")
-@JsonPropertyOrder({"name", "description", "dataStructureComponentType"})
+@JsonPropertyOrder({"name", "description", "dataStructureComponentType", "representedVariable", "population", "sentinelValueDomain"})
 public class Instance {
 
     @JsonProperty
