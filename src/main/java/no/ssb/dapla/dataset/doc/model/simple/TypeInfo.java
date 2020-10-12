@@ -3,6 +3,7 @@ package no.ssb.dapla.dataset.doc.model.simple;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +29,9 @@ public class TypeInfo {
             this.candidates = List.of();
         } else {
             this.candidates = candidatesNameToId.entrySet().stream()
-                    .map(e -> new Candidate(e.getKey(), e.getValue())).collect(Collectors.toList());
+                    .map(e -> new Candidate(e.getKey(), e.getValue()))
+                    .sorted(Comparator.comparing(o -> o.id))
+                    .collect(Collectors.toList());
         }
         makeSureWeHaveOneElement();
         makeSureWeHaveCorrectSelectedId();

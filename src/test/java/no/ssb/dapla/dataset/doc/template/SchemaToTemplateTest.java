@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import no.ssb.dapla.dataset.doc.model.lineage.Dataset;
 import no.ssb.dapla.dataset.doc.model.simple.Record;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -179,7 +178,9 @@ class SchemaToTemplateTest {
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
         String json = TestUtils.load("testdata/template/default.json");
 
-        JSONAssert.assertEquals(jsonString, json, false);
+        // strict: false is not testing all cases. And for true we will have to have same order
+        JSONAssert.assertEquals(jsonString, json, true);
+        //assertThat(jsonString).isEqualTo(json);
     }
 
     @Test

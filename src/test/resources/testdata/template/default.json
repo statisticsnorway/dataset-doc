@@ -15,26 +15,9 @@
   "instanceVariables" : [ {
     "name" : "kontonummer",
     "description" : "vilkårlig lang sekvens av tegn inkludert aksenter og spesielle tegn fra standardiserte tegnsett",
-    "identifierComponentIsComposite" : false,
-    "identifierComponentIsUnique" : false,
-    "dataStructureComponentRole" : {
-      "selected-enum" : "ENTITY",
-      "enums" : [ "ENTITY", "IDENTITY", "COUNT", "TIME", "GEO" ]
-    },
     "dataStructureComponentType" : {
       "selected-enum" : "MEASURE",
       "enums" : [ "IDENTIFIER", "MEASURE", "ATTRIBUTE" ]
-    },
-    "population" : {
-      "concept-type" : "Population",
-      "selected-id" : "Population_DUMMY",
-      "candidates" : [ {
-        "id" : "Population_DUMMY",
-        "name" : "Population_default"
-      }, {
-        "id" : "some-id-could-be-guid",
-        "name" : "All families 2018-01-01"
-      } ]
     },
     "representedVariable" : {
       "concept-type" : "RepresentedVariable",
@@ -47,18 +30,29 @@
         "name" : "NationalFamilyIdentifier"
       } ]
     },
+    "population" : {
+      "concept-type" : "Population",
+      "selected-id" : "Population_DUMMY",
+      "candidates" : [ {
+        "id" : "Population_DUMMY",
+        "name" : "Population_default"
+      }, {
+        "id" : "some-id-could-be-guid",
+        "name" : "All families 2018-01-01"
+      } ]
+    },
     "sentinelValueDomain" : {
       "concept-type" : "EnumeratedValueDomain,DescribedValueDomain",
       "selected-id" : "ValueDomain_DUMMY",
       "candidates" : [ {
-        "id" : "ValueDomain_DUMMY",
-        "name" : "ValueDomain_default"
-      }, {
         "id" : "DescribedValueDomain_DUMMY",
         "name" : "DescribedValueDomain_default"
       }, {
         "id" : "EnumeratedValueDomain_DUMMY",
         "name" : "EnumeratedValueDomain_default"
+      }, {
+        "id" : "ValueDomain_DUMMY",
+        "name" : "ValueDomain_default"
       }, {
         "id" : "some-id-could-be-guid",
         "name" : "Heltall"
@@ -67,26 +61,9 @@
   }, {
     "name" : "innskudd",
     "description" : "9 sifret nummer gitt de som er registrert i Enhetsregisteret.",
-    "identifierComponentIsComposite" : false,
-    "identifierComponentIsUnique" : false,
-    "dataStructureComponentRole" : {
-      "selected-enum" : "ENTITY",
-      "enums" : [ "ENTITY", "IDENTITY", "COUNT", "TIME", "GEO" ]
-    },
     "dataStructureComponentType" : {
       "selected-enum" : "MEASURE",
       "enums" : [ "IDENTIFIER", "MEASURE", "ATTRIBUTE" ]
-    },
-    "population" : {
-      "concept-type" : "Population",
-      "selected-id" : "Population_DUMMY",
-      "candidates" : [ {
-        "id" : "Population_DUMMY",
-        "name" : "Population_default"
-      }, {
-        "id" : "some-id-could-be-guid",
-        "name" : "All families 2018-01-01"
-      } ]
     },
     "representedVariable" : {
       "concept-type" : "RepresentedVariable",
@@ -99,18 +76,29 @@
         "name" : "NationalFamilyIdentifier"
       } ]
     },
+    "population" : {
+      "concept-type" : "Population",
+      "selected-id" : "Population_DUMMY",
+      "candidates" : [ {
+        "id" : "Population_DUMMY",
+        "name" : "Population_default"
+      }, {
+        "id" : "some-id-could-be-guid",
+        "name" : "All families 2018-01-01"
+      } ]
+    },
     "sentinelValueDomain" : {
       "concept-type" : "EnumeratedValueDomain,DescribedValueDomain",
       "selected-id" : "ValueDomain_DUMMY",
       "candidates" : [ {
-        "id" : "ValueDomain_DUMMY",
-        "name" : "ValueDomain_default"
-      }, {
         "id" : "DescribedValueDomain_DUMMY",
         "name" : "DescribedValueDomain_default"
       }, {
         "id" : "EnumeratedValueDomain_DUMMY",
         "name" : "EnumeratedValueDomain_default"
+      }, {
+        "id" : "ValueDomain_DUMMY",
+        "name" : "ValueDomain_default"
       }, {
         "id" : "some-id-could-be-guid",
         "name" : "Heltall"
@@ -119,26 +107,9 @@
   }, {
     "name" : "gjeld",
     "description" : "en sum av penger i hele kroner brukt i en kontekst. Dette kan være en transaksjon, saldo o.l.",
-    "identifierComponentIsComposite" : false,
-    "identifierComponentIsUnique" : false,
-    "dataStructureComponentRole" : {
-      "selected-enum" : "ENTITY",
-      "enums" : [ "ENTITY", "IDENTITY", "COUNT", "TIME", "GEO" ]
-    },
     "dataStructureComponentType" : {
       "selected-enum" : "MEASURE",
       "enums" : [ "IDENTIFIER", "MEASURE", "ATTRIBUTE" ]
-    },
-    "population" : {
-      "concept-type" : "Population",
-      "selected-id" : "Population_DUMMY",
-      "candidates" : [ {
-        "id" : "Population_DUMMY",
-        "name" : "Population_default"
-      }, {
-        "id" : "some-id-could-be-guid",
-        "name" : "All families 2018-01-01"
-      } ]
     },
     "representedVariable" : {
       "concept-type" : "RepresentedVariable",
@@ -151,18 +122,29 @@
         "name" : "NationalFamilyIdentifier"
       } ]
     },
+    "population" : {
+      "concept-type" : "Population",
+      "selected-id" : "Population_DUMMY",
+      "candidates" : [ {
+        "id" : "Population_DUMMY",
+        "name" : "Population_default"
+      }, {
+        "id" : "some-id-could-be-guid",
+        "name" : "All families 2018-01-01"
+      } ]
+    },
     "sentinelValueDomain" : {
       "concept-type" : "EnumeratedValueDomain,DescribedValueDomain",
       "selected-id" : "ValueDomain_DUMMY",
       "candidates" : [ {
-        "id" : "ValueDomain_DUMMY",
-        "name" : "ValueDomain_default"
-      }, {
         "id" : "DescribedValueDomain_DUMMY",
         "name" : "DescribedValueDomain_default"
       }, {
         "id" : "EnumeratedValueDomain_DUMMY",
         "name" : "EnumeratedValueDomain_default"
+      }, {
+        "id" : "ValueDomain_DUMMY",
+        "name" : "ValueDomain_default"
       }, {
         "id" : "some-id-could-be-guid",
         "name" : "Heltall"
