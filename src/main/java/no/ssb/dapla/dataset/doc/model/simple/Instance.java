@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonFilter("InstanceVariable_MinimumFilter")
-@JsonPropertyOrder({"name", "description", "identifierComponentIsComposite", "identifierComponentIsUnique", "dataStructureComponentRole", "dataStructureComponentType"})
+@JsonPropertyOrder({"name", "description", "dataStructureComponentType"})
 public class Instance {
 
     @JsonProperty
@@ -13,15 +13,6 @@ public class Instance {
 
     @JsonProperty
     private String description;
-
-    @JsonProperty
-    private boolean identifierComponentIsComposite;
-
-    @JsonProperty
-    private boolean identifierComponentIsUnique;
-
-    @JsonProperty
-    private EnumInfo dataStructureComponentRole;
 
     @JsonProperty
     private EnumInfo dataStructureComponentType;
@@ -59,36 +50,12 @@ public class Instance {
         this.population = population;
     }
 
-    public EnumInfo getDataStructureComponentRole() {
-        return dataStructureComponentRole;
-    }
-
-    public void setDataStructureComponentRole(EnumInfo dataStructureComponentRole) {
-        this.dataStructureComponentRole = dataStructureComponentRole;
-    }
-
     public EnumInfo getDataStructureComponentType() {
         return dataStructureComponentType;
     }
 
     public void setDataStructureComponentType(EnumInfo dataStructureComponentType) {
         this.dataStructureComponentType = dataStructureComponentType;
-    }
-
-    public boolean getIdentifierComponentIsComposite() {
-        return identifierComponentIsComposite;
-    }
-
-    public void setIdentifierComponentIsComposite(boolean identifierComponentIsComposite) {
-        this.identifierComponentIsComposite = identifierComponentIsComposite;
-    }
-
-    public boolean getIdentifierComponentIsUnique() {
-        return identifierComponentIsUnique;
-    }
-
-    public void setIdentifierComponentIsUnique(boolean identifierComponentIsUnique) {
-        this.identifierComponentIsUnique = identifierComponentIsUnique;
     }
 
     public TypeInfo getRepresentedVariable() {

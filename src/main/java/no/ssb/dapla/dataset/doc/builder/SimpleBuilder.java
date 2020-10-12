@@ -75,24 +75,6 @@ public class SimpleBuilder {
             return this;
         }
 
-        public InstanceVariableBuilder identifierComponentIsComposite(boolean identifierComponentIsComposite) {
-            instance.setIdentifierComponentIsComposite(identifierComponentIsComposite);
-            return this;
-        }
-
-
-        public InstanceVariableBuilder identifierComponentIsUnique(boolean identifierComponentIsUnique) {
-            instance.setIdentifierComponentIsUnique(identifierComponentIsUnique);
-            return this;
-        }
-
-        public InstanceVariableBuilder dataStructureComponentRole(String dataStructureComponentRole) {
-            List<String> enumList = conceptNameLookup.getGsimSchemaEnum(LDS_SCHEMA_NAME, "dataStructureComponentRole");
-            EnumInfo info = new EnumInfo(dataStructureComponentRole, enumList);
-            instance.setDataStructureComponentRole(info);
-            return this;
-        }
-
         public InstanceVariableBuilder representedVariable(String representedVariable) {
             Map<String, String> nameToIds = conceptNameLookup.getNameToIds("RepresentedVariable");
             TypeInfo typeInfo = new TypeInfo(representedVariable, "RepresentedVariable", nameToIds);
