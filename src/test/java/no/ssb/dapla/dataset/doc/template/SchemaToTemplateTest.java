@@ -178,7 +178,9 @@ class SchemaToTemplateTest {
         String jsonString = schemaToTemplate.generateSimpleTemplateAsJsonString();
         String json = TestUtils.load("testdata/template/default.json");
 
-        JSONAssert.assertEquals(jsonString, json, false);
+        // strict: false is not testing all cases. And for true we will have to have same order
+        JSONAssert.assertEquals(jsonString, json, true);
+        //assertThat(jsonString).isEqualTo(json);
     }
 
     @Test
