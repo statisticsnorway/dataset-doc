@@ -50,6 +50,10 @@ public class SchemaToTemplate extends SchemaTraverse<Record> {
         return this;
     }
 
+    public ValidateResult validate(String existingDocTemplate) {
+        return new TemplateValidator(existingDocTemplate).validate(schema);
+    }
+
     public SchemaToTemplate withLogicalRecordFilterFilter(String... ignoreFields) {
         if (!logicalRecordFilter.isEmpty()) {
             throw new IllegalStateException("LogicalRecord already contains " + ignoreFields + ". use addLogicalRecordFilter to add");

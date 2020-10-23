@@ -229,4 +229,26 @@ class SchemaToTemplateTest {
         Record root = new ObjectMapper().readValue(jsonString, Record.class);
         assertThat(root.getName()).isEmpty();
     }
+
+    @Test
+    void checkValidate() {
+        Schema schema = SchemaBuilder
+                .record("spark_schema").namespace("no.ssb.dataset")
+                .fields()
+                .name("kontonummer").type().stringType().noDefault()
+                .endRecord();
+
+        String template = "{\n" +
+                "  \"name\" : \"\",\n" +
+                "  \"description\" : \"\",\n" +
+                "  \"instanceVariables\" : [ {\n" +
+                "    \"name\" : \"kontonummer\",\n" +
+                "    \"description\" : \"\"\n" +
+                "  } ]\n" +
+                "}\n";
+
+//        System.out.println(new SchemaToTemplate(schema).withDoSimpleFiltering(true).generateSimpleTemplateAsJsonString());
+
+        ValidateResult validateResult = new SchemaToTemplate(schema).validate(template);
+    }
 }
