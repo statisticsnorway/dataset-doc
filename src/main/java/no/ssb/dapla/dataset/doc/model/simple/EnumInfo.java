@@ -15,6 +15,10 @@ public class EnumInfo {
     @JsonProperty("enums")
     private List<String> enums;
 
+    @JsonProperty("optional")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Boolean optional;
+
     public EnumInfo() {
     }
 
