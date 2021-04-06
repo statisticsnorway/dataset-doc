@@ -1,6 +1,7 @@
 package no.ssb.dapla.dataset.doc.model.simple;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -16,6 +17,10 @@ public class Instance {
 
     @JsonProperty
     private EnumInfo dataStructureComponentType;
+
+    @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private EnumInfo valuation;
 
     @JsonProperty
     private TypeInfo population;
@@ -72,5 +77,13 @@ public class Instance {
 
     public void setSentinelValueDomain(TypeInfo sentinelValueDomain) {
         this.sentinelValueDomain = sentinelValueDomain;
+    }
+
+    public EnumInfo getValuation() {
+        return valuation;
+    }
+
+    public void setValuation(EnumInfo valuation) {
+        this.valuation = valuation;
     }
 }
